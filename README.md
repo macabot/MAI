@@ -7,7 +7,7 @@ Task:
 
 Dependencies
 ===
-- Java
+- Java http://www.java.com/
 
 Eclipse
 ===
