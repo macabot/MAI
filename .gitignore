@@ -2,8 +2,8 @@
 
 # Package Files #
 #*.jar
-*.war
-*.ear
+#*.war
+#*.ear
 
 # Eclipse
 .classpath
