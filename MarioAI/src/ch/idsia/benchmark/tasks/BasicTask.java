@@ -81,8 +81,9 @@ public boolean runSingleEpisode(final int repetitionsOfSingleEpisode)
                 agent.giveIntermediateReward(environment.getIntermediateReward());
 
                 boolean[] action = agent.getAction();
-                if (System.currentTimeMillis() - c > COMPUTATION_TIME_BOUND)
-                    return false;
+                //TODO uncomment time-bound for real testing in competition
+                //if (System.currentTimeMillis() - c > COMPUTATION_TIME_BOUND)
+                  //  return false;
 //                System.out.println("action = " + Arrays.toString(action));
 //            environment.setRecording(GlobalOptions.isRecording);
                 environment.performAction(action);
