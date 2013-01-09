@@ -6,6 +6,7 @@ Task:
 - create Mario AI
 
 Mario AI: http://www.marioai.org/
+
 Google group: https://groups.google.com/forum/?fromgroups#!forum/mariocompetition
 
 Dependencies
