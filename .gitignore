@@ -1,4 +1,8 @@
+# Java
 *.class
+
+# Mario AI
+MarioAI/bin
 
 # Package Files 
 *.zip
