@@ -15,6 +15,7 @@ Google group: https://groups.google.com/forum/?fromgroups#!forum/mariocompetitio
 Dependencies
 ===
 - Java http://www.java.com/
+- Java library for Multidimensional Scaling (MDSJ): http://www.inf.uni-konstanz.de/algo/software/mdsj/
 
 Eclipse
 ===
