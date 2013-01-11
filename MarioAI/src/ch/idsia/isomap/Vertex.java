@@ -5,7 +5,7 @@ package ch.idsia.isomap;
 public class Vertex implements Comparable<Vertex>
 {
     public final String name;
-    public Edge[] adjacencies;
+    public Edge[] adjacencies; //TODO use SortedSet
     public double minDistance = Double.POSITIVE_INFINITY;
     public Vertex previous;
     
