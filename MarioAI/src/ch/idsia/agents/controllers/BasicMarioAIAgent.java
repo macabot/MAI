@@ -72,8 +72,8 @@ protected int marioEgoCol;
 // values of these variables could be changed during the Agent-Environment interaction.
 // Use them to get more detailed or less detailed description of the level.
 // for information see documentation for the benchmark <link: marioai.org/marioaibenchmark/zLevels
-int zLevelScene = 1;
-int zLevelEnemies = 0;
+protected int zLevelScene = 1;
+protected int zLevelEnemies = 0;
 
 public BasicMarioAIAgent(String s)
 {
@@ -99,6 +99,7 @@ public void integrateObservation(Environment environment)
     receptiveFieldWidth = environment.getReceptiveFieldWidth();
     receptiveFieldHeight = environment.getReceptiveFieldHeight();
 
+    
     // It also possible to use direct methods from Environment interface.
     //
     marioStatus = marioState[0];
@@ -115,7 +116,7 @@ public void integrateObservation(Environment environment)
 
 public void giveIntermediateReward(float intermediateReward)
 {
-
+	
 }
 
 public void reset()

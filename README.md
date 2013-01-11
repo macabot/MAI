@@ -12,6 +12,7 @@ Mario AI websites:
 
 Google group: https://groups.google.com/forum/?fromgroups#!forum/mariocompetition
 
+interview aStar 2009 dude: http://aigamedev.com/open/interview/mario-ai/
 Dependencies
 ===
 - Java http://www.java.com/
