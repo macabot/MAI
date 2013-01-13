@@ -1,6 +1,6 @@
 // http://www.algolist.com/code/java/Dijkstra%27s_algorithm
 
-package ch.idsia.isomap;
+package isomap;
 
 import java.util.ArrayList;
 import java.util.Collections;

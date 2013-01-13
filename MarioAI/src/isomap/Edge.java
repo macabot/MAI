@@ -1,6 +1,6 @@
 // http://www.algolist.com/code/java/Dijkstra%27s_algorithm
 
-package ch.idsia.isomap;
+package isomap;
 
 public class Edge implements Comparable<Edge>
 {

@@ -1,6 +1,6 @@
 // http://www.inf.uni-konstanz.de/algo/software/mdsj/
 
-package ch.idsia.isomap;
+package isomap;
 
 import mdsj.MDSJ;
 

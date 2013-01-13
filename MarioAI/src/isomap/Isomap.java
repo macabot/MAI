@@ -1,4 +1,4 @@
-package ch.idsia.isomap;
+package isomap;
 
 import java.util.List;
 
