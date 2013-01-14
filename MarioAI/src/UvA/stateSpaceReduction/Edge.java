@@ -1,6 +1,6 @@
 // http://www.algolist.com/code/java/Dijkstra%27s_algorithm
 
-package stateSpaceReduction;
+package UvA.stateSpaceReduction;
 
 public class Edge implements Comparable<Edge>
 {

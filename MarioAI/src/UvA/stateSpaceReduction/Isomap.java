@@ -1,4 +1,4 @@
-package stateSpaceReduction;
+package UvA.stateSpaceReduction;
 
 import java.util.List;
 

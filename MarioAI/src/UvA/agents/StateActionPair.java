@@ -1,4 +1,4 @@
-package ch.idsia.evolution;
+package UvA.agents;
 
 import java.util.Arrays;
 

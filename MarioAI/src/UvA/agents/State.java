@@ -1,4 +1,4 @@
-package ch.idsia.evolution;
+package UvA.agents;
 
 
 public interface State 

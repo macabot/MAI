@@ -1,6 +1,6 @@
 // http://www.inf.uni-konstanz.de/algo/software/mdsj/
 
-package stateSpaceReduction;
+package UvA.stateSpaceReduction;
 
 import mdsj.MDSJ;
 

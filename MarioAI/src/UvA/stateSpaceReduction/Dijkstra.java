@@ -1,6 +1,6 @@
 // http://www.algolist.com/code/java/Dijkstra%27s_algorithm
 
-package stateSpaceReduction;
+package UvA.stateSpaceReduction;
 
 import java.util.ArrayList;
 import java.util.Collections;
