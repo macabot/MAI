@@ -68,7 +68,7 @@ protected int receptiveFieldWidth;
 protected int receptiveFieldHeight;
 protected int marioEgoRow;
 protected int marioEgoCol;
-
+protected int distance;
 // values of these variables could be changed during the Agent-Environment interaction.
 // Use them to get more detailed or less detailed description of the level.
 // for information see documentation for the benchmark <link: marioai.org/marioaibenchmark/zLevels
@@ -99,7 +99,7 @@ public void integrateObservation(Environment environment)
     receptiveFieldWidth = environment.getReceptiveFieldWidth();
     receptiveFieldHeight = environment.getReceptiveFieldHeight();
 
-    
+    distance = environment.getEvaluationInfo().distancePassedCells;
     // It also possible to use direct methods from Environment interface.
     //
     marioStatus = marioState[0];

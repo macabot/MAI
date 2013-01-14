@@ -15,7 +15,7 @@ import ch.idsia.evolution.StateActionPair;
 public class QLearnAgent extends BasicMarioAIAgent implements Agent {
 
 	static private final String name = "QLearnAgent";
-	final private int amountKeys = 15;
+	private int oldDistance;
 	final private int amountActions = 6; // actions to be learned (up right left etc)
 	private boolean[] returnAction;
 		
@@ -26,10 +26,10 @@ public class QLearnAgent extends BasicMarioAIAgent implements Agent {
 
 	
 	// settings for q learning
-	final int initialValue = 1500; // initial qvalues
+	final int initialValue = 2; // initial qvalues
 	final double epsilon = 0.1; // epsilon used in picking an action
 	final double gamma = 0.9; // gamma is penalty on delayed result
-	final double alpha = 0.4; // learning rate
+	final double alpha = 0.5; // learning rate
 	
 	
 	/**
@@ -133,9 +133,11 @@ public class QLearnAgent extends BasicMarioAIAgent implements Agent {
 				bestQValue = newQ;
 		}
 		
+		 
 		
-		int relativeReward = newState.getReward() - oldState.getReward();
-				
+		int relativeReward = distance - oldDistance;
+		oldDistance = distance; 
+		
 		double updatedValue = oldQ + alpha*(relativeReward + gamma*bestQValue - oldQ);
 		qValues.put(oldSap, updatedValue);	// update qValue of State-action pair
 		

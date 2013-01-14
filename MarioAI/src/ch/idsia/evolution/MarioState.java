@@ -2,6 +2,8 @@ package ch.idsia.evolution;
 
 import java.util.Arrays;
 
+import ch.idsia.benchmark.mario.environments.Environment;
+
 public class MarioState implements State {
 
 	boolean[] info;
@@ -14,7 +16,7 @@ public class MarioState implements State {
 	/**
 	 * Get the reward of prey or predator based on the state.
 	 * @return reward of mario
-	 */
+	 */ 
 	public int getReward() {
 		return 1;
 	} // end getReward
@@ -29,10 +31,11 @@ public class MarioState implements State {
 	} // end clone
 	
 	/**
-	 * Reset the positions of the agents.
+	 * Reset the info to no info
 	 */
 	public void reset() {
-		
+		for(int i = 0; i < info.length; i++)
+		info[i] = false;
 	} // end reset
 	
 	

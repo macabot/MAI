@@ -1,5 +1,7 @@
 package ch.idsia.evolution;
 
+import java.util.Arrays;
+
 public class StateActionPair 
 {
 	State state;
@@ -34,7 +36,7 @@ public class StateActionPair
 	@Override
 	public int hashCode()
 	{
-		return state.hashCode()*33+action.hashCode()*33;
+		return state.hashCode()*33+Arrays.hashCode(action)*33;
 	}
 	
 	@Override
