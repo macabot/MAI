@@ -28,7 +28,7 @@ public class StateActionPair
 
 		StateActionPair sap = (StateActionPair) o;
 
-		if( sap.state.equals(this.state) && sap.action.equals(this.action) )
+		if( sap.state.equals(this.state) && Arrays.equals(sap.action, this.action) )
 			return true;
 		return false;
 	}
@@ -42,7 +42,12 @@ public class StateActionPair
 	@Override
 	public String toString()
 	{
-		return String.format("%s %s", state ,action);
+		String actionString = "";
+		for(boolean b : action) 
+		{
+			actionString += b?"T":"F";
+		}
+		return String.format("%s & %s", state, actionString);
 	}
 	
 }

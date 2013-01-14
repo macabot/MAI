@@ -43,7 +43,10 @@ public class MarioState implements State {
 	public String toString() {
 		String string = "";
 		for(boolean b : info) 
-			string += " " + b + " ";
+		{
+			string += b?"T":"F";
+		}
+			//string += " " + b + " ";
 		return string; 
 	} // end toString
 
