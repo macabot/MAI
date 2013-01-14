@@ -14,6 +14,8 @@ Google group: https://groups.google.com/forum/?fromgroups#!forum/mariocompetitio
 
 interview aStar 2009 dude: http://aigamedev.com/open/interview/mario-ai/
 Dependencies
+
+2009 options: https://sites.google.com/site/imarioproject/Home/options
 ===
 - Java http://www.java.com/
 - Java library for Multidimensional Scaling (MDSJ): http://www.inf.uni-konstanz.de/algo/software/mdsj/
