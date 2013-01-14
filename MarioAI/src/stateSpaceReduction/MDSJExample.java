@@ -1,6 +1,6 @@
 // http://www.inf.uni-konstanz.de/algo/software/mdsj/
 
-package isomap;
+package stateSpaceReduction;
 
 import mdsj.MDSJ;
 

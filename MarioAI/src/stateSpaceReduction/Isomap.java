@@ -1,4 +1,4 @@
-package isomap;
+package stateSpaceReduction;
 
 import java.util.List;
 
