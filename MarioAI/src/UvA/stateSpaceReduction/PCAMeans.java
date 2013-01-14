@@ -20,7 +20,7 @@ public class PCAMeans
 	private int iterations;
 
 	PrincipleComponentAnalysis pca;
-	List<double[]> means;
+	Dataset means;
 	List<double[]> states;
 
 	public PCAMeans(int numComponents, int clusterAmount, int iterations)
@@ -29,10 +29,10 @@ public class PCAMeans
 		this.clusterAmount = clusterAmount;
 		this.iterations = iterations;
 		this.pca = new PrincipleComponentAnalysis();
-		this.means = new ArrayList<double[]>();
+		this.means = new DefaultDataset();
 		this.states = new ArrayList<double[]>();
 	}
-
+	//TODO pca.setup/2
 	public void addState(State state)
 	{
 		states.add(state.representation);
@@ -57,11 +57,19 @@ public class PCAMeans
 		means = calcMeans(clusters);
 	}
 	
-	public static List<double[]> calcMeans(Dataset[] clusters)
+	public static Dataset calcMeans(Dataset[] clusters)
 	{
-		List<double[]> means = new ArrayList<double[]>();
-		
+		Dataset means = new DefaultDataset();
+		for(Dataset dataset: clusters)
+		{
+			Instance sum = new DenseInstance(new double[dataset.size()]);
+			for(Instance instance: dataset)
+			{
+				sum.add(instance);
+			}
+			means.add(sum.divide(dataset.size()));
+		}
 		return means;
 	}
-
+	
 }
