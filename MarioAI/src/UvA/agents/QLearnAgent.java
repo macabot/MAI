@@ -21,7 +21,7 @@ public class QLearnAgent extends BasicMarioAIAgent implements Agent {
 	private List<boolean[]> validActions;
 	private State newState; // retrieved from engine
 	private State oldState; // used for learning
-
+	private final String stateType = "MarioState"; 
 	
 	// settings for q learning
 	final int initialValue = 2; // initial qvalues
@@ -46,6 +46,7 @@ public class QLearnAgent extends BasicMarioAIAgent implements Agent {
 		super(name);
 		initiateQValues();
 		this.qValues = qValuesIn;
+		
 	} // end constructor with policy
 	
 
@@ -65,7 +66,7 @@ public class QLearnAgent extends BasicMarioAIAgent implements Agent {
 	            probe(-1, 1, enemies), probe(0, 1, enemies), probe(1, 1, enemies),
 	            isMarioOnGround ? true : false, isMarioAbleToJump ? true : false};
 	        
-	    newState = new MarioState(input);
+	    newState = createState(stateType, input);
 	    // update q values and return new action
 	    updateQValue();
 	    returnAction = eGreedyAction();
@@ -192,10 +193,21 @@ public class QLearnAgent extends BasicMarioAIAgent implements Agent {
 	
 	public void initiateQValues() {
 		boolean[] fakeInput = new boolean[20];
-		oldState = new MarioState(fakeInput);
+		oldState = createState(stateType, fakeInput);
 		returnAction = new boolean[Environment.numberOfKeys];
 		validActions = getValidActions();
 	} // end getvalidactions
+	
+	public static State createState(String stateType, boolean[] input)
+	{
+		if( stateType.equals("MarioState") )
+			return new MarioState(input);
+		else
+		{
+			System.out.println("Unknown state-type");
+			return null;
+		}			
+	}
 	
 	/**
 	 * Used in getAction for getting x and y positions relative to mario
