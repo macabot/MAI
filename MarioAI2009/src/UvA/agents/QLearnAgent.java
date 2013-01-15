@@ -8,6 +8,7 @@ import java.util.Random;
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.ai.BasicAIAgent;
+import ch.idsia.mario.engine.MarioComponent;
 import ch.idsia.mario.environments.Environment;
 
 public class QLearnAgent extends BasicAIAgent implements Agent {
@@ -29,10 +30,10 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
  
 	
 	// settings for q learning
-	final int initialValue = 2; // initial qvalues
+	final int initialValue = 20; // initial qvalues
 	final double epsilon = 0.1; // epsilon used in picking an action
 	final double gamma = 0.9; // gamma is penalty on delayed result
-	final double alpha = 0.1; // learning rate
+	final double alpha = 0.4; // learning rate
 	
 	
 	
@@ -70,7 +71,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		returnAction = eGreedyAction();
 		
 		// update oldState for updateQValue()
-	    oldState = state;
+	    oldState = state.clone();
 	    
 	    return returnAction;
 
@@ -134,6 +135,8 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		double reward = state.getReward();
 		double updatedValue = oldQ + alpha*(reward + gamma*bestQValue - oldQ);
 		qValues.put(oldSap, updatedValue);	// update qValue of State-action pair
+		
+		//System.out.printf("Updated state \n%s \n from %.2f to %.2f \n\n", oldState, oldQ, updatedValue);
 	}
 	
 	/**
@@ -204,11 +207,18 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 * such as oldState, which needs to have a value
 	 */
 	public void initiateValues() {
+		oldState = createState(stateType, null);
 		state = createState(stateType, null);
 		returnAction = new boolean[Environment.numberOfButtons];
 		validActions = getValidActions();
 	} // end getvalidactions
 	
+	/**
+	 * Creates a state depending on type declared at top of file
+	 * @param stateType The type of state to be created
+	 * @param environmentIn The information state needs in order to create a state
+	 * @return the correct state type including information
+	 */
 	public State createState(String stateType, Environment environmentIn)
 	{
 		if( stateType.equals("MarioState") )
@@ -226,6 +236,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 * Load qvalues according to path, called from main run
 	 * @param path is the path where the qvalues are stored
 	 */
+	@SuppressWarnings("unchecked") // hack to remore annoying warning of casting
 	public void loadQValues(String path) {
 		try {
 			qValues = (Map<StateActionPair, Double>) SLAPI.load(path);

@@ -13,8 +13,9 @@ public class MarioState implements State, Serializable {
 	private static final long serialVersionUID = -499494658577348783L;
 
 	// state representation
-	private double[] representation;
-	private Environment environment; // used for cloning 
+	private int amountOfInput = 100;
+	private double[] representation = new double[amountOfInput];
+	private Environment environment = null; // used for cloning 
 	
 	/* ------------ variables usable in state ---------------- */
 	protected byte[][] scene;
@@ -38,7 +39,12 @@ public class MarioState implements State, Serializable {
 	 * @param environment is the mario environment
 	 */
 	public MarioState(Environment environment) {
-		update(environment);
+		if(environment != null) {
+			update(environment);
+			representation = new double[amountOfInput];
+		}
+		else
+			System.out.println("Input environment when creating state is null, may only happen at the creation of mario");
 	} // end constructor 
 
 	/**
@@ -54,9 +60,11 @@ public class MarioState implements State, Serializable {
 	 * This function is called in order to update the state; 
 	 */
 	public void update(Object environment) {
-		this.environment = (Environment) environment;
-		updateValues();
-		updateRepresentation();		
+		if(environment != null) {
+			this.environment = (Environment) environment;
+			updateValues();
+			updateRepresentation();	
+		}
 	}
 	
 	/**
@@ -100,8 +108,8 @@ public class MarioState implements State, Serializable {
 	            representation[which++] = probe(i, j, enemies);
 	        }
 	    }
-	    representation[representation.length + 1] = isMarioOnGround ? 1 : 0;
-	    representation[representation.length + 1] = isMarioAbleToJump ? 1 : 0;
+	    representation[representation.length - 2] = isMarioOnGround ? 1 : 0;
+	    representation[representation.length - 1] = isMarioAbleToJump ? 1 : 0;
 
 	} // end updateRepresentation
 	
@@ -133,7 +141,7 @@ public class MarioState implements State, Serializable {
 	 * @return clone
 	 */
 	public State clone() {
-		return new MarioState(environment);
+		return new MarioState(environment, oldXPos);
 	} // end clone
 	
 	/**
@@ -148,9 +156,13 @@ public class MarioState implements State, Serializable {
 	@Override
 	public String toString() {
 		String string = "";
-		for(double d : representation) 
+		for(int i = 0; i<representation.length; i++) 
 		{
-			string += String.format(" %f", d);
+			string += String.format(" %f", representation[i]);
+			if( ( (i+1) % 7) == 0)
+				string += "\n";
+			if( ( (i+1) % 49) == 0)
+				string += "\n";
 		}
 			//string += " " + b + " ";
 		return string; 
