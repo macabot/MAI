@@ -1,5 +1,6 @@
 package ch.idsia.scenarios;
 
+import UvA.agents.QLearnAgent;
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.AgentsPool;
 import ch.idsia.ai.agents.human.HumanKeyboardAgent;
@@ -39,17 +40,47 @@ public class Play {
      * @since   iMario1.0
      */
 
+	static String loadPath = null; // path to saved QValues
+	static String savePath = null;
+	
     public static void main(String[] args) {
+    	
+    	///// initialization
         EvaluationOptions options = new CmdLineOptions(args);
         Task task = new ProgressTask(options);
-//        options.setMaxFPS(false);
-//        options.setVisualization(true);
-//        options.setNumberOfTrials(1);
-        options.setLevelRandSeed((int) (Math.random () * Integer.MAX_VALUE));
-        options.setLevelDifficulty(1000);
-        task.setOptions(options);
 
-        System.out.println ("Score: " + task.evaluate (options.getAgent())[0]);
-        System.out.println("Simulation/Play finished");       
+        // regular options
+        options.setLevelDifficulty(1);
+        
+        ///// set options specific for learning
+//        options.setLevelRandSeed((int) (Math.random () * Integer.MAX_VALUE));
+//        options.setVisualization(false);
+//        options.setMaxFPS(true);
+//
+//        //////// optionally load qvalues, dont forget to set path
+//        QLearnAgent agent = (QLearnAgent) options.getAgent();
+//        agent.loadQValues(loadPath);
+//        
+//        /// set options and
+//        task.setOptions(options);
+//
+//        //// train
+//        for (int i = 0; i < 100; i++) { 
+//        System.out.print("Training trial " + i + "... ");
+//        task.evaluate(options.getAgent());
+//        System.out.print("Done!\n");
+//        }
+        
+        //// reset options for visualization
+        options.setVisualization(true);
+        task.setOptions(options);
+        
+        //// and show the next game, learned agent
+        System.out.print("Showing improvement... ");
+        task.evaluate(options.getAgent());
+        System.out.println("Done!");
+        
+        ///// write new qvalues to file
+//        agent.writeQValues(savePath);
     }
 }

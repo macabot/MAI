@@ -29,6 +29,7 @@ public class QLearnAgent extends BasicMarioAIAgent implements Agent {
 	final double gamma = 0.9; // gamma is penalty on delayed result
 	final double alpha = 0.5; // learning rate
 	
+	private int run = 0;
 	
 	/**
 	 *  Constructor of qlearn agent with a blank policy (to be learned)
@@ -74,6 +75,16 @@ public class QLearnAgent extends BasicMarioAIAgent implements Agent {
 	    // set old state for updating values
 	    oldState = newState; 
 	    
+	    run++;
+	    if(run > 200) {
+	    	try {
+	    		String path = new java.io.File(".").getCanonicalPath();
+				SLAPI.save(qValues, path);
+			} catch (Exception e) {
+				
+				e.printStackTrace();
+			}
+	    }
 	    return returnAction;
 	} // end getAction()
 

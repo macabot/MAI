@@ -1,8 +1,9 @@
 package UvA.agents;
 
+import java.io.Serializable;
 import java.util.Arrays;
 
-public class StateActionPair 
+public class StateActionPair implements Serializable 
 {
 	State state;
 	public boolean[] action;
