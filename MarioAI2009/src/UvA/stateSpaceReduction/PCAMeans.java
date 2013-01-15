@@ -1,5 +1,6 @@
 package UvA.stateSpaceReduction;
 
+import java.io.Serializable;
 import java.util.List;
 
 import net.sf.javaml.clustering.Clusterer;
@@ -10,10 +11,12 @@ import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
 import UvA.agents.State;
 
-public class PCAMeans 
+public class PCAMeans implements Serializable
 {
-	PrincipleComponentAnalysis pca;
-	Dataset means;
+	private static final long serialVersionUID = -2478983458498184932L;
+	
+	private PrincipleComponentAnalysis pca;
+	private Dataset means;
 
 	/**
 	 * Constructor performs PCA on states and clusters the eigen space projections.
@@ -83,7 +86,7 @@ public class PCAMeans
 		Dataset means = new DefaultDataset();
 		for(Dataset dataset: clusters)
 		{
-			Instance sum = new DenseInstance(new double[dataset.size()]);
+			Instance sum = new DenseInstance(new double[dataset.get(0).noAttributes()]);
 			for(Instance instance: dataset)
 			{
 				sum = sum.add(instance);
@@ -113,9 +116,10 @@ public class PCAMeans
 	public static double distance(Instance a, Instance b)
 	{
 		Instance diff = a.minus(b);
+		Instance squaredDiff = diff.multiply(diff);
 		double sum = 0;
-		for(int i=0; i<diff.noAttributes(); i++)
-			sum += diff.get(i);
+		for(int i=0; i<squaredDiff.noAttributes(); i++)
+			sum += squaredDiff.get(i);
 		
 		return Math.sqrt(sum);		
 	}

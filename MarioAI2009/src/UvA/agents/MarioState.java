@@ -1,14 +1,14 @@
 package UvA.agents;
 
-import java.io.Serializable;
 import java.util.Arrays;
+
 import ch.idsia.mario.environments.Environment;
 
 
-@SuppressWarnings("serial") // annoying warning
-public class MarioState implements State, Serializable {
-
-
+public class MarioState implements State 
+{
+	private static final long serialVersionUID = 4326470085716280782L;
+	
 	// state representation
 	private final int amountOfInput = 100;
 	private double[] representation = new double[amountOfInput];

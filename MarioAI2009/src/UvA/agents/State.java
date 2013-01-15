@@ -1,8 +1,9 @@
 package UvA.agents;
 
+import java.io.Serializable;
 
 
-public interface State 
+public interface State extends Serializable
 {	
 	/**
 	 * update the state given input

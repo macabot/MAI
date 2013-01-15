@@ -14,6 +14,8 @@ import ch.idsia.mario.environments.Environment;
  * Date: Apr 25, 2009
  * Time: 12:27:07 AM
  * Package: ch.idsia.ai.agents.ai;
+ * 
+ * Edited so that is saves all its states
  */
 
 public class SaveStatesAgent extends BasicAIAgent implements Agent 

@@ -10,11 +10,6 @@ public class SarsaAgent extends QLearnAgent{
 
 	// agent specific values
 	static private final String name = "SarsaAgent";
-	private final String stateType = "MarioState";
-	
-	// used to create state
-	//State state;
-	//State oldState;
 	
 	// action to return
 	private boolean[] action;
@@ -94,8 +89,8 @@ public class SarsaAgent extends QLearnAgent{
 	 */
 	@Override
 	public void initiateValues() {
-		oldState = createState(stateType, null);
-		state = createState(stateType, null);
+		oldState = createState(null);
+		state = createState(null);
 		oldAction = new boolean[Environment.numberOfButtons];
 		action = new boolean[Environment.numberOfButtons];
 		validActions = getValidActions();
