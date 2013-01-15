@@ -14,7 +14,7 @@ public class PCAMeans
 {
 	PrincipleComponentAnalysis pca;
 	Dataset means;
-	
+
 	/**
 	 * Constructor performs PCA on states and clusters the eigen space projections.
 	 * @param states	training data for PCA
@@ -24,6 +24,25 @@ public class PCAMeans
 	 */
 	public PCAMeans(List<State> states, int numComponents, int clusterAmount, int iterations)
 	{
+		this(statesToVectors(states), numComponents, clusterAmount, iterations);
+	}
+	public PCAMeans(double[][] vectors, int numComponents, int clusterAmount, int iterations)
+	{
+		// perform PCA
+		int numSamples = vectors.length;
+		int sampleSize = vectors[0].length;
+		this.pca = new PrincipleComponentAnalysis(numSamples, sampleSize);
+		pca.addSamples(vectors);
+		pca.computeBasis(numComponents);
+		double[][] projections = pca.samplesToEigenSpace(vectors);
+
+		// cluster PCA results		
+		this.means = calculateMeans(projections, clusterAmount, iterations);
+	}
+	//end constructors
+
+	public static double[][] statesToVectors(List<State> states)
+	{
 		// create vectors for PCA
 		int numSamples = states.size();
 		int sampleSize = states.get(0).getRepresentation().length;
@@ -31,15 +50,8 @@ public class PCAMeans
 		for(int i=0; i<vectors.length; i++)
 			vectors[i] = states.get(i).getRepresentation();
 		
-		// perform PCA
-		this.pca = new PrincipleComponentAnalysis(numSamples, sampleSize);
-		pca.addSamples(vectors);
-		pca.computeBasis(numComponents);
-		double[][] projections = pca.samplesToEigenSpace(vectors);
-		
-		// cluster PCA results		
-		this.means = calculateMeans(projections, clusterAmount, iterations);
-	}//end constructor
+		return vectors;
+	}
 
 	/**
 	 * Calculate the means of the clusters found in 'vectors'.
@@ -60,7 +72,7 @@ public class PCAMeans
 		Dataset[] clusters = km.cluster(data);
 		return calcMeans(clusters);
 	}
-	
+
 	/**
 	 * Calculate the means of clusters
 	 * @param clusters kMeans clusters
@@ -74,11 +86,40 @@ public class PCAMeans
 			Instance sum = new DenseInstance(new double[dataset.size()]);
 			for(Instance instance: dataset)
 			{
-				sum.add(instance);
+				sum = sum.add(instance);
 			}
 			means.add(sum.divide(dataset.size()));
 		}
 		return means;
 	}
 	
+	public int sampleToMean(double[] sample)
+	{
+		Instance projection = new DenseInstance(pca.sampleToEigenSpace(sample));
+		int nearestMeanIndex = 0;
+		double bestDist = distance(projection, means.get(nearestMeanIndex));
+		for(int i=1; i<means.size(); i++)
+		{
+			double tempDist = distance(projection, means.get(i)); 
+			if( tempDist < bestDist)
+			{
+				nearestMeanIndex = i;
+				bestDist = tempDist;
+			}
+		}
+		return nearestMeanIndex;
+	}
+	
+	public static double distance(Instance a, Instance b)
+	{
+		Instance diff = a.minus(b);
+		double sum = 0;
+		for(int i=0; i<diff.noAttributes(); i++)
+			sum += diff.get(i);
+		
+		return Math.sqrt(sum);		
+	}
+	
+	
+
 }//end class

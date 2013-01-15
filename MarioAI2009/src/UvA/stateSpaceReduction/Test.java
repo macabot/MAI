@@ -12,7 +12,15 @@ public class Test
 
 	public static void main(String[] args) 
 	{
-		testPCA();
+		double[][] vectors = {{1,1,1},{1,1,1},{2,2,2},{2,2,2},{3,3,3},{3,3,3}};
+		int numComponents = 2;
+		int clusterAmount = 3;
+		int iterations = 10;
+
+		PCAMeans pcam = new PCAMeans(vectors, numComponents, clusterAmount, iterations);
+		double[] sample = {1,1,1};
+		int mean = pcam.sampleToMean(sample);
+		System.out.println(mean);
 
 	}//end main
 
@@ -49,32 +57,32 @@ public class Test
 			System.out.println(output);
 		}
 	}
-	
+
 	public static void testCluster()
 	{
 		double[][] sampleData = new double[][] {
-		        {1, 2, 3, 4, 5, 6},
-		        {6, 5, 4, 3, 2, 1},
-		        {2, 2, 2, 2, 2, 2},
-		        {1, 2, 3, 4, 5, 6},
-		        {6, 5, 4, 3, 2, 1},
-		        {2, 2, 2, 2, 2, 2},
-		        {1, 2, 3, 4, 5, 6},
-		        {6, 5, 4, 3, 2, 1},
-		        {2, 2, 2, 2, 2, 2}};
-		
-		///Dataset data = new DefaultDataset();
-	    Dataset data = new DefaultDataset();
-	    for (int i = 0; i < sampleData.length; i++) {
-	    	Instance instance = new DenseInstance(sampleData[i]);
-	    	data.add(instance);
-	    }
+				{1, 2, 3, 4, 5, 6},
+				{6, 5, 4, 3, 2, 1},
+				{2, 2, 2, 2, 2, 2},
+				{1, 2, 3, 4, 5, 6},
+				{6, 5, 4, 3, 2, 1},
+				{2, 2, 2, 2, 2, 2},
+				{1, 2, 3, 4, 5, 6},
+				{6, 5, 4, 3, 2, 1},
+				{2, 2, 2, 2, 2, 2}};
 
-	    int clusterAmount = 2;
-	    int iterations = 10;
+		///Dataset data = new DefaultDataset();
+		Dataset data = new DefaultDataset();
+		for (int i = 0; i < sampleData.length; i++) {
+			Instance instance = new DenseInstance(sampleData[i]);
+			data.add(instance);
+		}
+
+		int clusterAmount = 2;
+		int iterations = 10;
 		Clusterer km = new KMeans(clusterAmount, iterations);
 		Dataset[] clusters = km.cluster(data);
-		
+
 		System.out.println(clusters);
 	}
 
