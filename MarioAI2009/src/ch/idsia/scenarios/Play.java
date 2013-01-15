@@ -43,12 +43,14 @@ public class Play {
     public static void main(String[] args) {
     	
     	///// initialization
-    	loadPath = System.getProperty("user.dir") + "/write.txt";
-    	savePath = System.getProperty("user.dir") + "/write.txt";
+    	loadPath = System.getProperty("user.dir") + "/qvalues.txt";
+    	savePath = System.getProperty("user.dir") + "/qvalues.txt";
     	
         EvaluationOptions options = new CmdLineOptions(args);
         Task task = new ProgressTask(options);
         QLearnAgent agent = (QLearnAgent) options.getAgent();
+        
+        agent.loadQValues(loadPath);       
         
         // regular options
         options.setLevelDifficulty(1);
@@ -57,8 +59,9 @@ public class Play {
 //        options.setLevelRandSeed((int) (Math.random () * Integer.MAX_VALUE));
 //        options.setVisualization(false);
 //        options.setMaxFPS(true);
-////        //////// optionally load qvalues, dont forget to set path
-////        agent.loadQValues(loadPath);
+//        
+//        //////// optionally load qvalues, dont forget to set path
+// 
 //        
 //        /// set options and
 //        task.setOptions(options);
@@ -72,7 +75,8 @@ public class Play {
 //        }
         
         //// reset options for visualization
-        options.setVisualization(true);
+        options.setVisualization(false);
+        options.setMaxFPS(true);
         task.setOptions(options);
         
         //// and show the next game, learned agent
@@ -82,5 +86,6 @@ public class Play {
         
         ///// write new qvalues to file
 //        agent.writeQValues(savePath);
+        System.out.println("Done with simulation!");
     }
 }

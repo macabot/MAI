@@ -10,86 +10,51 @@ public class MarioState implements State, Serializable {
 
 
 	// state representation
-	private int amountOfInput = 100;
-	private double[] representation = new double[amountOfInput];
-	private transient Environment environment = null; // used for cloning 
+	private final int amountOfInput = 100;
+	private int[] representation = new int[amountOfInput];
 	
-	/* ------------ variables usable in state ---------------- */
-	protected byte[][] scene;
-	protected byte[][] enemies;
-	protected byte[][] mergedObservation;
-
-	protected float[] marioFloatPos = null;
-	protected float[] enemiesFloatPos = null;
-
-	private boolean isMarioAbleToJump;
-	private boolean isMarioOnGround;
-	
-	protected int zLevelScene = 1;
-	protected int zLevelEnemies = 0;
-	
-	protected float xPos = 32;
-	protected float oldXPos = 32;
+	protected transient float xPos = 32;
+	protected transient float oldXPos = 32;
 	
 	/**
 	 * Constructor, creates state representation
 	 * @param environment is the mario environment
 	 */
 	public MarioState(Environment environment) {
-		if(environment != null) {
+		if(environment != null) 
 			update(environment);
-			representation = new double[amountOfInput];
-		}
-		else
+		else 
 			System.out.println("Input environment when creating state is null, may only happen at the creation of mario");
+			
 	} // end constructor 
+
 
 	/**
-	 * Constructor, creates state representation, when cloning, oldXPos is necessarily
-	 * @param environment is the mario environment
+	 * Constructor for when environment was not available: input is representation alone
 	 */
-	public MarioState(Environment environment, float oldXPos) {
-		update(environment);
-		this.oldXPos = oldXPos;
-	} // end constructor 
-
+	public MarioState(int[] reprIn, float oldXPosIn){
+		this.representation = reprIn;
+		this.oldXPos = oldXPosIn;
+	} // end constructor for representation input
+	
 	/**
 	 * This function is called in order to update the state; 
 	 */
 	public void update(Object environment) {
 		if(environment != null) {
-			this.environment = (Environment) environment;
-			updateValues();
-			updateRepresentation();	
+			updateRepresentation( (Environment) environment);	
 		}
 	}
 	
-	/**
-	 * This function extracts values from environment
-	 */
-	private void updateValues() {
-		/* setting info gotten from environment ===================================*/
-		// info from environment 
-	    scene = environment.getLevelSceneObservationZ(zLevelScene);
-	    enemies = environment.getEnemiesObservationZ(zLevelEnemies);
-	    mergedObservation = environment.getMergedObservationZ(1, 0);
-
-	    this.marioFloatPos = environment.getMarioFloatPos();
-	    this.enemiesFloatPos = environment.getEnemiesFloatPos();
-	        
-	    isMarioOnGround = environment.isMarioOnGround();
-	    isMarioAbleToJump = environment.mayMarioJump();
-	    
-	    // set distances, in order to get relative distance
-	    oldXPos = xPos;
-	    xPos = environment.getMarioFloatPos()[0];
-	    
-	}
-
+	
 	/**
 	 * updateRepresentation creates the representation of the state
 	 */
-	private void updateRepresentation() {
+	private void updateRepresentation(Environment environment) {
+        byte[][] scene = environment.getLevelSceneObservation();
+        byte[][] enemies = environment.getEnemiesObservation();
+		
+		
 	    int which = 0;
 	    for (int i = -3; i < 4; i++)
 	    {
@@ -105,8 +70,11 @@ public class MarioState implements State, Serializable {
 	            representation[which++] = probe(i, j, enemies);
 	        }
 	    }
-	    representation[representation.length - 2] = isMarioOnGround ? 1 : 0;
-	    representation[representation.length - 1] = isMarioAbleToJump ? 1 : 0;
+	    representation[representation.length - 2] = environment.mayMarioJump() ? 1 : 0;
+	    representation[representation.length - 1] = environment.isMarioOnGround() ? 1 : 0;
+	    
+	    this.oldXPos = xPos;
+	    xPos = environment.getMarioFloatPos()[0];
 
 	} // end updateRepresentation
 	
@@ -125,7 +93,7 @@ public class MarioState implements State, Serializable {
 	 * @param scene: scene object created in basicmarioAIagent
 	 * @return
 	 */
-	private double probe(int x, int y, byte[][] scene)
+	private int probe(int x, int y, byte[][] scene)
 	{
 	    int realX = x + Environment.HalfObsWidth;
 	    int realY = y + Environment.HalfObsHeight;
@@ -138,7 +106,7 @@ public class MarioState implements State, Serializable {
 	 * @return clone
 	 */
 	public State clone() {
-		return new MarioState(environment, oldXPos);
+		return new MarioState(representation, oldXPos);
 	} // end clone
 	
 	/**
@@ -155,13 +123,12 @@ public class MarioState implements State, Serializable {
 		String string = "";
 		for(int i = 0; i<representation.length; i++) 
 		{
-			string += String.format(" %f", representation[i]);
+			string += String.format(" %d", representation[i]);
 			if( ( (i+1) % 7) == 0)
 				string += "\n";
 			if( ( (i+1) % 49) == 0)
 				string += "\n";
 		}
-			//string += " " + b + " ";
 		return string; 
 	} // end toString
 
