@@ -8,14 +8,16 @@ import java.util.Random;
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.ai.BasicAIAgent;
+import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.engine.MarioComponent;
 import ch.idsia.mario.environments.Environment;
+
 
 public class QLearnAgent extends BasicAIAgent implements Agent {
 
 	// agent specific values
 	static private final String name = "QLearnAgent";
-	private final String stateType = "MarioState";
+	protected final String stateType = "MarioState";
 	
 	// used to create state
 	State state;
@@ -25,8 +27,8 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	private boolean[] returnAction;
 		
 	// values used by qlearning
-	private Map<StateActionPair, Double> qValues;	// state-action values
-	private List<boolean[]> validActions;
+	protected Map<StateActionPair, Double> qValues;	// state-action values
+	protected List<boolean[]> validActions;
  
 	
 	// settings for q learning
@@ -35,6 +37,19 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	final double gamma = 0.9; // gamma is penalty on delayed result
 	final double alpha = 0.4; // learning rate
 	
+	// actions
+	final boolean[] STAY = new boolean[Environment.numberOfButtons];;
+	final boolean[] JUMP = new boolean[Environment.numberOfButtons];
+	final boolean[] SPEED = new boolean[Environment.numberOfButtons];;
+	final boolean[] JUMP_SPEED = new boolean[Environment.numberOfButtons];;
+	final boolean[] RIGHT = new boolean[Environment.numberOfButtons];;
+	final boolean[] RIGHT_JUMP = new boolean[Environment.numberOfButtons];;
+	final boolean[] RIGHT_SPEED = new boolean[Environment.numberOfButtons];;
+	final boolean[] RIGHT_JUMP_SPEED = new boolean[Environment.numberOfButtons];;
+	final boolean[] LEFT = new boolean[Environment.numberOfButtons];;
+	final boolean[] LEFT_JUMP = new boolean[Environment.numberOfButtons];;
+	final boolean[] LEFT_SPEED = new boolean[Environment.numberOfButtons];;
+	final boolean[] LEFT_JUMP_SPEED = new boolean[Environment.numberOfButtons];;
 	
 	
 	/**
@@ -52,6 +67,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	public QLearnAgent(Map<StateActionPair, Double> qValuesIn) {
 		super(name);
 		initiateValues();
+		initialiseActions();
 		this.qValues = qValuesIn;
 	} // end constructor with policy
 	
@@ -150,13 +166,14 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 				qValues.get(sap):initialValue;
 	}
 
-	
+
 	/**
 	 * Incrementally add valid actions to the list, in order to create a permutation of all keys
 	 * A recursion is just because altering the list while looping through is 
 	 * causes unwanted behavior
 	 * @return all possible actions
 	 */
+	/*
 	public List<boolean[]> getValidActions()
 	{
 		// initiate valid actions
@@ -173,6 +190,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		
 		return validActions;
 	}
+	*/
 	
 	/**
 	 * getValidAction returns a list of actions possible, which is all buttons in 
@@ -184,6 +202,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 * @param actionKey is number of key we are looping through
 	 * @return is the new valid action
 	 */
+	/*
 	public List<boolean[]> getValidAction(List<boolean[]> oldValidActions, int actionKey) {
 		
 		List<boolean[]> newValidActions = new ArrayList<boolean[]>();
@@ -201,7 +220,45 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 
 		return newValidActions;
 	}
-
+	*/
+	
+	public void initialiseActions(){
+		JUMP[Mario.KEY_JUMP] = true;
+		SPEED[Mario.KEY_SPEED] = true;
+		JUMP_SPEED[Mario.KEY_JUMP] = JUMP_SPEED[Mario.KEY_SPEED] = true;
+		RIGHT[Mario.KEY_RIGHT] = true;
+		RIGHT_JUMP[Mario.KEY_RIGHT] = RIGHT_JUMP[Mario.KEY_JUMP] = true;
+		RIGHT_SPEED[Mario.KEY_RIGHT] = RIGHT_SPEED[Mario.KEY_SPEED] = true;
+		RIGHT_JUMP_SPEED[Mario.KEY_RIGHT] = RIGHT_JUMP_SPEED[Mario.KEY_JUMP] = 
+				RIGHT_JUMP_SPEED[Mario.KEY_SPEED] = true;
+		LEFT[Mario.KEY_LEFT] = true;
+		LEFT_JUMP[Mario.KEY_LEFT] = LEFT_JUMP[Mario.KEY_JUMP] = true;
+		LEFT_SPEED[Mario.KEY_LEFT] = LEFT_SPEED[Mario.KEY_SPEED] = true;
+		LEFT_JUMP_SPEED[Mario.KEY_LEFT] = LEFT_JUMP_SPEED[Mario.KEY_JUMP] = 
+				LEFT_JUMP_SPEED[Mario.KEY_SPEED] = true;
+	}// end function initialiseActions
+	
+	public List<boolean[]> getValidActions()
+	{
+		// initiate valid actions
+		List<boolean[]> validActions = new ArrayList<boolean[]>();
+		
+		validActions.add(STAY);
+		validActions.add(JUMP);
+		validActions.add(SPEED);
+		validActions.add(JUMP_SPEED);
+		validActions.add(RIGHT);
+		validActions.add(RIGHT_SPEED);
+		validActions.add(RIGHT_JUMP);
+		validActions.add(RIGHT_JUMP_SPEED);
+		validActions.add(LEFT);
+		validActions.add(LEFT_SPEED);
+		validActions.add(LEFT_JUMP);
+		validActions.add(LEFT_JUMP_SPEED);
+		
+		return validActions;
+	}
+	
 	/**
 	 * Function is used for declaring some values necessarily for qLearning, 
 	 * such as oldState, which needs to have a value
