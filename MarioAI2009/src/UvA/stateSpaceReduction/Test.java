@@ -12,6 +12,46 @@ public class Test
 
 	public static void main(String[] args) 
 	{
+		testPCA();
+
+	}//end main
+
+	public static void testPCA()
+	{
+		/*double[][] sampleData = new double[][] {
+        {1, 2, 3, 4, 5, 6},
+        {6, 5, 4, 3, 2, 1},
+        {2, 2, 2, 2, 2, 2}};*/
+		double[][] sampleData = new double[][] {
+				{6,7,6,5,7,6,5,6,3,1,2,5,2,3,1,2},
+				{5,3,4,7,7,4,7,5,5,3,6,7,4,5,6,3},
+				{3,2,4,1,5,2,2,4,6,7,6,7,5,6,5,7},
+				{4,2,5,3,5,3,1,4,7,5,7,6,6,5,5,7}
+		};
+		int numSamples = sampleData.length;
+		int sampleSize = sampleData[0].length;
+		PrincipleComponentAnalysis pca = new PrincipleComponentAnalysis(numSamples, sampleSize);
+		pca.addSamples(sampleData);
+		int numComponents = 4;
+		pca.computeBasis(numComponents);
+		/*double[][] testData = new double[][] {
+		{1, 2, 3, 4, 5, 6},
+		{1, 2, 1, 2, 1, 2}};*/
+		double[][] testData = sampleData;
+		for(int i=0; i<testData.length; i++)
+		{
+			double[] reducedData = pca.sampleToEigenSpace(testData[i]);
+			String output = "";
+			for(int j=0; j<reducedData.length; j++)
+			{
+				output += String.format("%f ", reducedData[j]);
+			}
+			System.out.println(output);
+		}
+	}
+	
+	public static void testCluster()
+	{
 		double[][] sampleData = new double[][] {
 		        {1, 2, 3, 4, 5, 6},
 		        {6, 5, 4, 3, 2, 1},
@@ -36,40 +76,6 @@ public class Test
 		Dataset[] clusters = km.cluster(data);
 		
 		System.out.println(clusters);
-
-	}//end main
-
-	public void testPCA()
-	{
-		/*double[][] sampleData = new double[][] {
-        {1, 2, 3, 4, 5, 6},
-        {6, 5, 4, 3, 2, 1},
-        {2, 2, 2, 2, 2, 2}};*/
-		double[][] sampleData = new double[][] {
-				{6,7,6,5,7,6,5,6,3,1,2,5,2,3,1,2},
-				{5,3,4,7,7,4,7,5,5,3,6,7,4,5,6,3},
-				{3,2,4,1,5,2,2,4,6,7,6,7,5,6,5,7},
-				{4,2,5,3,5,3,1,4,7,5,7,6,6,5,5,7}
-		};
-		PrincipleComponentAnalysis pca = new PrincipleComponentAnalysis();
-		pca.setup(sampleData.length, sampleData[0].length);
-		pca.addSamples(sampleData);
-		int numComponents = 4;
-		pca.computeBasis(numComponents);
-		/*double[][] testData = new double[][] {
-		{1, 2, 3, 4, 5, 6},
-		{1, 2, 1, 2, 1, 2}};*/
-		double[][] testData = sampleData;
-		for(int i=0; i<testData.length; i++)
-		{
-			double[] reducedData = pca.sampleToEigenSpace(testData[i]);
-			String output = "";
-			for(int j=0; j<reducedData.length; j++)
-			{
-				output += String.format("%f ", reducedData[j]);
-			}
-			System.out.println(output);
-		}
 	}
 
 }

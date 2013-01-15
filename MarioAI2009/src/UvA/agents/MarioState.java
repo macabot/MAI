@@ -190,5 +190,10 @@ public class MarioState implements State, Serializable {
 		return Arrays.hashCode(representation);
 	} // end hashcode
 
+	@Override
+	public double[] getRepresentation() {
+		return this.representation;
+	}
+
 
 } // end mariostate class
