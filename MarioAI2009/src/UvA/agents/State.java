@@ -3,7 +3,7 @@ package UvA.agents;
 
 public interface State 
 {	
-	double[] representation = null;
+	public double[] representation = null;
 	/**
 	 * update the state given input
 	 * @param o is the new input
