@@ -3,7 +3,6 @@ package UvA.agents;
 
 public interface State 
 {	
-	public double[] representation = null;
 	/**
 	 * update the state given input
 	 * @param o is the new input
@@ -27,6 +26,8 @@ public interface State
 	 * Reset the positions of the agents.
 	 */
 	public void reset();
+	
+	public double[] getRepresentation();
 	
 	@Override
 	public String toString();

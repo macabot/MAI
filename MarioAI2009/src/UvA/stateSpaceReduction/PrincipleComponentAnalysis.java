@@ -53,7 +53,14 @@ public class PrincipleComponentAnalysis {
     // mean values of each element across all the samples
     double mean[];
 
-    public PrincipleComponentAnalysis() {
+    /**
+     * Declares and sets up internal data structures.
+     * @param numSamples Number of samples that will be processed.
+     * @param sampleSize Number of elements in each sample.
+     */
+    public PrincipleComponentAnalysis(int numSamples, int sampleSize) 
+    {
+    	setup(numSamples, sampleSize);
     }
 
     /**
@@ -62,7 +69,7 @@ public class PrincipleComponentAnalysis {
      * @param numSamples Number of samples that will be processed.
      * @param sampleSize Number of elements in each sample.
      */
-    public void setup( int numSamples , int sampleSize ) {
+    public void setup( int numSamples, int sampleSize ) {
         mean = new double[ sampleSize ];
         A.reshape(numSamples,sampleSize,false);
         sampleIndex = 0;
@@ -182,6 +189,20 @@ public class PrincipleComponentAnalysis {
         CommonOps.mult(V_t,s,r);
 
         return r.data;
+    }
+    
+    /**
+     * Converts vectors from sample space to eigen space.
+    * @param sampleData Sample space data.
+     * @return Eigen space projections.
+     */
+    public double[][] samplesToEigenSpace( double[][] sampleData )
+    {
+    	double[][] projection = new double[sampleData.length][];
+    	for(int i=0; i<sampleData.length; i++)
+    		projection[i] = sampleToEigenSpace(sampleData[i]);
+    	
+    	return projection;
     }
 
     /**

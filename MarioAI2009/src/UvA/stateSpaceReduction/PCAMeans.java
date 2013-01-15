@@ -1,9 +1,6 @@
 package UvA.stateSpaceReduction;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import net.sf.javaml.clustering.Clusterer;
 import net.sf.javaml.clustering.KMeans;
@@ -15,48 +12,60 @@ import UvA.agents.State;
 
 public class PCAMeans 
 {
-	private int numComponents;
-	private int clusterAmount;
-	private int iterations;
-
 	PrincipleComponentAnalysis pca;
 	Dataset means;
-	List<double[]> states;
-
-	public PCAMeans(int numComponents, int clusterAmount, int iterations)
+	
+	/**
+	 * Constructor performs PCA on states and clusters the eigen space projections.
+	 * @param states	training data for PCA
+	 * @param numComponents		number of components for PCA
+	 * @param clusterAmount		amount of clusters for kMeans clustering
+	 * @param iterations		amount of iterations for kMeans clustering
+	 */
+	public PCAMeans(List<State> states, int numComponents, int clusterAmount, int iterations)
 	{
-		this.numComponents = numComponents;
-		this.clusterAmount = clusterAmount;
-		this.iterations = iterations;
-		this.pca = new PrincipleComponentAnalysis();
-		this.means = new DefaultDataset();
-		this.states = new ArrayList<double[]>();
-	}
-	//TODO pca.setup/2
-	public void addState(State state)
-	{
-		states.add(state.representation);
-		pca.addSample(state.representation);
-	}
-
-	public void performPCA()
-	{
+		// create vectors for PCA
+		int numSamples = states.size();
+		int sampleSize = states.get(0).getRepresentation().length;
+		double[][] vectors = new double[numSamples][sampleSize];
+		for(int i=0; i<vectors.length; i++)
+			vectors[i] = states.get(i).getRepresentation();
+		
+		// perform PCA
+		this.pca = new PrincipleComponentAnalysis(numSamples, sampleSize);
+		pca.addSamples(vectors);
 		pca.computeBasis(numComponents);
-	}
+		double[][] projections = pca.samplesToEigenSpace(vectors);
+		
+		// cluster PCA results		
+		this.means = calculateMeans(projections, clusterAmount, iterations);
+	}//end constructor
 
-	public void createMeans()
+	/**
+	 * Calculate the means of the clusters found in 'vectors'.
+	 * @param vectors	n vectors with m dimensions
+	 * @param clusterAmount		amount of clusters for kMeans clustering
+	 * @param iterations		amount of iterations for kMeans clustering
+	 * @return Dataset containing means of clusters
+	 */
+	public static Dataset calculateMeans(double[][] vectors, int clusterAmount, int iterations)
 	{
 		Clusterer km = new KMeans(clusterAmount, iterations);
 		Dataset data = new DefaultDataset();
-		for (int i = 0; i < states.size(); i++) 
+		for (int i = 0; i < vectors.length; i++) 
 		{
-			Instance instance = new DenseInstance(states.get(i));
+			Instance instance = new DenseInstance(vectors[i]);
 			data.add(instance);
 		}
 		Dataset[] clusters = km.cluster(data);
-		means = calcMeans(clusters);
+		return calcMeans(clusters);
 	}
 	
+	/**
+	 * Calculate the means of clusters
+	 * @param clusters kMeans clusters
+	 * @return Dataset containing means of clusters
+	 */
 	public static Dataset calcMeans(Dataset[] clusters)
 	{
 		Dataset means = new DefaultDataset();
@@ -72,4 +81,4 @@ public class PCAMeans
 		return means;
 	}
 	
-}
+}//end class
