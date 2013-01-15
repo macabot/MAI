@@ -1,6 +1,7 @@
 package UvA.agents;
 
 
+
 public interface State 
 {	
 	/**

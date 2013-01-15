@@ -5,17 +5,14 @@ import java.util.Arrays;
 import ch.idsia.mario.environments.Environment;
 
 
+@SuppressWarnings("serial") // annoying warning
 public class MarioState implements State, Serializable {
 
-	/**
-	 * serial version id, does not seem to be necessarily, but i hate warnings
-	 */
-	private static final long serialVersionUID = -499494658577348783L;
 
 	// state representation
 	private int amountOfInput = 100;
 	private double[] representation = new double[amountOfInput];
-	private Environment environment = null; // used for cloning 
+	private transient Environment environment = null; // used for cloning 
 	
 	/* ------------ variables usable in state ---------------- */
 	protected byte[][] scene;

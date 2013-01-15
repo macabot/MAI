@@ -3,6 +3,7 @@ package UvA.agents;
 import java.io.Serializable;
 import java.util.Arrays;
 
+@SuppressWarnings("serial") // ignore annoying warning
 public class StateActionPair implements Serializable 
 {
 	State state;
@@ -13,6 +14,7 @@ public class StateActionPair implements Serializable
 	{
 		this(sap.state, sap.action);
 	}
+	
 	public StateActionPair(State state, boolean[] actionIn)
 	{
 		this.state = state.clone();

@@ -9,7 +9,6 @@ import java.util.Random;
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.ai.BasicAIAgent;
 import ch.idsia.mario.engine.sprites.Mario;
-import ch.idsia.mario.engine.MarioComponent;
 import ch.idsia.mario.environments.Environment;
 
 
@@ -264,8 +263,8 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 * such as oldState, which needs to have a value
 	 */
 	public void initiateValues() {
-		oldState = createState(stateType, null);
-		state = createState(stateType, null);
+		oldState = createState(null);
+		state =  createState(null);
 		returnAction = new boolean[Environment.numberOfButtons];
 		validActions = getValidActions();
 	} // end getvalidactions
@@ -276,7 +275,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 * @param environmentIn The information state needs in order to create a state
 	 * @return the correct state type including information
 	 */
-	public State createState(String stateType, Environment environmentIn)
+	public State createState(Environment environmentIn)
 	{
 		if( stateType.equals("MarioState") )
 			return new MarioState(environmentIn);

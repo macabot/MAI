@@ -1,9 +1,6 @@
 package ch.idsia.scenarios;
 
 import UvA.agents.QLearnAgent;
-import ch.idsia.ai.agents.Agent;
-import ch.idsia.ai.agents.AgentsPool;
-import ch.idsia.ai.agents.human.HumanKeyboardAgent;
 import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.ai.tasks.Task;
 import ch.idsia.tools.CmdLineOptions;
@@ -40,15 +37,19 @@ public class Play {
      * @since   iMario1.0
      */
 
-	static String loadPath = null; // path to saved QValues
-	static String savePath = null;
+	private static String loadPath = null; // path to saved QValues
+	private static String savePath = null;
 	
     public static void main(String[] args) {
     	
     	///// initialization
+    	loadPath = System.getProperty("user.dir") + "/write.txt";
+    	savePath = System.getProperty("user.dir") + "/write.txt";
+    	
         EvaluationOptions options = new CmdLineOptions(args);
         Task task = new ProgressTask(options);
-
+        QLearnAgent agent = (QLearnAgent) options.getAgent();
+        
         // regular options
         options.setLevelDifficulty(1);
         
@@ -56,19 +57,18 @@ public class Play {
 //        options.setLevelRandSeed((int) (Math.random () * Integer.MAX_VALUE));
 //        options.setVisualization(false);
 //        options.setMaxFPS(true);
-//
-//        //////// optionally load qvalues, dont forget to set path
-//        QLearnAgent agent = (QLearnAgent) options.getAgent();
-//        agent.loadQValues(loadPath);
+////        //////// optionally load qvalues, dont forget to set path
+////        agent.loadQValues(loadPath);
 //        
 //        /// set options and
 //        task.setOptions(options);
 //
 //        //// train
 //        for (int i = 0; i < 100; i++) { 
-//        System.out.print("Training trial " + i + "... ");
-//        task.evaluate(options.getAgent());
-//        System.out.print("Done!\n");
+//	        System.out.print("Training trial " + i + "... ");
+//	        double[] result = task.evaluate(agent);
+//	        // TODO: agent.evaluateResult(result);
+//	        System.out.print("Done!\n");
 //        }
         
         //// reset options for visualization
@@ -77,7 +77,7 @@ public class Play {
         
         //// and show the next game, learned agent
         System.out.print("Showing improvement... ");
-        task.evaluate(options.getAgent());
+        task.evaluate(agent);
         System.out.println("Done!");
         
         ///// write new qvalues to file
