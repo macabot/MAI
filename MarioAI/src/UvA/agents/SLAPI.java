@@ -8,7 +8,9 @@ import java.io.ObjectOutputStream;
 public class SLAPI {
     public static void save(Object obj,String path) throws Exception
     {
+
     	System.out.println("Printing to " + path);
+
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path));
         oos.writeObject(obj);
         oos.flush();
