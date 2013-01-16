@@ -70,8 +70,8 @@ public class MarioState implements State
 	            representation[which++] = probe(i, j, enemies);
 	        }
 	    }
-	    representation[representation.length - 2] = environment.mayMarioJump() ? 1 : 0;
-	    representation[representation.length - 1] = environment.isMarioOnGround() ? 1 : 0;
+	    representation[representation.length - 2] = environment.mayMarioJump() ? 1.0 : 0.0;
+	    representation[representation.length - 1] = environment.isMarioOnGround() ? 1.0 : 0.0;
 	    
 	    this.oldXPos = xPos;
 	    xPos = environment.getMarioFloatPos()[0];
@@ -97,7 +97,7 @@ public class MarioState implements State
 	{
 	    int realX = x + Environment.HalfObsWidth;
 	    int realY = y + Environment.HalfObsHeight;
-	    return (scene[realX][realY] != 0) ? 1 : 0;
+	    return (scene[realX][realY] != 0) ? 1.0 : 0.0;
 	} // end probe
 	
 	
@@ -114,7 +114,7 @@ public class MarioState implements State
 	 */
 	public void reset() {
 		for(int i = 0; i < representation.length; i++)
-		representation[i] = 0;
+		representation[i] = 0.0;
 	} // end reset
 	
 	
@@ -123,7 +123,7 @@ public class MarioState implements State
 		String string = "";
 		for(int i = 0; i<representation.length; i++) 
 		{
-			string += String.format(" %d", representation[i]);
+			string += String.format(" %.1f", representation[i]);
 			if( ( (i+1) % 7) == 0)
 				string += "\n";
 			if( ( (i+1) % 49) == 0)
