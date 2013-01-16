@@ -14,16 +14,13 @@ import ch.idsia.mario.environments.Environment;
 
 public class QLearnAgent extends BasicAIAgent implements Agent {
 
-	// debugging
-	private int run = 0;
-	
 	// agent specific values
 	static private final String name = "QLearnAgent";
 	protected final String stateType = "MarioState";
 	
 	// used to create state
-	State state;
-	State oldState;
+	State state = null;
+	State oldState = null;
 	
 	// action to return
 	private boolean[] returnAction;
@@ -79,11 +76,9 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 */
 	public boolean[] getAction(Environment environment)
 	{
-		run++;
-		// update state
-		state.update(environment);
-	    
-
+		
+		state = createState(environment);
+				
 		// update q and return action
 		updateQValue();
 		returnAction = eGreedyAction();
@@ -91,7 +86,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		// update oldState for updateQValue()
 	    oldState = state.clone();
 	    
-	    
+
 	    return returnAction;
 
 	} // end getAction()
@@ -155,8 +150,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		double updatedValue = oldQ + alpha*(reward + gamma*bestQValue - oldQ);
 		
 		qValues.put(oldSap, updatedValue);	// update qValue of State-action pair
-		
-		//System.out.printf("Updated state \n%s \n from %.2f to %.2f \n\n", oldState, oldQ, updatedValue);
 	}
 	
 	/**
@@ -213,7 +206,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		validActions.add(LEFT_JUMP_SPEED);
 		
 		return validActions;
-	}
+	} // end getValidActions()
 	
 	/**
 	 * Function is used for declaring some values necessarily for qLearning, 
@@ -234,8 +227,13 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 */
 	public State createState(Environment environmentIn)
 	{
-		if( stateType.equals("MarioState") )
-			return new MarioState(environmentIn);
+		if( stateType.equals("MarioState") ) {
+			MarioState curState = (MarioState) state;
+			if(curState != null)
+				return new MarioState(environmentIn, curState.xPos);
+			else
+				return new MarioState(environmentIn, 32);
+		}
 		else
 		{
 			System.out.println("Unknown state-type");

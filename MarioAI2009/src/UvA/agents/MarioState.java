@@ -16,6 +16,7 @@ public class MarioState implements State
 	protected transient float xPos = 32;
 	protected transient float oldXPos = 32;
 	
+
 	// enemies killed total
 	private int totalKilledByStomp = 0;
 	private int totalKilledByFire = 0;
@@ -41,32 +42,23 @@ public class MarioState implements State
 	 * Constructor, creates state representation
 	 * @param environment is the mario environment
 	 */
-	public MarioState(Environment environment) {
+
+	public MarioState(Environment environment, float xPosIn) {
 		if(environment != null) 
-			update(environment);
-		else 
-			System.out.println("Input environment when creating state is null, may only happen at the creation of mario");
+			updateRepresentation( (Environment) environment);
 			
-	} // end constructor 
-
-
+		this.oldXPos = xPosIn;
+	} // end constructor env + xPosIn used by mario
+	
 	/**
 	 * Constructor for when environment was not available: input is representation alone
+	 * Used by clone
 	 */
 	public MarioState(double[] reprIn, float oldXPosIn){
 		this.representation = new double[reprIn.length];
 		System.arraycopy(reprIn, 0, this.representation, 0, reprIn.length);
 		this.oldXPos = oldXPosIn;
-	} // end constructor for representation input
-	
-	/**
-	 * This function is called in order to update the state; 
-	 */
-	public void update(Object environment) {
-		if(environment != null) {
-			updateRepresentation( (Environment) environment);	
-		}
-	}
+	} // end constructor for representation input used by clone
 	
 	
 	/**
@@ -198,10 +190,20 @@ public class MarioState implements State
 		return result;
 	}
 
+	/**
+	 * Override getrepresentation, returns representation of the state
+	 */
 	@Override
 	public double[] getRepresentation() {
 		return this.representation;
 	}
+	
+	/**
+	 * getxPos, necessarily to create new state
+	 */
+	public float getXPos() {
+		return this.oldXPos;
+	} // end get xPos
 
 
 } // end mariostate class
