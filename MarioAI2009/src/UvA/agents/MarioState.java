@@ -16,6 +16,27 @@ public class MarioState implements State, Serializable {
 	protected transient float xPos = 32;
 	protected transient float oldXPos = 32;
 	
+	// enemies killed total
+	private int totalKilledByStomp = 0;
+	private int totalKilledByFire = 0;
+	private int totalKilledByShell = 0;
+	
+	// enemies killed in current scene
+	private int killedByStomp = 0;
+	private int killedByFire = 0;
+	private int killedByShell = 0;
+	
+	private int lastMarioMode = 2; //TODO initialise properly
+	private int collided = 0;
+	
+	// Parameters for how important the reward for X is 
+	private final int REWARD_DISTANCE = 1;
+	private final int REWARD_KILLED_STOMP = 100;
+	private final int REWARD_KILLED_FIRE = 100;
+	private final int REWARD_KILLED_SHELL = 100;
+	private final int REWARD_COLLIDED = -500;
+	
+	
 	/**
 	 * Constructor, creates state representation
 	 * @param environment is the mario environment
@@ -75,7 +96,22 @@ public class MarioState implements State, Serializable {
 	    
 	    this.oldXPos = xPos;
 	    xPos = environment.getMarioFloatPos()[0];
-
+	    
+	    // update enemies killed
+		killedByFire = environment.getKillsByFire() - totalKilledByFire;
+		killedByStomp = environment.getKillsByStomp() - totalKilledByStomp;
+		killedByShell = environment.getKillsByShell() - totalKilledByShell;
+		totalKilledByFire = environment.getKillsByFire();
+		totalKilledByStomp = environment.getKillsByStomp();
+		totalKilledByShell = environment.getKillsByShell();
+		
+		// calculate if collided (lose mario mode)
+	    if(lastMarioMode > environment.getMarioMode()){
+	    	collided = 1;
+	    	lastMarioMode = environment.getMarioMode();
+	    }
+	    else
+	    	collided = 0;
 	} // end updateRepresentation
 	
 	/** TODO: get better reward function
@@ -83,7 +119,11 @@ public class MarioState implements State, Serializable {
 	 * @return reward of mario
 	 */ 
 	public float getReward() {
-		return xPos - oldXPos;
+		float distance = xPos - oldXPos;
+		float reward = distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
+				killedByFire*REWARD_KILLED_FIRE + killedByShell*REWARD_KILLED_SHELL + 
+				collided*REWARD_COLLIDED;
+		return reward;
 	} // end getReward
 
 	/**
