@@ -50,38 +50,41 @@ public class Play {
         Task task = new ProgressTask(options);
         QLearnAgent agent = (QLearnAgent) options.getAgent();
         
-        agent.loadQValues(loadPath);       
+//        agent.loadQValues(loadPath);       
         
         // regular options
         options.setLevelDifficulty(1);
         
         ///// set options specific for learning
-//        options.setLevelRandSeed((int) (Math.random () * Integer.MAX_VALUE));
-//        options.setVisualization(false);
-//        options.setMaxFPS(true);
-//        
-//        //////// optionally load qvalues, dont forget to set path
-// 
-//        
-//        /// set options and
-//        task.setOptions(options);
-//
-//        //// train
-//        for (int i = 0; i < 100; i++) { 
-//	        System.out.print("Training trial " + i + "... ");
-//	        double[] result = task.evaluate(agent);
-//	        // TODO: agent.evaluateResult(result);
-//	        System.out.print("Done!\n");
-//        }
-        
-        //// reset options for visualization
+        options.setLevelRandSeed((int) (Math.random () * Integer.MAX_VALUE));
         options.setVisualization(false);
         options.setMaxFPS(true);
+        
+        //////// optionally load qvalues, dont forget to set path
+ 
+        
+        /// set options and
+        task.setOptions(options);
+
+        //// train
+        for (int i = 0; i < 1000; i++) { 
+	        System.out.print("Training trial " + i + "... ");
+	        options.setLevelRandSeed((int) (Math.random () * Integer.MAX_VALUE));
+	        double[] result = task.evaluate(agent);
+	        // TODO: agent.evaluateResult(result);
+	        System.out.print("Done!\n");
+        }
+        
+        //// reset options for visualization
+        options.setVisualization(true);
+        options.setMaxFPS(false);
         task.setOptions(options);
         
         //// and show the next game, learned agent
         System.out.print("Showing improvement... ");
-        task.evaluate(agent);
+        for (int i = 0; i < 10; i++)
+        	options.setLevelRandSeed((int) (Math.random () * Integer.MAX_VALUE));
+        	task.evaluate(agent);
         System.out.println("Done!");
         
         ///// write new qvalues to file
