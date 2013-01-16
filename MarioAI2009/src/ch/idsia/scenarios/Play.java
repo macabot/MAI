@@ -1,7 +1,6 @@
 package ch.idsia.scenarios;
 
 import UvA.agents.QLearnAgent;
-import UvA.agents.serializeTest;
 import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.ai.tasks.Task;
 import ch.idsia.tools.CmdLineOptions;
