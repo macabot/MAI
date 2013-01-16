@@ -13,9 +13,10 @@ Mario AI websites:
 Google group: https://groups.google.com/forum/?fromgroups#!forum/mariocompetition
 
 interview aStar 2009 dude: http://aigamedev.com/open/interview/mario-ai/
-Dependencies
 
-2009 options: https://sites.google.com/site/imarioproject/Home/options
+2009 command-line options: https://sites.google.com/site/imarioproject/Home/options
+
+Dependencies
 ===
 - Java http://www.java.com/
 - Java library for Multidimensional Scaling (MDSJ): http://www.inf.uni-konstanz.de/algo/software/mdsj/
