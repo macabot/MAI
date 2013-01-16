@@ -11,10 +11,6 @@ public class SarsaAgent extends QLearnAgent{
 	// agent specific values
 	static private final String name = "SarsaAgent";
 	
-	// used to create state
-	//State state;
-	//State oldState;
-	
 	// action to return
 	private boolean[] action;
 	private boolean[] oldAction;

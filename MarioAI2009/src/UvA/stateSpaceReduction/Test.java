@@ -12,17 +12,28 @@ public class Test
 
 	public static void main(String[] args) 
 	{
-		double[][] vectors = {{1,1,1},{1,1,1},{2,2,2},{2,2,2},{3,3,3},{3,3,3}};
-		int numComponents = 2;
-		int clusterAmount = 3;
+		testPCAMeans();
+		
+
+	}//end main
+	
+	public static void testPCAMeans()
+	{
+		//double[][] vectors = {{1,1,1},{1,1,1},{2,2,2},{2,2,2},{3,3,3},{3,3,3}};
+		double[][] vectors = {{0,0},{1,1},{2,2},{3,3},{4,4}};
+		int numComponents = 1;
+		int clusterAmount = 5;
 		int iterations = 10;
 
 		PCAMeans pcam = new PCAMeans(vectors, numComponents, clusterAmount, iterations);
-		double[] sample = {1,1,1};
-		int mean = pcam.sampleToMean(sample);
-		System.out.println(mean);
-
-	}//end main
+		double[][] samples = {{1,1},{0.9,0.9},{1.9,1.9},{2.9,2.9}};
+		for(double[] sample: samples)
+		{
+			int mean = pcam.sampleToMean(sample);
+			System.out.println(mean);
+		}
+		
+	}
 
 	public static void testPCA()
 	{

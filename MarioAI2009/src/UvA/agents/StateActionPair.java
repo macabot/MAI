@@ -3,10 +3,11 @@ package UvA.agents;
 import java.io.Serializable;
 import java.util.Arrays;
 
-@SuppressWarnings("serial") // ignore annoying warning
 public class StateActionPair implements Serializable 
 {
-	State state;
+	private static final long serialVersionUID = -4351206083833990887L;
+	
+	public State state;
 	public boolean[] action;
 	
 	// constructors

@@ -14,6 +14,9 @@ import ch.idsia.mario.environments.Environment;
 
 public class QLearnAgent extends BasicAIAgent implements Agent {
 
+	// debugging
+	private int run = 0;
+	
 	// agent specific values
 	static private final String name = "QLearnAgent";
 	protected final String stateType = "MarioState";
@@ -76,7 +79,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 */
 	public boolean[] getAction(Environment environment)
 	{
-		
+		run++;
 		// update state
 		state.update(environment);
 	    
@@ -87,6 +90,9 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		
 		// update oldState for updateQValue()
 	    oldState = state.clone();
+	    
+	    if(run > 200)
+	    	serializeTest.main(qValues);
 	    
 	    return returnAction;
 

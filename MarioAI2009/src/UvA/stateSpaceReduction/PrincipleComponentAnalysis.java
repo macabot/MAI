@@ -31,6 +31,8 @@
 
 package UvA.stateSpaceReduction;
 
+import java.io.Serializable;
+
 import org.ejml.data.DenseMatrix64F;
 import org.ejml.factory.DecompositionFactory;
 import org.ejml.factory.SingularValueDecomposition;
@@ -38,9 +40,11 @@ import org.ejml.ops.CommonOps;
 import org.ejml.ops.NormOps;
 import org.ejml.ops.SingularOps;
 
-public class PrincipleComponentAnalysis {
+public class PrincipleComponentAnalysis implements Serializable 
+{
+    private static final long serialVersionUID = 1028173321602430338L;
 
-    // principle component subspace is stored in the rows
+	// principle component subspace is stored in the rows
     private DenseMatrix64F V_t;
 
     // how many principle components are used
