@@ -167,60 +167,8 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 
 
 	/**
-	 * Incrementally add valid actions to the list, in order to create a permutation of all keys
-	 * A recursion is just because altering the list while looping through is 
-	 * causes unwanted behavior
-	 * @return all possible actions
+	 * This function initializes the possible actions manually	
 	 */
-	/*
-	public List<boolean[]> getValidActions()
-	{
-		// initiate valid actions
-		List<boolean[]> validActions = new ArrayList<boolean[]>();
-		boolean[] validAction = new boolean[Environment.numberOfButtons];
-		
-		// start with all false
-		validActions.add(validAction);
-		
-		// for each actionKey double the amount of actions possible by adding a new action for each present action
-		for(int actionKey = 0; actionKey < validAction.length; actionKey++) {
-			validActions.addAll(getValidAction(validActions, actionKey));
-		} // end for each actionkey
-		
-		return validActions;
-	}
-	*/
-	
-	/**
-	 * getValidAction returns a list of actions possible, which is all buttons in 
-	 * combinations: 2^5
-	 * This is the recursion needed for altering the list while looping through is
-	 * creates unwanted behavior
-	 * 
-	 * @param oldValidActions are the valid actions up till now 
-	 * @param actionKey is number of key we are looping through
-	 * @return is the new valid action
-	 */
-	/*
-	public List<boolean[]> getValidAction(List<boolean[]> oldValidActions, int actionKey) {
-		
-		List<boolean[]> newValidActions = new ArrayList<boolean[]>();
-		
-		boolean[] validAction = new boolean[oldValidActions.get(0).length];
-		
-		// go through all present actions
-		int actionSize = oldValidActions.size();
-		for(int i = 0; i < actionSize; i++) {
-			validAction = oldValidActions.get(i).clone();
-			// add a new action in which the current actionkey is true
-			validAction[actionKey] = true;
-			newValidActions.add(validAction);
-		} // end each present valid action
-
-		return newValidActions;
-	}
-	*/
-	
 	public void initialiseActions(){
 		JUMP[Mario.KEY_JUMP] = true;
 		SPEED[Mario.KEY_SPEED] = true;
@@ -237,6 +185,10 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 				LEFT_JUMP_SPEED[Mario.KEY_SPEED] = true;
 	}// end function initialiseActions
 	
+	/**
+	 * Get valid actions returns the valid actions by adding all actions possible manually
+	 * @return validactions boolean array
+	 */
 	public List<boolean[]> getValidActions()
 	{
 		// initiate valid actions

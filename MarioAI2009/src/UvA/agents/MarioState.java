@@ -11,7 +11,7 @@ public class MarioState implements State, Serializable {
 
 	// state representation
 	private final int amountOfInput = 100;
-	private int[] representation = new int[amountOfInput];
+	private double[] representation = new double[amountOfInput];
 	
 	protected transient float xPos = 32;
 	protected transient float oldXPos = 32;
@@ -32,7 +32,7 @@ public class MarioState implements State, Serializable {
 	/**
 	 * Constructor for when environment was not available: input is representation alone
 	 */
-	public MarioState(int[] reprIn, float oldXPosIn){
+	public MarioState(double[] reprIn, float oldXPosIn){
 		this.representation = reprIn;
 		this.oldXPos = oldXPosIn;
 	} // end constructor for representation input
@@ -93,7 +93,7 @@ public class MarioState implements State, Serializable {
 	 * @param scene: scene object created in basicmarioAIagent
 	 * @return
 	 */
-	private int probe(int x, int y, byte[][] scene)
+	private double probe(int x, int y, byte[][] scene)
 	{
 	    int realX = x + Environment.HalfObsWidth;
 	    int realY = y + Environment.HalfObsHeight;
