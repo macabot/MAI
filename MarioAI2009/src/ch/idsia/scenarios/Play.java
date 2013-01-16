@@ -87,7 +87,7 @@ public class Play {
         System.out.println("Done!");
         
         ///// write new qvalues to file
-//        agent.writeQValues(savePath);
+        agent.writeQValues(savePath);
         System.out.println("Done with simulation!");
     }
 }

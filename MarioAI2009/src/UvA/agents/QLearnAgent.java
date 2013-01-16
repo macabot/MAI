@@ -248,13 +248,11 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 * @param path is the path where the qvalues are stored
 	 */
 	@SuppressWarnings("unchecked") // hack to remove annoying warning of casting
-	public boolean loadQValues(String path) {
+	public void loadQValues(String path) {
 		try {
 			qValues = (HashMap<StateActionPair, Double>) SLAPI.load(path);
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
 		}
 	} // end loadQValues
 	
@@ -262,13 +260,11 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 * Save qvalues according to path, called from main run
 	 * @param path is the path where the qvalues are to be saved
 	 */
-	public boolean writeQValues(String path) {
+	public void writeQValues(String path) {
 		try {
 			SLAPI.save(qValues, path);
-			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			return false;
 		}
 		
 	} // end loadQValues
