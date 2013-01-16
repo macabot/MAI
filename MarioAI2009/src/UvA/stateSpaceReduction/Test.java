@@ -12,7 +12,7 @@ public class Test
 
 	public static void main(String[] args) 
 	{
-		testPCAMeans();
+		System.out.println("clear stdout");
 		
 
 	}//end main

@@ -54,7 +54,8 @@ public class MarioState implements State
 	 * Constructor for when environment was not available: input is representation alone
 	 */
 	public MarioState(double[] reprIn, float oldXPosIn){
-		this.representation = reprIn;
+		this.representation = new double[reprIn.length];
+		System.arraycopy(reprIn, 0, this.representation, 0, reprIn.length);
 		this.oldXPos = oldXPosIn;
 	} // end constructor for representation input
 	
@@ -173,26 +174,29 @@ public class MarioState implements State
 	} // end toString
 
 	@Override
-	public boolean equals(Object o) {
-		if( this == o ) 
+	public boolean equals(Object obj) {
+		if (this == obj)
 			return true;
-		if( o == null || getClass() != o.getClass() ) 
+		if (obj == null)
 			return false;
-
-		MarioState state = (MarioState) o;
-
-		if( state.representation.length == (this.representation.length) && 
-				Arrays.equals(state.representation, this.representation) )
-			return true;
-		
-		return false;
-
-	} // end equals
+		if (getClass() != obj.getClass())
+			return false;
+		MarioState other = (MarioState) obj;
+		if (amountOfInput != other.amountOfInput)
+			return false;
+		if (!Arrays.equals(representation, other.representation))
+			return false;
+		return true;
+	}
 		
 	@Override
 	public int hashCode() {
-		return Arrays.hashCode(representation);
-	} // end hashcode
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + amountOfInput;
+		result = prime * result + Arrays.hashCode(representation);
+		return result;
+	}
 
 	@Override
 	public double[] getRepresentation() {

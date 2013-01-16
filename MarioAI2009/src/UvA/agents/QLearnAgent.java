@@ -91,8 +91,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		// update oldState for updateQValue()
 	    oldState = state.clone();
 	    
-	    if(run > 200)
-	    	serializeTest.main(qValues);
 	    
 	    return returnAction;
 
@@ -155,6 +153,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		
 		double reward = state.getReward();
 		double updatedValue = oldQ + alpha*(reward + gamma*bestQValue - oldQ);
+		
 		qValues.put(oldSap, updatedValue);	// update qValue of State-action pair
 		
 		//System.out.printf("Updated state \n%s \n from %.2f to %.2f \n\n", oldState, oldQ, updatedValue);
@@ -250,25 +249,28 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 * Load qvalues according to path, called from main run
 	 * @param path is the path where the qvalues are stored
 	 */
-	@SuppressWarnings("unchecked") // hack to remore annoying warning of casting
-	public void loadQValues(String path) {
+	@SuppressWarnings("unchecked") // hack to remove annoying warning of casting
+	public boolean loadQValues(String path) {
 		try {
-			qValues = (Map<StateActionPair, Double>) SLAPI.load(path);
+			qValues = (HashMap<StateActionPair, Double>) SLAPI.load(path);
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
-		
 	} // end loadQValues
 	
 	/**
 	 * Save qvalues according to path, called from main run
 	 * @param path is the path where the qvalues are to be saved
 	 */
-	public void writeQValues(String path) {
+	public boolean writeQValues(String path) {
 		try {
 			SLAPI.save(qValues, path);
+			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return false;
 		}
 		
 	} // end loadQValues
