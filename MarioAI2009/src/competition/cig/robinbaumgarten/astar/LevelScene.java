@@ -91,7 +91,7 @@ public class LevelScene implements SpriteContext, Cloneable
         int HalfObsWidth = 11;
         int HalfObsHeight = 11;
         int MarioXInMap = (int)mario.x/16;
-        int MarioYInMap = (int)mario.y/16;
+        int MarioYInMap = ((int)mario.y/16);
         boolean gapAtLast = true;
         boolean gapAtSecondLast = true;
         int lastEventX = 0;
@@ -102,6 +102,7 @@ public class LevelScene implements SpriteContext, Cloneable
         int gapBorderHeight = 0;
         int gapBorderMinusOneHeight = 0;
         int gapBorderMinusTwoHeight = 0;
+        
         
         for (int y = MarioYInMap - HalfObsHeight, obsX = 0; y < MarioYInMap + HalfObsHeight; y++, obsX++)
         {

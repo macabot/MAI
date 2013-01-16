@@ -48,7 +48,7 @@ public class AStarAgent implements Agent
     	boolean[] ac = new boolean[5];
     	ac[Mario.KEY_RIGHT] = true;
     	ac[Mario.KEY_SPEED] = true;
-    	
+
     	//byte[][] scene = observation.getCompleteObservation();//observation.getLevelSceneObservation(0);
     	byte[][] scene = observation.getLevelSceneObservationZ(0);
     	float[] enemies = observation.getEnemiesFloatPos();

@@ -2,6 +2,7 @@ package competition.cig.robinbaumgarten.astar;
 
 import java.util.ArrayList;
 
+import ch.idsia.ai.agents.human.MouseMotionListenerAgent;
 import ch.idsia.mario.engine.GlobalOptions;
 import ch.idsia.mario.engine.sprites.Mario;
 
@@ -12,6 +13,7 @@ public class AStarSimulator
 {
 	
     public LevelScene levelScene;
+
     public LevelScene workScene;
     public SearchNode bestPosition;
     public SearchNode furthestPosition;
@@ -37,7 +39,7 @@ public class AStarSimulator
     
 	
 	private class SearchNode
-	{
+	{	
 		private int timeElapsed = 0;
 		public float remainingTimeEstimated = 0;
 		private float remainingTime = 0;
@@ -442,6 +444,7 @@ public class AStarSimulator
     
     private SearchNode pickBestPos(ArrayList<SearchNode> posPool)
     {
+    	
     	SearchNode bestPos = null;
     	float bestPosCost = 10000000;
     	//System.out.println("Searching fitnesses.");
@@ -484,7 +487,7 @@ public class AStarSimulator
 	{
 		levelScene = new LevelScene();
 		levelScene.init();	
-		levelScene.level = new Level(1500,15);
+		levelScene.level = new Level(500,15);
 	}
 	
 	public void setLevelPart(byte[][] levelPart, float[] enemies)

@@ -28,7 +28,7 @@ public class LevelScene implements SpriteContext, Cloneable
     public float xCam, yCam, xCamO, yCamO;
     public int tick;
     
-    public int verbose = 0;
+    public int verbose = 1000;
 
     public boolean paused = true;
     public int startTime = 0;

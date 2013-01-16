@@ -1,10 +1,16 @@
 package competition.icegic.robin;
 
+import java.awt.Point;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
+
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.ai.BasicAIAgent;
-import competition.icegic.robin.astar.AStarSimulator;
+import ch.idsia.mario.engine.MarioComponent;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
+
+import competition.icegic.robin.astar.AStarSimulator;
 
 public class AStarAgent extends BasicAIAgent implements Agent
 {
@@ -42,6 +48,7 @@ public class AStarAgent extends BasicAIAgent implements Agent
 
     public boolean[] getAction(Environment observation)
     {
+    	
     	tickCounter++;
     	String s = "Fire";
     	if (!sim.levelScene.mario.fire)
@@ -100,8 +107,14 @@ public class AStarAgent extends BasicAIAgent implements Agent
 		}
 		lastX = f[0];
 		lastY = f[1];
-
-        action = sim.optimise();
+		
+		MarioComponent MC = (MarioComponent)observation;
+		sim.targetX = (MC.mouseListener.goal.x/4 + (int)sim.levelScene.xCamO);
+		sim.targetY = MC.mouseListener.goal.y/4;
+		System.out.println(sim.targetX);
+        action = sim.optimise(MC.mouseListener.goal);        
+        
+        
         
         if (sim.levelScene.verbose > 1) System.out.println("Returning action: " + sim.printAction(action));
         return action;
@@ -121,4 +134,6 @@ public class AStarAgent extends BasicAIAgent implements Agent
     { 
     	this.name = Name;    
     }
+    
+	
 }
