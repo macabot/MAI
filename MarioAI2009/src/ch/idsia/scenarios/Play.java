@@ -4,7 +4,6 @@ import java.util.Random;
 
 import UvA.agents.QLearnAgent;
 import UvA.agents.SarsaAgent;
-import UvA.agents.SarsaAgent;
 import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.ai.tasks.Task;
 import ch.idsia.tools.CmdLineOptions;
