@@ -46,7 +46,7 @@ public class SarsaAgent extends QLearnAgent{
 	public boolean[] getAction(Environment environment)
 	{
 		// take action a, observe r, s'
-		state.update(environment);
+		state = createState(environment);
 		
 		// choose a' from s' with eGreedy
 		action = eGreedyAction();
