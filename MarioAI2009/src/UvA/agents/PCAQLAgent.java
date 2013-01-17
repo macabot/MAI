@@ -1,3 +1,7 @@
+/*
+ * TODO should pcam be trained with visitedStates that contains duplicate states
+ */
+
 package UvA.agents;
 
 import java.util.HashMap;
@@ -14,17 +18,17 @@ public class PCAQLAgent extends QLearnAgent
 	static private final String name = "PCAQLAgent";
 	protected final String stateType = "PCAState";
 
-	List<State> visitedStates;
-	PCAMeans pcam;
+	protected List<State> visitedStates;
+	protected final PCAMeans pcam;
 	
-	public PCAQLAgent(String pcamPath)
+	public PCAQLAgent()
 	{
-		this(pcamPath, name);
+		this(name);
 	}
-
-	public PCAQLAgent(String pcamPath, String name)
+	
+	public PCAQLAgent(String name)
 	{
-		this(loadPCAM(pcamPath), name);
+		this(null, name);
 	}
 	
 	public PCAQLAgent(PCAMeans pcam)

@@ -18,3 +18,8 @@ temp
 
 # Mario Main
 MarioAI2009/src/ch/idsia/scenarios/Play.java
+
+# Serializable files
+#   denote exceptions with prefix !
+*.ser
+!showQlearn.ser
