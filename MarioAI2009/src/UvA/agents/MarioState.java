@@ -16,7 +16,7 @@ public class MarioState implements State
 	protected transient float xPos = 32;
 	protected transient float oldXPos = 32;
 	
-
+	
 	// enemies killed total
 	private static int totalKilledByStomp = 0;
 	private static int totalKilledByFire = 0;
@@ -33,13 +33,13 @@ public class MarioState implements State
 	
 	
 	public static double rewardSoFar = 0;
-	
+	private boolean dieCheck;
 	// Parameters for how important the reward for X is 
 	private final int REWARD_DISTANCE = 1;
 	private final int REWARD_KILLED_STOMP = 0;
 	private final int REWARD_KILLED_FIRE = 0;
 	private final int REWARD_KILLED_SHELL = 0;
-	private final int REWARD_COLLIDED = 0;
+	private final int REWARD_COLLIDED = 5;
 	
 	
 	/**
@@ -93,6 +93,7 @@ public class MarioState implements State
 	    
 	    this.oldXPos = xPos;
 	    xPos = environment.getMarioFloatPos()[0];
+	    dieCheck = environment.getMarioFloatPos()[1] > 225;
 	    
 	    // update enemies killed
 		killedByFire = environment.getKillsByFire() - totalKilledByFire;
@@ -117,7 +118,12 @@ public class MarioState implements State
 	 * @return reward of mario
 	 */ 
 	public float getReward() {
+		if(dieCheck) {
+			System.out.println("Dieing!!!!!");
+			return -100;
+		} // end hack to check if gonna die
 		float distance = xPos - oldXPos;
+		
 		float reward = (float) (distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
 				killedByFire*REWARD_KILLED_FIRE + killedByShell*REWARD_KILLED_SHELL + 
 				collided*REWARD_COLLIDED - 0.5);
