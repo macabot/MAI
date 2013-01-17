@@ -118,10 +118,9 @@ public class MarioState implements State
 	 */ 
 	public float getReward() {
 		float distance = xPos - oldXPos;
-		float reward = distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
+		float reward = (float) (distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
 				killedByFire*REWARD_KILLED_FIRE + killedByShell*REWARD_KILLED_SHELL + 
-				collided*REWARD_COLLIDED;
-		rewardSoFar += reward;
+				collided*REWARD_COLLIDED - 0.5);
 		return reward;
 	} // end getReward
 

@@ -17,6 +17,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	// agent specific values
 	static private final String name = "QLearnAgent";
 	protected final String stateType = "MarioState";
+	private int run = 0; // used for choosing new actions every 1/2th time
 	
 	// used to create state
 	State state = null;
@@ -32,9 +33,11 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	
 	// settings for q learning
 	final int initialValue = 20; // initial qvalues
-	private double epsilon = 0.1; // epsilon used in picking an action
+	protected double epsilon = 0.1; // epsilon used in picking an action
+
 	final double gamma = 0.9; // gamma is penalty on delayed result
-	final double alpha = 0.4; // learning rate
+	final double alpha = 0.3; // learning rate
+	final float winReward = 100; // reward for winning
 	
 	// actions
 	final boolean[] STAY = new boolean[Environment.numberOfButtons];
@@ -81,8 +84,12 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		
 		// update q and return action
 		updateQValue();
-		returnAction = eGreedyAction();
 		
+		// only pick a new action every 2nd question
+		if(run % 2 == 0)
+			returnAction = eGreedyAction();
+		run++;
+
 		// update oldState for updateQValue()
 	    oldState = state.clone();
 	    
@@ -130,13 +137,22 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	}
 
 	/**
-	 * Update the qValues according to Q learning methods
+	 * Update the qValues according to Q learning methods, 
+	 * first calculates reward and then updates with updateQValue(reward)
 	 */
 	public void updateQValue()
 	{
-		StateActionPair oldSap = new StateActionPair(oldState, returnAction);
-		double oldQ = getStateActionValue(oldSap);
+		// update according to reward of current state
+		updateQValue(state.getReward());
+	}
+	
+	/**
+	 * This function actually updates the qvalue according to reward given
+	 * @param reward is the reward that comes with the new state
+	 */
+	public void updateQValue(float reward) {
 		
+		// get bets QValue for calculating updated qvalue
 		double bestQValue = 0;
 		for(int i=0; i<validActions.size(); i++)
 		{
@@ -145,12 +161,17 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 			if( Q > bestQValue )
 				bestQValue = Q;
 		}
-		
-		double reward = state.getReward();
+
+		// create state action pair
+		StateActionPair oldSap = new StateActionPair(oldState, returnAction);
+		double oldQ = getStateActionValue(oldSap);
+
+		// calculate reward
 		double updatedValue = oldQ + alpha*(reward + gamma*bestQValue - oldQ);
 		
 		qValues.put(oldSap, updatedValue);	// update qValue of State-action pair
-	}
+
+	} // end updateQValue(reward);
 	
 	/**
 	 * This function returns the q value if present, else returns the initialValue
@@ -195,15 +216,16 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		validActions.add(STAY);
 		validActions.add(JUMP);
 		validActions.add(SPEED);
+		validActions.add(LEFT);
+		validActions.add(LEFT_SPEED);
+		validActions.add(LEFT_JUMP);
+		validActions.add(LEFT_JUMP_SPEED);
 		validActions.add(JUMP_SPEED);
 		validActions.add(RIGHT);
 		validActions.add(RIGHT_SPEED);
 		validActions.add(RIGHT_JUMP);
 		validActions.add(RIGHT_JUMP_SPEED);
-		validActions.add(LEFT);
-		validActions.add(LEFT_SPEED);
-		validActions.add(LEFT_JUMP);
-		validActions.add(LEFT_JUMP_SPEED);
+		
 		
 		return validActions;
 	} // end getValidActions()
@@ -246,9 +268,13 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 
 	/**
 	 * Evaluate end, so that dieing can be punished
+	 * @param won is a boolean whether mario has won or not
 	 */
-	public void evaluateEnd(/*INPUT? */) {
-		
+	public void evaluateEnd(boolean won) {
+		if(won)
+			updateQValue(winReward);
+		else
+			updateQValue(-winReward);
 	} // end evaluateEnd
 	
 	/**
@@ -276,7 +302,12 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		}
 	} // end loadQValues
 	
-	public void setEpsilon(double epsilon) {
-		this.epsilon = epsilon;
+	/**
+	 * Set epsilon, used to test without exploring
+	 * @param newEpsilon
+	 */
+	public void setEpsilon(int newEpsilon) {
+		this.epsilon = newEpsilon;
+		System.out.println("New epsilon is set: " + this.epsilon);
 	}
 } // end class
