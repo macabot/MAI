@@ -27,4 +27,17 @@ public class SLAPI {
         System.out.println("Done reading!");
         return result;
     }
+    
+    public static boolean fileExists(String path)
+    {
+    	try {
+			new ObjectInputStream(new FileInputStream(path));
+			return true;
+		} catch (FileNotFoundException e) {
+			return false;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
+    }
 }

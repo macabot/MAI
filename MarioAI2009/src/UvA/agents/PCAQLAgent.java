@@ -70,7 +70,7 @@ public class PCAQLAgent extends QLearnAgent
 	
 	public State createState(Environment environmentIn, String stateType)
 	{
-		if( stateType.equals("PCaState") ) {
+		if( stateType.equals("PCAState") ) {
 			PCAState curState = (PCAState) state;
 			if(curState != null)
 				return new PCAState(environmentIn, curState.xPos, pcam);
@@ -86,7 +86,7 @@ public class PCAQLAgent extends QLearnAgent
 		}
 		else
 		{
-			System.out.println("Unknown state-type");
+			System.out.printf("Unknown state-type: %s\n", stateType);
 			return null;
 		}			
 	}
@@ -116,5 +116,14 @@ public class PCAQLAgent extends QLearnAgent
 		}
 		
 	} // end loadQValues
+	
+	public void writeStateList(String path)
+	{
+		try {
+			SLAPI.save(visitedStates, path);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }//end class
