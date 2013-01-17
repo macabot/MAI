@@ -3,7 +3,10 @@ package ch.idsia.scenarios;
 import java.util.Random;
 
 import UvA.agents.QLearnAgent;
+<<<<<<< HEAD
 import UvA.agents.SarsaAgent;
+=======
+>>>>>>> sarsa fixed
 import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.ai.tasks.Task;
 import ch.idsia.tools.CmdLineOptions;
@@ -41,6 +44,7 @@ public class Play {
 	 */
 
 
+
 	private static String savePath = System.getProperty("user.dir") + "/showQlearn.ser";
 	private static String loadPath = System.getProperty("user.dir") + "/showQlearn.ser";
 	private static int amountRuns = 100;
@@ -63,13 +67,15 @@ public class Play {
         	agent.loadQValues(loadPath);       
         
         // regular options
+
         options.setLevelDifficulty(0);
+
         options.setLevelRandSeed(level);        
         
         ///// set options specific for learning if trainB is true
         if(trainB) {
         	System.out.printf("Starting training of %d runs\n", amountRuns);
-//	        options.setVisualization(false);
+	        options.setVisualization(false);
 	        options.setMaxFPS(true);
 	        
 	        //////// optionally load qvalues, dont forget to set path
@@ -91,6 +97,8 @@ public class Play {
         //// reset options for visualization
         options.setVisualization(true);
         options.setMaxFPS(false);
+        if(!singleLev)
+        	options.setLevelRandSeed(rand.nextInt());
         task.setOptions(options);
         
         agent.setEpsilon(0);
