@@ -23,7 +23,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	State oldState = null;
 	
 	// action to return
-	private boolean[] returnAction;
+	protected boolean[] returnAction;
 		
 	// values used by qlearning
 	protected Map<StateActionPair, Double> qValues;	// state-action values
@@ -55,7 +55,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 *  Constructor of qlearn agent with a blank policy (to be learned)
 	 */
 	public QLearnAgent() {
-		this(new HashMap<StateActionPair, Double>());	
+		this(new HashMap<StateActionPair, Double>(), name);	
 	} // end constructor without policy
 	
 	/**
@@ -63,7 +63,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 * 
 	 * @param plc is the policy the agent should handle
 	 */
-	public QLearnAgent(Map<StateActionPair, Double> qValuesIn) {
+	public QLearnAgent(Map<StateActionPair, Double> qValuesIn, String name) {
 		super(name);
 		initiateValues();
 		initialiseActions();
