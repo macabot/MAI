@@ -18,24 +18,28 @@ public class MarioState implements State
 	
 
 	// enemies killed total
-	private int totalKilledByStomp = 0;
-	private int totalKilledByFire = 0;
-	private int totalKilledByShell = 0;
+	private static int totalKilledByStomp = 0;
+	private static int totalKilledByFire = 0;
+	private static int totalKilledByShell = 0;
 	
 	// enemies killed in current scene
-	private int killedByStomp = 0;
-	private int killedByFire = 0;
-	private int killedByShell = 0;
+	private static int killedByStomp = 0;
+	private static int killedByFire = 0;
+	private static int killedByShell = 0;
 	
-	private int lastMarioMode = 2; //TODO initialise properly
-	private int collided = 0;
+	private static int marioMode = 2; //TODO initialise properly
+	private static int lastMarioMode = 2; //TODO initialise properly
+	private static int collided = 0;
+	
+	
+	public static double rewardSoFar = 0;
 	
 	// Parameters for how important the reward for X is 
-	private final int REWARD_DISTANCE = 1;
-	private final int REWARD_KILLED_STOMP = 0;
-	private final int REWARD_KILLED_FIRE = 0;
-	private final int REWARD_KILLED_SHELL = 0;
-	private final int REWARD_COLLIDED = 0;
+	private final int REWARD_DISTANCE = 2;
+	private final int REWARD_KILLED_STOMP = 1;
+	private final int REWARD_KILLED_FIRE = 1;
+	private final int REWARD_KILLED_SHELL = 1;
+	private final int REWARD_COLLIDED = -1;
 	
 	
 	/**
@@ -97,16 +101,17 @@ public class MarioState implements State
 		totalKilledByFire = environment.getKillsByFire();
 		totalKilledByStomp = environment.getKillsByStomp();
 		totalKilledByShell = environment.getKillsByShell();
+		marioMode = environment.getMarioMode();
 		
 		// calculate if collided (lose mario mode)
-	    if(lastMarioMode > environment.getMarioMode()){
+	    if(marioMode < lastMarioMode){
 	    	collided = 1;
-	    	lastMarioMode = environment.getMarioMode();
+	    	lastMarioMode = marioMode;
 	    }
 	    else
 	    	collided = 0;
 	} // end updateRepresentation
-	
+		
 	/** TODO: get better reward function
 	 * Get the reward of prey or predator based on the state.
 	 * @return reward of mario
@@ -116,6 +121,7 @@ public class MarioState implements State
 		float reward = distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
 				killedByFire*REWARD_KILLED_FIRE + killedByShell*REWARD_KILLED_SHELL + 
 				collided*REWARD_COLLIDED;
+		rewardSoFar += reward;
 		return reward;
 	} // end getReward
 
@@ -149,6 +155,19 @@ public class MarioState implements State
 		for(int i = 0; i < representation.length; i++)
 		representation[i] = 0.0;
 	} // end reset
+	
+	public static void resetStatic(int mode){
+		totalKilledByStomp = 0;
+		totalKilledByFire = 0;
+		totalKilledByShell = 0;
+		killedByStomp = 0;
+		killedByFire = 0;
+		killedByShell = 0;
+		marioMode = mode;
+		lastMarioMode = marioMode;
+		collided = 0;
+		rewardSoFar = 0;
+	}// end resetStatic
 	
 	
 	@Override

@@ -1,5 +1,6 @@
 package ch.idsia.scenarios;
 
+import UvA.agents.MarioState;
 import UvA.agents.QLearnAgent;
 import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.ai.tasks.Task;
@@ -44,13 +45,14 @@ public class Play {
     public static void main(String[] args) {
     	
     	///// initialization
-    	loadPath = System.getProperty("user.dir") + "/qvalues.txt";
-    	savePath = System.getProperty("user.dir") + "/qvalues.txt";
+    	loadPath = System.getProperty("user.dir") + "/qvaluesQLearning.txt";
+    	savePath = System.getProperty("user.dir") + "/qvaluesQLearning.txt";
     	
         EvaluationOptions options = new CmdLineOptions(args);
         Task task = new ProgressTask(options);
         QLearnAgent agent = (QLearnAgent) options.getAgent();
         
+		//optionally load qvalues, don't forget to set path
         agent.loadQValues(loadPath);       
         
         // regular options
@@ -58,17 +60,17 @@ public class Play {
         options.setLevelRandSeed(12);        
         ///// set options specific for learning
 
-//        options.setVisualization(false);
-//        options.setMaxFPS(true);
-//        
-//        //////// optionally load qvalues, dont forget to set path
-// 
-//        
-//        /// set options and
+        options.setVisualization(false);
+        options.setMaxFPS(true);
+        
+       
+ 
+        
+//        // set options and
 //        task.setOptions(options);
 //
-//        //// train
-//        for (int i = 0; i < 50; i++) { 
+//        // train
+//        for (int i = 0; i < 100; i++) { 
 //	        System.out.print("Training trial " + i + "... ");
 //	        double[] result = task.evaluate(agent);
 //	        // TODO: agent.evaluateResult(result);
@@ -82,7 +84,9 @@ public class Play {
         
         //// and show the next game, learned agent
         System.out.print("Showing improvement... ");
-       	task.evaluate(agent);
+        for (int i = 0; i < 5; i++) {
+        	task.evaluate(agent);
+        }
         System.out.println("Done!");
         
         ///// write new qvalues to file

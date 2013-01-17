@@ -10,7 +10,7 @@ public interface State extends Serializable
 	 * @return reward of mario
 	 */
 	public float getReward();
-
+	
 	/**
 	 * Return a clone of this state
 	 * @return clone

@@ -37,18 +37,18 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	final double alpha = 0.4; // learning rate
 	
 	// actions
-	final boolean[] STAY = new boolean[Environment.numberOfButtons];;
+	final boolean[] STAY = new boolean[Environment.numberOfButtons];
 	final boolean[] JUMP = new boolean[Environment.numberOfButtons];
-	final boolean[] SPEED = new boolean[Environment.numberOfButtons];;
-	final boolean[] JUMP_SPEED = new boolean[Environment.numberOfButtons];;
-	final boolean[] RIGHT = new boolean[Environment.numberOfButtons];;
-	final boolean[] RIGHT_JUMP = new boolean[Environment.numberOfButtons];;
-	final boolean[] RIGHT_SPEED = new boolean[Environment.numberOfButtons];;
-	final boolean[] RIGHT_JUMP_SPEED = new boolean[Environment.numberOfButtons];;
-	final boolean[] LEFT = new boolean[Environment.numberOfButtons];;
-	final boolean[] LEFT_JUMP = new boolean[Environment.numberOfButtons];;
-	final boolean[] LEFT_SPEED = new boolean[Environment.numberOfButtons];;
-	final boolean[] LEFT_JUMP_SPEED = new boolean[Environment.numberOfButtons];;
+	final boolean[] SPEED = new boolean[Environment.numberOfButtons];
+	final boolean[] JUMP_SPEED = new boolean[Environment.numberOfButtons];
+	final boolean[] RIGHT = new boolean[Environment.numberOfButtons];
+	final boolean[] RIGHT_JUMP = new boolean[Environment.numberOfButtons];
+	final boolean[] RIGHT_SPEED = new boolean[Environment.numberOfButtons];
+	final boolean[] RIGHT_JUMP_SPEED = new boolean[Environment.numberOfButtons];
+	final boolean[] LEFT = new boolean[Environment.numberOfButtons];
+	final boolean[] LEFT_JUMP = new boolean[Environment.numberOfButtons];
+	final boolean[] LEFT_SPEED = new boolean[Environment.numberOfButtons];
+	final boolean[] LEFT_JUMP_SPEED = new boolean[Environment.numberOfButtons];
 	
 	
 	/**
@@ -78,7 +78,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	{
 		
 		state = createState(environment);
-				
+		
 		// update q and return action
 		updateQValue();
 		returnAction = eGreedyAction();
@@ -231,8 +231,10 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 			MarioState curState = (MarioState) state;
 			if(curState != null)
 				return new MarioState(environmentIn, curState.xPos);
-			else
+			else{
+				MarioState.resetStatic(2);
 				return new MarioState(environmentIn, 32);
+			}
 		}
 		else
 		{

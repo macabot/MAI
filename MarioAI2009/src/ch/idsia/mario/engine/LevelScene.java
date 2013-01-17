@@ -15,6 +15,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+import UvA.agents.MarioState;
+
 
 public class LevelScene extends Scene implements SpriteContext
 {
@@ -73,6 +75,7 @@ public class LevelScene extends Scene implements SpriteContext
         killedCreaturesByFireBall = 0;
         killedCreaturesByStomp = 0;
         killedCreaturesByShell = 0;
+        
     }
 
     private String mapElToStr(int el)
@@ -907,12 +910,14 @@ public class LevelScene extends Scene implements SpriteContext
         drawStringDropShadow(g, "MUSHROOMS: " + df.format(Mario.gainedMushrooms), 0, 5, 4);                  drawStringDropShadow(g, "by Stomp : " + killedCreaturesByStomp, 19, 4, 1);
         drawStringDropShadow(g, "FLOWERS  : " + df.format(Mario.gainedFlowers), 0, 6, 4);
 
+        // draw intermediate reward
+        drawStringDropShadow(g, "REWARD: " + df.format(MarioState.rewardSoFar), 19, 5, 2);
 
         drawStringDropShadow(g, "TIME", 32, 0, 7);
         int time = (timeLeft+15-1)/15;
         if (time<0) time = 0;
         drawStringDropShadow(g, " "+df2.format(time), 32, 1, 7);
-
+        
         drawProgress(g);
 
         if (GlobalOptions.Labels)
