@@ -16,14 +16,23 @@ public class PCAQLAgent extends QLearnAgent
 
 	List<State> visitedStates;
 	PCAMeans pcam;
-	State pcaState;
-
+	
 	public PCAQLAgent(String pcamPath)
 	{
-		this(loadPCAM(pcamPath));
+		this(pcamPath, name);
+	}
+
+	public PCAQLAgent(String pcamPath, String name)
+	{
+		this(loadPCAM(pcamPath), name);
 	}
 	
 	public PCAQLAgent(PCAMeans pcam)
+	{
+		this(pcam, name);
+	}
+	
+	public PCAQLAgent(PCAMeans pcam, String name)
 	{
 		this(new HashMap<StateActionPair, Double>(), pcam, name);		
 	}
@@ -40,7 +49,7 @@ public class PCAQLAgent extends QLearnAgent
 	public boolean[] getAction(Environment environment)
 	{
 
-		state = createState(environment, "MarioState");
+		state = createState(environment);
 		visitedStates.add(state);	// add MarioState
 
 		// update q and return action
