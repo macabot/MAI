@@ -2,6 +2,7 @@ package ch.idsia.mario.engine;
 
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.human.CheaterKeyboardAgent;
+import ch.idsia.ai.agents.human.MouseMotionListenerAgent;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
 import ch.idsia.tools.EvaluationInfo;
@@ -43,7 +44,9 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
     private Agent agent = null;
     private CheaterKeyboardAgent cheatAgent = null;
-
+    
+    public MouseMotionListenerAgent mouseListener = null;
+    
     private KeyAdapter prevHumanKeyBoardAgent;
     private Mario mario = null;
     private LevelScene levelScene = null;
@@ -53,23 +56,26 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
         this.setFocusable(true);
         this.setEnabled(true);
-        this.width = width;
-        this.height = height;
+        this.width = width*4;
+        this.height = height*4;
 
-        Dimension size = new Dimension(width, height);
+        Dimension size = new Dimension(width*4, height*4);
 
         setPreferredSize(size);
         setMinimumSize(size);
         setMaximumSize(size);
 
         setFocusable(true);
-
+        this.setSize(width, height);
         if (this.cheatAgent == null)
         {
             this.cheatAgent = new CheaterKeyboardAgent();
             this.addKeyListener(cheatAgent);
         }        
-
+        
+        this.mouseListener = new MouseMotionListenerAgent();
+        this.addMouseMotionListener(mouseListener);
+        
         GlobalOptions.registerMarioComponent(this);
     }
 
@@ -105,8 +111,8 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
     }
 
     public void run() {
-
     }
+    
 
     public EvaluationInfo run1(int currentTrial, int totalNumberOfTrials) {
         running = true;

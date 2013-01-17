@@ -28,6 +28,8 @@ public class GlobalOptions {
 
     public static boolean StopSimulationIfWin;
     public static boolean isMarioInvulnerable;
+    
+    public static int[][] Pos = new int[1000][2];
 
     public static void registerMarioComponent(MarioComponent mc)
     {
