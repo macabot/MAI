@@ -32,7 +32,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	
 	// settings for q learning
 	final int initialValue = 20; // initial qvalues
-	final double epsilon = 0.1; // epsilon used in picking an action
+	private double epsilon = 0.1; // epsilon used in picking an action
 	final double gamma = 0.9; // gamma is penalty on delayed result
 	final double alpha = 0.4; // learning rate
 	
@@ -241,9 +241,15 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 			System.out.println("Unknown state-type");
 			return null;
 		}			
-	}
+	} // end create state
 	
 
+	/**
+	 * Evaluate end, so that dieing can be punished
+	 */
+	public void evaluateEnd(/*INPUT? */) {
+		
+	} // end evaluateEnd
 	
 	/**
 	 * Load qvalues according to path, called from main run
@@ -268,6 +274,9 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	} // end loadQValues
+	
+	public void setEpsilon(double epsilon) {
+		this.epsilon = epsilon;
+	}
 } // end class

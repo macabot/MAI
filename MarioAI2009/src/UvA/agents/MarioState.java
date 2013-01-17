@@ -35,11 +35,11 @@ public class MarioState implements State
 	public static double rewardSoFar = 0;
 	
 	// Parameters for how important the reward for X is 
-	private final int REWARD_DISTANCE = 2;
-	private final int REWARD_KILLED_STOMP = 1;
-	private final int REWARD_KILLED_FIRE = 1;
-	private final int REWARD_KILLED_SHELL = 1;
-	private final int REWARD_COLLIDED = -1;
+	private final int REWARD_DISTANCE = 1;
+	private final int REWARD_KILLED_STOMP = 0;
+	private final int REWARD_KILLED_FIRE = 0;
+	private final int REWARD_KILLED_SHELL = 0;
+	private final int REWARD_COLLIDED = 0;
 	
 	
 	/**

@@ -1,7 +1,9 @@
 package ch.idsia.scenarios;
 
-import UvA.agents.MarioState;
+import java.util.Random;
+
 import UvA.agents.QLearnAgent;
+import UvA.agents.SarsaAgent;
 import ch.idsia.ai.tasks.ProgressTask;
 import ch.idsia.ai.tasks.Task;
 import ch.idsia.tools.CmdLineOptions;
@@ -39,58 +41,76 @@ public class Play {
 	 */
 
 
-	private static String loadPath = null; // path to saved QValues
-	private static String savePath = null;
+	private static String savePath = System.getProperty("user.dir") + "/showQlearn.ser";
+	private static String loadPath = System.getProperty("user.dir") + "/showQlearn.ser";
+	private static int amountRuns = 100;
+	private static boolean saveB = true;
+	private static boolean loadB = false;
+	private static boolean trainB = false;
+	private static boolean singleLev = true;
+	private static int level = 0;
 	
     public static void main(String[] args) {
-    	
-    	///// initialization
-    	loadPath = System.getProperty("user.dir") + "/qvaluesQLearning.txt";
-    	savePath = System.getProperty("user.dir") + "/qvaluesQLearning.txt";
-    	
+
+    	// initialization
+    	Random rand = new Random();
         EvaluationOptions options = new CmdLineOptions(args);
         Task task = new ProgressTask(options);
         QLearnAgent agent = (QLearnAgent) options.getAgent();
         
-		//optionally load qvalues, don't forget to set path
-        agent.loadQValues(loadPath);       
+        // load values if true
+        if(loadB)
+        	agent.loadQValues(loadPath);       
         
         // regular options
-        options.setLevelDifficulty(1);
-        options.setLevelRandSeed(12);        
-        ///// set options specific for learning
+        options.setLevelDifficulty(0);
+        options.setLevelRandSeed(level);        
+        
+        ///// set options specific for learning if trainB is true
+        if(trainB) {
+        	System.out.printf("Starting training of %d runs\n", amountRuns);
+//	        options.setVisualization(false);
+	        options.setMaxFPS(true);
+	        
+	        //////// optionally load qvalues, dont forget to set path
+	 
+	        /// set options and
 
-        options.setVisualization(false);
-        options.setMaxFPS(true);
-        
-       
- 
-        
-//        // set options and
-//        task.setOptions(options);
-//
-//        // train
-//        for (int i = 0; i < 100; i++) { 
-//	        System.out.print("Training trial " + i + "... ");
-//	        double[] result = task.evaluate(agent);
-//	        // TODO: agent.evaluateResult(result);
-//	        System.out.print("Done!\n");
-//        }
+	        task.setOptions(options);
+	        //// train
+	        for (int i = 0; i < amountRuns; i++) { 
+		        System.out.print("Training trial " + i + "... ");
+		        if(!singleLev)
+		        	options.setLevelRandSeed(rand.nextInt());
+		        task.evaluate(agent);
+		        System.out.print("Done!\n");
+	        }
+	        System.out.println("Done training");
+        } // end if load
         
         //// reset options for visualization
         options.setVisualization(true);
         options.setMaxFPS(false);
         task.setOptions(options);
         
-        //// and show the next game, learned agent
-        System.out.print("Showing improvement... ");
-        for (int i = 0; i < 5; i++) {
-        	task.evaluate(agent);
-        }
-        System.out.println("Done!");
+        agent.setEpsilon(0);
         
-        ///// write new qvalues to file
-        agent.writeQValues(savePath);
+        //// and show the next game, learned agent
+        System.out.println("Showing mario... ");
+        for (int i = 0; i < 2; i++) {
+        	System.out.print("run " + Integer.toString(i) + "... ");
+        	if(!singleLev)
+        		options.setLevelRandSeed(rand.nextInt());
+        	task.evaluate(options.getAgent());
+        	System.out.print("done! \n");
+        }
+        System.out.println("Done showing mario!");
+        
+        
+        ///// write new qvalues to file if saveB is true
+        if(saveB) 
+        	agent.writeQValues(savePath);
+        
         System.out.println("Done with simulation!");
     }
 }
