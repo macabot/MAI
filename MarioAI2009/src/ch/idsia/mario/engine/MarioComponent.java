@@ -56,10 +56,11 @@ public class MarioComponent extends JComponent implements Runnable, /*KeyListene
 
         this.setFocusable(true);
         this.setEnabled(true);
-        this.width = width*4;
-        this.height = height*4;
+        this.width = width;//*4;
+        this.height = height;//*4;
 
-        Dimension size = new Dimension(width*4, height*4);
+        Dimension size = new Dimension(width, height);
+        //Dimension size = new Dimension(width*4, height*4);
 
         setPreferredSize(size);
         setMinimumSize(size);

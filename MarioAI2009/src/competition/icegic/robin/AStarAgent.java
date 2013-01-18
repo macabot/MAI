@@ -109,8 +109,10 @@ public class AStarAgent extends BasicAIAgent implements Agent
 		lastY = f[1];
 		
 		MarioComponent MC = (MarioComponent)observation;
-		sim.targetX = (MC.mouseListener.goal.x/4 + (int)sim.levelScene.xCamO);
-		sim.targetY = MC.mouseListener.goal.y/4;
+		//sim.targetX = (MC.mouseListener.goal.x/4 + (int)sim.levelScene.xCamO);
+		//sim.targetY = MC.mouseListener.goal.y/4;
+		sim.targetX = (MC.mouseListener.goal.x + (int)sim.levelScene.xCamO);
+		sim.targetY = MC.mouseListener.goal.y;
 		System.out.println(sim.targetX);
         action = sim.optimise(MC.mouseListener.goal);        
         

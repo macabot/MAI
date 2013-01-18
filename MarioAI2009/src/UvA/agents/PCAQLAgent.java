@@ -1,12 +1,19 @@
+/*
+ * TODO should pcam be trained with visitedStates that contains duplicate states
+ */
+
 package UvA.agents;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import ch.idsia.mario.environments.Environment;
+import java.util.Set;
 
 import UvA.stateSpaceReduction.PCAMeans;
+import ch.idsia.mario.environments.Environment;
 
 public class PCAQLAgent extends QLearnAgent 
 {
@@ -14,17 +21,17 @@ public class PCAQLAgent extends QLearnAgent
 	static private final String name = "PCAQLAgent";
 	protected final String stateType = "PCAState";
 
-	List<State> visitedStates;
-	PCAMeans pcam;
+	protected Set<double[]> seenRepresentations; // representations of visited states
+	protected final PCAMeans pcam;
 	
-	public PCAQLAgent(String pcamPath)
+	public PCAQLAgent()
 	{
-		this(pcamPath, name);
+		this(name);
 	}
-
-	public PCAQLAgent(String pcamPath, String name)
+	
+	public PCAQLAgent(String name)
 	{
-		this(loadPCAM(pcamPath), name);
+		this(null, name);
 	}
 	
 	public PCAQLAgent(PCAMeans pcam)
@@ -50,7 +57,7 @@ public class PCAQLAgent extends QLearnAgent
 	{
 
 		state = createState(environment);
-		visitedStates.add(state);	// add MarioState
+		seenRepresentations.add(state.getRepresentation());	// add MarioState
 
 		// update q and return action
 		updateQValue();
@@ -70,7 +77,7 @@ public class PCAQLAgent extends QLearnAgent
 	
 	public State createState(Environment environmentIn, String stateType)
 	{
-		if( stateType.equals("PCaState") ) {
+		if( stateType.equals("PCAState") ) {
 			PCAState curState = (PCAState) state;
 			if(curState != null)
 				return new PCAState(environmentIn, curState.xPos, pcam);
@@ -86,9 +93,26 @@ public class PCAQLAgent extends QLearnAgent
 		}
 		else
 		{
-			System.out.println("Unknown state-type");
+			System.out.printf("Unknown state-type: %s\n", stateType);
 			return null;
 		}			
+	}
+	
+	public void representationsToText(String path)
+	{
+		String s = "";
+		for(double[] vector: seenRepresentations)
+		{
+			s += Arrays.toString(vector).replace(", ", " ") + "\n";
+		}
+		BufferedWriter out;
+		try {
+			out = new BufferedWriter(new FileWriter(path));
+			out.write(s);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
 	}
 	
 	/**
@@ -104,6 +128,18 @@ public class PCAQLAgent extends QLearnAgent
 		}
 	} // end loadQValues
 	
+	@SuppressWarnings("unchecked")
+	public static Set<double[]> loadSeenRepresentations(String path)
+	{
+		try{
+			return (Set<double[]>) SLAPI.load(path);
+		}catch( Exception e )
+		{
+			e.printStackTrace();
+			return null;
+		}		
+	}
+	
 	/**
 	 * Save pcam according to path
 	 * @param path is the path where the pcam is to be saved
@@ -116,5 +152,14 @@ public class PCAQLAgent extends QLearnAgent
 		}
 		
 	} // end loadQValues
+	
+	public void writeSeenRepresentations(String path)
+	{
+		try {
+			SLAPI.save(seenRepresentations, path);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 }//end class

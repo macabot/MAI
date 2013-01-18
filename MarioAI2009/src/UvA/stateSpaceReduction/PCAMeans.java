@@ -1,3 +1,9 @@
+/*
+ * TODO test if projection matrix is the same for a set of states
+ * that does contains duplicates and a set of states that doesn't.
+ * 
+ */
+
 package UvA.stateSpaceReduction;
 
 import java.io.Serializable;
