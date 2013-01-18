@@ -10,6 +10,7 @@ import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.ai.BasicAIAgent;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
+import UvA.states.*;
 
 
 public class QLearnAgent extends BasicAIAgent implements Agent {
@@ -28,7 +29,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		
 	// values used by qlearning
 	protected Map<StateActionPair, Double> qValues;	// state-action values
-	protected List<boolean[]> validActions;
+	protected List<boolean[]> allActions;
  
 	
 	// settings for q learning
@@ -113,7 +114,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		double bestValue = 0;
 
 		// find best action
-		
+		List<boolean[]> validActions = getValidActions();
 		for(int i=0; i<validActions.size(); i++)
 		{
 			StateActionPair sap = new StateActionPair(state, validActions.get(i));
@@ -153,10 +154,11 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	public void updateQValue(float reward) {
 		
 		// get bets QValue for calculating updated qvalue
+		List<boolean[]> actions = getValidActions();
 		double bestQValue = 0;
-		for(int i=0; i<validActions.size(); i++)
+		for(int i=0; i<actions.size(); i++)
 		{
-			StateActionPair sap = new StateActionPair(state, validActions.get(i));
+			StateActionPair sap = new StateActionPair(state, actions.get(i));
 			double Q = getStateActionValue(sap);
 			if( Q > bestQValue )
 				bestQValue = Q;
@@ -208,27 +210,33 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 * Get valid actions returns the valid actions by adding all actions possible manually
 	 * @return validactions boolean array
 	 */
-	public List<boolean[]> getValidActions()
+	public List<boolean[]> getAllActions()
 	{
 		// initiate valid actions
-		List<boolean[]> validActions = new ArrayList<boolean[]>();
+		List<boolean[]> allActions = new ArrayList<boolean[]>();
 		
-		validActions.add(STAY);
-		validActions.add(JUMP);
-		validActions.add(SPEED);
-		validActions.add(LEFT);
-		validActions.add(LEFT_SPEED);
-		validActions.add(LEFT_JUMP);
-		validActions.add(LEFT_JUMP_SPEED);
-		validActions.add(JUMP_SPEED);
-		validActions.add(RIGHT);
-		validActions.add(RIGHT_SPEED);
-		validActions.add(RIGHT_JUMP);
-		validActions.add(RIGHT_JUMP_SPEED);
+		allActions.add(STAY);
+		allActions.add(JUMP);
+		allActions.add(SPEED);
+		allActions.add(LEFT);
+		allActions.add(LEFT_SPEED);
+		allActions.add(LEFT_JUMP);
+		allActions.add(LEFT_JUMP_SPEED);
+		allActions.add(JUMP_SPEED);
+		allActions.add(RIGHT);
+		allActions.add(RIGHT_SPEED);
+		allActions.add(RIGHT_JUMP);
+		allActions.add(RIGHT_JUMP_SPEED);
 		
-		
-		return validActions;
+		return allActions;
 	} // end getValidActions()
+	
+	public List<boolean[]> getValidActions()
+	{
+		List<boolean[]> validActions = new ArrayList<boolean[]>(allActions);
+		//TODO remove actions that contain jump if environment.mayMarioJump() is false
+		return validActions;
+	}
 	
 	/**
 	 * Function is used for declaring some values necessarily for qLearning, 
@@ -238,7 +246,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		oldState = createState(null);
 		state =  createState(null);
 		returnAction = new boolean[Environment.numberOfButtons];
-		validActions = getValidActions();
+		allActions = getAllActions();
 	} // end getvalidactions
 	
 	/**

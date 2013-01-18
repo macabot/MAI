@@ -1,4 +1,4 @@
-package UvA.agents;
+package UvA.states;
 
 import java.util.Arrays;
 
@@ -11,10 +11,14 @@ public class MarioState implements State
 	private static final long serialVersionUID = 4326470085716280782L;
 	
 	// state representation
-	private final int amountOfInput = 100;
+	private final int viewDim = 6;//22;	//size of statespace that  is represented
+	private final int miscDims = 4; // dimensions for extra information about state
+	// 2 windows that contain info on objects and enemies = viewDim x viewDim
+	// miscDims spaces for features such as mayMarioJump() and isMarioOnGround()
+	private final int amountOfInput = 2*viewDim*viewDim+miscDims;
 	private double[] representation = new double[amountOfInput];
 	
-	protected transient float xPos = 32;
+	public transient float xPos = 32;
 	protected transient float oldXPos = 32;
 	
 	
@@ -45,16 +49,17 @@ public class MarioState implements State
 	public static double rewardSoFar = 0;
 	public static double testReward = 0; //TODO just for testing, see engine.LevelScene
 	private boolean dieCheck;
-	
+
 	// Parameters for how important the reward for X is 
 	private final int REWARD_DISTANCE = 1; //Positive for moving to right, negative for left
-	private final int REWARD_KILLED_STOMP = 1;
+	private final int REWARD_KILLED_STOMP = 0;
 	private final int REWARD_KILLED_FIRE = 1;
 	private final int REWARD_KILLED_SHELL = 1;
-	private final int REWARD_COLLIDED = -5; //Should be negative
+	private final int REWARD_COLLIDED = -50; //Should be negative
 	private final int REWARD_FLOWER = 1;
 	private final int REWARD_MUSHROOM = 1;
 	private final int REWARD_COIN = 10;
+	private final int REWARD_FALL = -1000;
 	
 	/**
 	 * Constructor, creates state representation
@@ -88,23 +93,26 @@ public class MarioState implements State
 		
 		
 	    int which = 0;
-	    for (int i = -3; i < 4; i++)
+	    for (int i = -viewDim/2; i < viewDim/2; i++)
 	    {
-	        for (int j = -3; j < 4; j++)
+	        for (int j = -viewDim/2; j < viewDim/2; j++)
 	        {
 	            representation[which++] = probe(i, j, scene);
 	        }
 	    }
-	    for (int i = -3; i < 4; i++)
+	    for (int i = -viewDim/2; i < viewDim/2; i++)
 	    {
-	        for (int j = -3; j < 4; j++)
+	        for (int j = -viewDim/2; j < viewDim/2; j++)
 	        {
 	            representation[which++] = probe(i, j, enemies);
 	        }
 	    }
-	    representation[representation.length - 2] = environment.mayMarioJump() ? 1.0 : 0.0;
-	    representation[representation.length - 1] = environment.isMarioOnGround() ? 1.0 : 0.0;
 	    
+	    representation[representation.length - 4] = environment.getMarioMode();
+	    representation[representation.length - 3] = environment.mayMarioJump() ? 1.0 : 0.0;
+	    representation[representation.length - 2] = environment.isMarioOnGround() ? 1.0 : 0.0;
+	    representation[representation.length - 1] = environment.canShoot() ? 1.0 : 0.0;
+
 	    this.oldXPos = xPos;
 	    xPos = environment.getMarioFloatPos()[0];
 	    dieCheck = environment.getMarioFloatPos()[1] > 225;
@@ -164,7 +172,7 @@ public class MarioState implements State
 		
 		if(dieCheck) {
 			System.out.println("Dieing!!!!!");
-			return -100;
+			return REWARD_FALL;
 		} // end hack to check if gonna die
 		float distance = xPos - oldXPos;
 		

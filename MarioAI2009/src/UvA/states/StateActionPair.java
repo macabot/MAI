@@ -1,4 +1,4 @@
-package UvA.agents;
+package UvA.states;
 
 import java.io.Serializable;
 import java.util.Arrays;

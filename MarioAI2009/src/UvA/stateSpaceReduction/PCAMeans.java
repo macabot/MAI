@@ -15,7 +15,7 @@ import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.DefaultDataset;
 import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
-import UvA.agents.State;
+import UvA.states.State;
 
 public class PCAMeans implements Serializable
 {
