@@ -2,6 +2,7 @@ package UvA.agents;
 
 import java.util.Arrays;
 
+import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
 
 
@@ -27,20 +28,33 @@ public class MarioState implements State
 	private static int killedByFire = 0;
 	private static int killedByShell = 0;
 	
-	private static int marioMode = 2; //TODO initialise properly
-	private static int lastMarioMode = 2; //TODO initialise properly
+	private static int marioMode = 2;
+	private static int lastMarioMode = 2;
 	private static int collided = 0;
+	
+	private static int gainedFlowersSoFar = 0;
+	private static int collectedFlowers = 0;
+	
+	private static int gainedMushroomsSoFar = 0;
+	private static int collectedMushrooms = 0;
+	
+	private static int gainedCoinsSoFar = 0;
+	private static int collectedCoins = 0;
 	
 	
 	public static double rewardSoFar = 0;
+	public static double testReward = 0; //TODO just for testing, see engine.LevelScene
 	private boolean dieCheck;
-	// Parameters for how important the reward for X is 
-	private final int REWARD_DISTANCE = 1;
-	private final int REWARD_KILLED_STOMP = 0;
-	private final int REWARD_KILLED_FIRE = 0;
-	private final int REWARD_KILLED_SHELL = 0;
-	private final int REWARD_COLLIDED = 5;
 	
+	// Parameters for how important the reward for X is 
+	private final int REWARD_DISTANCE = 1; //Positive for moving to right, negative for left
+	private final int REWARD_KILLED_STOMP = 1;
+	private final int REWARD_KILLED_FIRE = 1;
+	private final int REWARD_KILLED_SHELL = 1;
+	private final int REWARD_COLLIDED = -5; //Should be negative
+	private final int REWARD_FLOWER = 1;
+	private final int REWARD_MUSHROOM = 1;
+	private final int REWARD_COIN = 10;
 	
 	/**
 	 * Constructor, creates state representation
@@ -111,13 +125,43 @@ public class MarioState implements State
 	    }
 	    else
 	    	collided = 0;
+	    
+	    // calculate if picked up a flower
+	    int flowers = Mario.gainedFlowers;
+	    if(flowers > gainedFlowersSoFar){
+	    	collectedFlowers = flowers-gainedFlowersSoFar;
+	    	gainedFlowersSoFar = flowers;
+	    }
+	    else
+	    	collectedFlowers = 0;
+	    
+	    // calculate if picked up a mushroom
+	    int mushrooms = Mario.gainedMushrooms;
+	    if(mushrooms > gainedMushroomsSoFar){
+	    	collectedMushrooms = mushrooms-gainedMushroomsSoFar;
+	    	gainedMushroomsSoFar = mushrooms;
+	    }
+	    else
+	    	collectedMushrooms = 0;
+	    
+	    // calculate coins collected
+	    int coins = Mario.coins;
+	    if(coins > gainedCoinsSoFar){
+	    	collectedCoins = coins-gainedCoinsSoFar;
+	    	gainedCoinsSoFar = coins;
+	    }
+	    else
+	    	collectedCoins = 0;
+	    
+	    
 	} // end updateRepresentation
 		
-	/** TODO: get better reward function
+	/** TODO better reward function
 	 * Get the reward of prey or predator based on the state.
 	 * @return reward of mario
 	 */ 
-	public float getReward() {
+	public float getReward() {	
+		
 		if(dieCheck) {
 			System.out.println("Dieing!!!!!");
 			return -100;
@@ -126,7 +170,11 @@ public class MarioState implements State
 		
 		float reward = (float) (distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
 				killedByFire*REWARD_KILLED_FIRE + killedByShell*REWARD_KILLED_SHELL + 
-				collided*REWARD_COLLIDED - 0.5);
+				collided*REWARD_COLLIDED + collectedFlowers*REWARD_FLOWER + collectedMushrooms*REWARD_MUSHROOM +
+				collectedCoins*REWARD_COIN);
+		
+		rewardSoFar += reward;
+		testReward += distance;
 		return reward;
 	} // end getReward
 
@@ -157,8 +205,11 @@ public class MarioState implements State
 	 * Reset the info to no info
 	 */
 	public void reset() {
-		for(int i = 0; i < representation.length; i++)
-		representation[i] = 0.0;
+		for(int i = 0; i < representation.length; i++){
+			representation[i] = 0.0;
+		}
+		oldXPos = 32;
+		xPos = 32;
 	} // end reset
 	
 	public static void resetStatic(int mode){
@@ -172,6 +223,13 @@ public class MarioState implements State
 		lastMarioMode = marioMode;
 		collided = 0;
 		rewardSoFar = 0;
+		testReward = 0; //TODO just for testing
+		gainedFlowersSoFar = 0;
+		collectedFlowers = 0;
+		gainedMushroomsSoFar = 0;
+		collectedMushrooms = 0;
+		gainedCoinsSoFar = 0;
+		collectedCoins = 0;
 	}// end resetStatic
 	
 	

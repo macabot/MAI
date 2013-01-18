@@ -912,6 +912,8 @@ public class LevelScene extends Scene implements SpriteContext
 
         // draw intermediate reward
         drawStringDropShadow(g, "REWARD: " + df.format(MarioState.rewardSoFar), 19, 5, 2);
+        //TODO just for testing
+        drawStringDropShadow(g, "TEST REWARD: " + df.format(MarioState.testReward), 19, 6, 2);
 
         drawStringDropShadow(g, "TIME", 32, 0, 7);
         int time = (timeLeft+15-1)/15;

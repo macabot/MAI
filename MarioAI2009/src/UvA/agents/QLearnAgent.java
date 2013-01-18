@@ -254,7 +254,10 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 			if(curState != null)
 				return new MarioState(environmentIn, curState.xPos);
 			else{
-				MarioState.resetStatic(2);
+//				// first creation of the state
+//				int marioMode = 2;
+//				MarioState.resetStatic(marioMode); //TODO test
+				System.out.println("TEST");
 				return new MarioState(environmentIn, 32);
 			}
 		}
@@ -310,4 +313,13 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		this.epsilon = newEpsilon;
 		System.out.println("New epsilon is set: " + this.epsilon);
 	}
+	
+	/**
+	 * Reset oldXPos
+	 */
+	@Override
+	public void reset(){
+		state.reset();
+		oldState.reset();
+	}// end reset
 } // end class
