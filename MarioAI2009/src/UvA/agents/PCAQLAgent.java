@@ -13,6 +13,7 @@ import java.util.Map;
 import java.util.Set;
 
 import UvA.stateSpaceReduction.PCAMeans;
+import UvA.states.*;
 import ch.idsia.mario.environments.Environment;
 
 public class PCAQLAgent extends QLearnAgent 

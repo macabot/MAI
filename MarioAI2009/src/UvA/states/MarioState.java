@@ -1,4 +1,4 @@
-package UvA.agents;
+package UvA.states;
 
 import java.util.Arrays;
 
@@ -13,7 +13,7 @@ public class MarioState implements State
 	private final int amountOfInput = 100;
 	private double[] representation = new double[amountOfInput];
 	
-	protected transient float xPos = 32;
+	public transient float xPos = 32;
 	protected transient float oldXPos = 32;
 	
 	

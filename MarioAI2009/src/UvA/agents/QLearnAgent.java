@@ -10,6 +10,7 @@ import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.ai.BasicAIAgent;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
+import UvA.states.*;
 
 
 public class QLearnAgent extends BasicAIAgent implements Agent {

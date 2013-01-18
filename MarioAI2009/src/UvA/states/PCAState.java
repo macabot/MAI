@@ -1,4 +1,4 @@
-package UvA.agents;
+package UvA.states;
 
 import UvA.stateSpaceReduction.PCAMeans;
 import ch.idsia.mario.environments.Environment;

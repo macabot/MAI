@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ch.idsia.mario.environments.Environment;
+import UvA.states.*;
 
 public class SarsaAgent extends QLearnAgent{
 
