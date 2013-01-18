@@ -94,7 +94,7 @@ public class SarsaAgent extends QLearnAgent{
 		state = createState(null);
 		oldAction = new boolean[Environment.numberOfButtons];
 		action = new boolean[Environment.numberOfButtons];
-		validActions = getValidActions();
+		allActions = getAllActions();
 	} // end initiateValues
 	
 } // end class

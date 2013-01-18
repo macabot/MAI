@@ -15,7 +15,7 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import UvA.agents.MarioState;
+import UvA.states.MarioState;
 
 
 public class LevelScene extends Scene implements SpriteContext
