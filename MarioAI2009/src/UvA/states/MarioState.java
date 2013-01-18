@@ -11,7 +11,7 @@ public class MarioState implements State
 	private static final long serialVersionUID = 4326470085716280782L;
 	
 	// state representation
-	private final int viewDim = 22;//22;	//size of statespace that  is represented
+	private final int viewDim = 6;//22;//6;	//size of statespace that  is represented
 	private final int miscDims = 4; // dimensions for extra information about state
 	// 2 windows that contain info on objects and enemies = viewDim x viewDim
 	// miscDims spaces for features such as mayMarioJump() and isMarioOnGround()
@@ -165,15 +165,14 @@ public class MarioState implements State
 		int fall = 0;
 		if(dieCheck) {
 			System.out.println("Dieing!!!!!");
-			//return REWARD_FALL;
-			fall += 1;
+			fall = 1;
 		} // end hack to check if gonna die
 		float distance = xPos - oldXPos;
 		
 		float reward = (float) (distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
 				killedByFire*REWARD_KILLED_FIRE + killedByShell*REWARD_KILLED_SHELL + 
 				collided*REWARD_COLLIDED + collectedFlowers*REWARD_FLOWER + collectedMushrooms*REWARD_MUSHROOM +
-				collectedCoins*REWARD_COIN);
+				collectedCoins*REWARD_COIN + REWARD_FALL*fall);
 		
 		rewardSoFar += reward;
 		testReward += distance;

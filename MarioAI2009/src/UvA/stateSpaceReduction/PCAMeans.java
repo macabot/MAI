@@ -6,6 +6,9 @@
 
 package UvA.stateSpaceReduction;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -20,9 +23,12 @@ import UvA.states.State;
 public class PCAMeans implements Serializable
 {
 	private static final long serialVersionUID = -2478983458498184932L;
-	
+
 	private PrincipleComponentAnalysis pca;
 	private Dataset means;
+
+	private int verbose;
+	private String path = System.getProperty("user.dir") + "/debugPCAM";;
 
 	/**
 	 * Constructor performs PCA on states and clusters the eigen space projections.
@@ -33,10 +39,16 @@ public class PCAMeans implements Serializable
 	 */
 	public PCAMeans(List<State> states, int numComponents, int clusterAmount, int iterations)
 	{
-		this(statesToVectors(states), numComponents, clusterAmount, iterations);
+		this(statesToVectors(states), numComponents, clusterAmount, iterations, 0);
 	}
+
 	public PCAMeans(double[][] vectors, int numComponents, int clusterAmount, int iterations)
 	{
+		this(vectors, numComponents, clusterAmount, iterations, 0);
+	}
+	public PCAMeans(double[][] vectors, int numComponents, int clusterAmount, int iterations, int verbose)
+	{
+		this.verbose = verbose;
 		// perform PCA
 		int numSamples = vectors.length;
 		int sampleSize = vectors[0].length;
@@ -58,7 +70,7 @@ public class PCAMeans implements Serializable
 		double[][] vectors = new double[numSamples][sampleSize];
 		for(int i=0; i<vectors.length; i++)
 			vectors[i] = states.get(i).getRepresentation();
-		
+
 		return vectors;
 	}
 
@@ -69,7 +81,7 @@ public class PCAMeans implements Serializable
 	 * @param iterations		amount of iterations for kMeans clustering
 	 * @return Dataset containing means of clusters
 	 */
-	public static Dataset calculateMeans(double[][] vectors, int clusterAmount, int iterations)
+	public Dataset calculateMeans(double[][] vectors, int clusterAmount, int iterations)
 	{
 		Clusterer km = new KMeans(clusterAmount, iterations);
 		Dataset data = new DefaultDataset();
@@ -79,6 +91,8 @@ public class PCAMeans implements Serializable
 			data.add(instance);
 		}
 		Dataset[] clusters = km.cluster(data);
+		if( verbose==1 )
+			clustersToFile(clusters);
 		return calcMeans(clusters);
 	}
 
@@ -101,7 +115,43 @@ public class PCAMeans implements Serializable
 		}
 		return means;
 	}
-	
+
+	public void clustersToFile(Dataset[] clusters)
+	{
+		try {
+			BufferedWriter out = new BufferedWriter(new FileWriter(path));
+			for(int c=0; c<clusters.length; c++)
+			{
+				Dataset cluster = clusters[c];
+				out.write(String.format("C%d = [",c));
+				for(int i=0; i<cluster.size(); i++)
+				{
+					Instance vector = cluster.get(i);
+					out.write(instanceToString(vector));
+					if( i!=cluster.size()-1 )
+						out.write("; ");
+				}
+
+				out.write("]\n");
+			}
+
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+	}
+
+	public static String instanceToString(Instance vector)
+	{
+		String s = vector.toString();		
+		String[] toReplace = {"{", "}", "[", "]", ";", "null"};
+		for(String repl: toReplace)
+		{
+			s = s.replace(repl, "");
+		}
+		return s;
+	}
+
 	public int sampleToMean(double[] sample)
 	{
 		Instance projection = new DenseInstance(pca.sampleToEigenSpace(sample));
@@ -118,7 +168,7 @@ public class PCAMeans implements Serializable
 		}
 		return nearestMeanIndex;
 	}
-	
+
 	public static double distance(Instance a, Instance b)
 	{
 		Instance diff = a.minus(b);
@@ -126,10 +176,10 @@ public class PCAMeans implements Serializable
 		double sum = 0;
 		for(int i=0; i<squaredDiff.noAttributes(); i++)
 			sum += squaredDiff.get(i);
-		
+
 		return Math.sqrt(sum);		
 	}
-	
-	
+
+
 
 }//end class

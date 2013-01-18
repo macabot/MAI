@@ -12,7 +12,10 @@ public class PCAState extends MarioState
 	public PCAState(Environment environmentIn, float xPosIn, PCAMeans pcam) 
 	{
 		super(environmentIn, xPosIn);
-		this.meanIndex = pcam.sampleToMean(super.getRepresentation());
+		if( pcam!=null )
+			this.meanIndex = pcam.sampleToMean(super.getRepresentation());
+		else
+			this.meanIndex = 0;
 	}
 	
 	public PCAState(Environment environmentIn, float xPosIn, int meanIndexIn)

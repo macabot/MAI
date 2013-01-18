@@ -9,11 +9,15 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import UvA.stateSpaceReduction.PCAMeans;
-import UvA.states.*;
+import UvA.states.MarioState;
+import UvA.states.PCAState;
+import UvA.states.State;
+import UvA.states.StateActionPair;
 import ch.idsia.mario.environments.Environment;
 
 public class PCAQLAgent extends QLearnAgent 
@@ -49,6 +53,7 @@ public class PCAQLAgent extends QLearnAgent
 	{
 		super(qValuesIn, name);
 		this.pcam = pcam;
+		this.seenRepresentations = new HashSet<double[]>();
 	}//end constructors
 
 	/**
@@ -99,23 +104,6 @@ public class PCAQLAgent extends QLearnAgent
 		}			
 	}
 	
-	public void representationsToText(String path)
-	{
-		String s = "";
-		for(double[] vector: seenRepresentations)
-		{
-			s += Arrays.toString(vector).replace(", ", " ") + "\n";
-		}
-		BufferedWriter out;
-		try {
-			out = new BufferedWriter(new FileWriter(path));
-			out.write(s);
-			out.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}		
-	}
-	
 	/**
 	 * Load pcam according to path
 	 * @param path is the path where the pcam is stored
@@ -130,14 +118,13 @@ public class PCAQLAgent extends QLearnAgent
 	} // end loadQValues
 	
 	@SuppressWarnings("unchecked")
-	public static Set<double[]> loadSeenRepresentations(String path)
+	public void loadSeenRepresentations(String path)
 	{
 		try{
-			return (Set<double[]>) SLAPI.load(path);
+			this.seenRepresentations = (Set<double[]>) SLAPI.load(path);
 		}catch( Exception e )
 		{
 			e.printStackTrace();
-			return null;
 		}		
 	}
 	
