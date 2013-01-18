@@ -4,13 +4,16 @@
 
 package UvA.agents;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-
-import ch.idsia.mario.environments.Environment;
+import java.util.Set;
 
 import UvA.stateSpaceReduction.PCAMeans;
+import ch.idsia.mario.environments.Environment;
 
 public class PCAQLAgent extends QLearnAgent 
 {
@@ -18,7 +21,7 @@ public class PCAQLAgent extends QLearnAgent
 	static private final String name = "PCAQLAgent";
 	protected final String stateType = "PCAState";
 
-	protected List<State> visitedStates;
+	protected Set<double[]> seenRepresentations; // representations of visited states
 	protected final PCAMeans pcam;
 	
 	public PCAQLAgent()
@@ -54,7 +57,7 @@ public class PCAQLAgent extends QLearnAgent
 	{
 
 		state = createState(environment);
-		visitedStates.add(state);	// add MarioState
+		seenRepresentations.add(state.getRepresentation());	// add MarioState
 
 		// update q and return action
 		updateQValue();
@@ -95,6 +98,23 @@ public class PCAQLAgent extends QLearnAgent
 		}			
 	}
 	
+	public void representationsToText(String path)
+	{
+		String s = "";
+		for(double[] vector: seenRepresentations)
+		{
+			s += Arrays.toString(vector).replace(", ", " ") + "\n";
+		}
+		BufferedWriter out;
+		try {
+			out = new BufferedWriter(new FileWriter(path));
+			out.write(s);
+			out.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}		
+	}
+	
 	/**
 	 * Load pcam according to path
 	 * @param path is the path where the pcam is stored
@@ -107,6 +127,18 @@ public class PCAQLAgent extends QLearnAgent
 			return null;
 		}
 	} // end loadQValues
+	
+	@SuppressWarnings("unchecked")
+	public static Set<double[]> loadSeenRepresentations(String path)
+	{
+		try{
+			return (Set<double[]>) SLAPI.load(path);
+		}catch( Exception e )
+		{
+			e.printStackTrace();
+			return null;
+		}		
+	}
 	
 	/**
 	 * Save pcam according to path
@@ -121,10 +153,10 @@ public class PCAQLAgent extends QLearnAgent
 		
 	} // end loadQValues
 	
-	public void writeStateList(String path)
+	public void writeSeenRepresentations(String path)
 	{
 		try {
-			SLAPI.save(visitedStates, path);
+			SLAPI.save(seenRepresentations, path);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
