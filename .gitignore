@@ -18,6 +18,7 @@ temp
 
 # Mario Main
 MarioAI2009/src/ch/idsia/scenarios/Play.java
+MarioAI2009/src/ch/idsia/scenarios/PlaySam.java
 
 # Serializable files
 #   denote exceptions with prefix !
