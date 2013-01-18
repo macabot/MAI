@@ -11,11 +11,11 @@ public class MarioState implements State
 	private static final long serialVersionUID = 4326470085716280782L;
 	
 	// state representation
-	private final int viewDim = 6;//22;	//size of statespace that  is represented
+	private final int viewDim = 22;//22;	//size of statespace that  is represented
 	private final int miscDims = 4; // dimensions for extra information about state
 	// 2 windows that contain info on objects and enemies = viewDim x viewDim
 	// miscDims spaces for features such as mayMarioJump() and isMarioOnGround()
-	private final int amountOfInput = 2*viewDim*viewDim+miscDims;
+	private final int amountOfInput = viewDim*viewDim+miscDims;
 	private double[] representation = new double[amountOfInput];
 	
 	public transient float xPos = 32;
@@ -51,6 +51,7 @@ public class MarioState implements State
 	private boolean dieCheck;
 
 	// Parameters for how important the reward for X is 
+
 	private final int REWARD_DISTANCE = 1; //Positive for moving to right, negative for left
 	private final int REWARD_KILLED_STOMP = 0;
 	private final int REWARD_KILLED_FIRE = 1;
@@ -60,6 +61,7 @@ public class MarioState implements State
 	private final int REWARD_MUSHROOM = 1;
 	private final int REWARD_COIN = 10;
 	private final int REWARD_FALL = -1000;
+
 	
 	/**
 	 * Constructor, creates state representation
@@ -88,8 +90,7 @@ public class MarioState implements State
 	 * updateRepresentation creates the representation of the state
 	 */
 	private void updateRepresentation(Environment environment) {
-        byte[][] scene = environment.getLevelSceneObservation();
-        byte[][] enemies = environment.getEnemiesObservation();
+        byte[][] scene = environment.getCompleteObservation();
 		
 		
 	    int which = 0;
@@ -98,13 +99,6 @@ public class MarioState implements State
 	        for (int j = -viewDim/2; j < viewDim/2; j++)
 	        {
 	            representation[which++] = probe(i, j, scene);
-	        }
-	    }
-	    for (int i = -viewDim/2; i < viewDim/2; i++)
-	    {
-	        for (int j = -viewDim/2; j < viewDim/2; j++)
-	        {
-	            representation[which++] = probe(i, j, enemies);
 	        }
 	    }
 	    
@@ -128,7 +122,7 @@ public class MarioState implements State
 		
 		// calculate if collided (lose mario mode)
 	    if(marioMode < lastMarioMode){
-	    	collided = 1;
+	    	collided += 1;
 	    	lastMarioMode = marioMode;
 	    }
 	    else
@@ -168,11 +162,13 @@ public class MarioState implements State
 	 * Get the reward of prey or predator based on the state.
 	 * @return reward of mario
 	 */ 
-	public float getReward() {	
-		
+
+	public float getReward() {
+		int fall = 0;
 		if(dieCheck) {
 			System.out.println("Dieing!!!!!");
-			return REWARD_FALL;
+			//return REWARD_FALL;
+			fall += 1;
 		} // end hack to check if gonna die
 		float distance = xPos - oldXPos;
 		
@@ -183,6 +179,7 @@ public class MarioState implements State
 		
 		rewardSoFar += reward;
 		testReward += distance;
+
 		return reward;
 	} // end getReward
 
