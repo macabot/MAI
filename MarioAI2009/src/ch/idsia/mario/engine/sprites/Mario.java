@@ -7,7 +7,7 @@ import ch.idsia.mario.engine.LevelScene;
 import ch.idsia.mario.engine.Scene;
 import ch.idsia.mario.engine.level.Level;
 
-import UvA.agents.MarioState;
+import UvA.states.MarioState;
 
 public class Mario extends Sprite
 {

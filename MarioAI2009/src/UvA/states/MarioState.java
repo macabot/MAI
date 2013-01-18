@@ -51,7 +51,6 @@ public class MarioState implements State
 	private boolean dieCheck;
 
 	// Parameters for how important the reward for X is 
-
 	private final int REWARD_DISTANCE = 1; //Positive for moving to right, negative for left
 	private final int REWARD_KILLED_STOMP = 0;
 	private final int REWARD_KILLED_FIRE = 1;
@@ -162,7 +161,6 @@ public class MarioState implements State
 	 * Get the reward of prey or predator based on the state.
 	 * @return reward of mario
 	 */ 
-
 	public float getReward() {
 		int fall = 0;
 		if(dieCheck) {
@@ -179,7 +177,6 @@ public class MarioState implements State
 		
 		rewardSoFar += reward;
 		testReward += distance;
-
 		return reward;
 	} // end getReward
 
