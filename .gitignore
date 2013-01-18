@@ -24,3 +24,6 @@ MarioAI2009/src/ch/idsia/scenarios/PlaySam.java
 #   denote exceptions with prefix !
 *.ser
 !showQlearn.ser
+
+# debug file
+*.db

@@ -28,7 +28,7 @@ public class PCAMeans implements Serializable
 	private Dataset means;
 
 	private int verbose;
-	private String path = System.getProperty("user.dir") + "/debugPCAM";;
+	private String path = System.getProperty("user.dir") + "/debugPCAM.db";;
 
 	/**
 	 * Constructor performs PCA on states and clusters the eigen space projections.
