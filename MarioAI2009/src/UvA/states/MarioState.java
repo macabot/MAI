@@ -11,8 +11,8 @@ public class MarioState implements State
 	private static final long serialVersionUID = 4326470085716280782L;
 	
 	// state representation
-	private final int viewDim = 6;//22;//6;	//size of statespace that  is represented
-	private final int miscDims = 4; // dimensions for extra information about state
+	public static final int viewDim = 10;//22;//6;	//size of statespace that  is represented
+	public static final int miscDims = 4; // dimensions for extra information about state
 	// 2 windows that contain info on objects and enemies = viewDim x viewDim
 	// miscDims spaces for features such as mayMarioJump() and isMarioOnGround()
 	private final int amountOfInput = viewDim*viewDim+miscDims;
@@ -97,7 +97,8 @@ public class MarioState implements State
 	    {
 	        for (int j = -viewDim/2; j < viewDim/2; j++)
 	        {
-	            representation[which++] = probe(i, j, scene);
+	        	double value = probe(i, j, scene);
+	        	representation[which++] = value;
 	        }
 	    }
 	    
@@ -121,7 +122,7 @@ public class MarioState implements State
 		
 		// calculate if collided (lose mario mode)
 	    if(marioMode < lastMarioMode){
-	    	collided += 1;
+	    	collided += 1; //TODO shouldn't this be: collided = 1; ??
 	    	lastMarioMode = marioMode;
 	    }
 	    else
@@ -240,10 +241,10 @@ public class MarioState implements State
 		String string = "";
 		for(int i = 0; i<representation.length; i++) 
 		{
-			string += String.format(" %.1f", representation[i]);
-			if( ( (i+1) % 7) == 0)
+			string += String.format(" %.0f", representation[i]);
+			if( ( (i+1) % viewDim) == 0 )
 				string += "\n";
-			if( ( (i+1) % 49) == 0)
+			if( (i+1) % (viewDim*viewDim) == 0 )
 				string += "\n";
 		}
 		return string; 
