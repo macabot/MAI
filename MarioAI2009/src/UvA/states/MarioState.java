@@ -190,7 +190,8 @@ public class MarioState implements State
 	{
 	    int realX = x + Environment.HalfObsWidth;
 	    int realY = y + Environment.HalfObsHeight;
-	    return (scene[realX][realY] != 0) ? 1.0 : 0.0;
+	    return (double) scene[realX][realY];
+	    //return (scene[realX][realY] != 0) ? 1.0 : 0.0;
 	} // end probe
 	
 	
