@@ -9,7 +9,7 @@ public interface State extends Serializable
 	 * Get the reward of prey or predator based on the state.
 	 * @return reward of mario
 	 */
-	public float getReward();
+	public double getReward();
 	
 	/**
 	 * Return a clone of this state

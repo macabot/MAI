@@ -18,8 +18,8 @@ public class MarioState implements State
 	private final int amountOfInput = viewDim*viewDim+miscDims;
 	private double[] representation = new double[amountOfInput];
 	
-	public transient float xPos = 32;
-	protected transient float oldXPos = 32;
+	public transient double xPos = 32;
+	protected transient double oldXPos = 32;
 	
 	
 	// enemies killed total
@@ -67,7 +67,7 @@ public class MarioState implements State
 	 * @param environment is the mario environment
 	 */
 
-	public MarioState(Environment environment, float xPosIn) {
+	public MarioState(Environment environment, double xPosIn) {
 		if(environment != null) 
 			updateRepresentation( (Environment) environment);
 			
@@ -78,7 +78,7 @@ public class MarioState implements State
 	 * Constructor for when environment was not available: input is representation alone
 	 * Used by clone
 	 */
-	public MarioState(double[] reprIn, float oldXPosIn){
+	public MarioState(double[] reprIn, double oldXPosIn){
 		this.representation = new double[reprIn.length];
 		System.arraycopy(reprIn, 0, this.representation, 0, reprIn.length);
 		this.oldXPos = oldXPosIn;
@@ -161,15 +161,15 @@ public class MarioState implements State
 	 * Get the reward of prey or predator based on the state.
 	 * @return reward of mario
 	 */ 
-	public float getReward() {
+	public double getReward() {
 		int fall = 0;
 		if(dieCheck) {
 			System.out.println("Dieing!!!!!");
 			fall = 1;
 		} // end hack to check if gonna die
-		float distance = xPos - oldXPos;
+		double distance = xPos - oldXPos;
 		
-		float reward = (float) (distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
+		double reward = (double) (distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
 				killedByFire*REWARD_KILLED_FIRE + killedByShell*REWARD_KILLED_SHELL + 
 				collided*REWARD_COLLIDED + collectedFlowers*REWARD_FLOWER + collectedMushrooms*REWARD_MUSHROOM +
 				collectedCoins*REWARD_COIN + REWARD_FALL*fall);
@@ -285,7 +285,7 @@ public class MarioState implements State
 	/**
 	 * getxPos, necessarily to create new state
 	 */
-	public float getXPos() {
+	public double getXPos() {
 		return this.oldXPos;
 	} // end get xPos
 

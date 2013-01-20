@@ -38,7 +38,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 
 	final double gamma = 0.9; // gamma is penalty on delayed result
 	final double alpha = 0.3; // learning rate
-	final float winReward = 100; // reward for winning
+	final double winReward = 100; // reward for winning
 	
 	// actions
 	final boolean[] STAY = new boolean[Environment.numberOfButtons];
@@ -151,7 +151,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 * This function actually updates the qvalue according to reward given
 	 * @param reward is the reward that comes with the new state
 	 */
-	public void updateQValue(float reward) {
+	public void updateQValue(double reward) {
 		
 		// get bets QValue for calculating updated qvalue
 		List<boolean[]> actions = getValidActions();
