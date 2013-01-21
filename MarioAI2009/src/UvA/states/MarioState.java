@@ -17,7 +17,7 @@ public class MarioState implements State
 
 	// 2 windows that contain info on objects and enemies = viewDim x viewDim
 	// miscDims spaces for features such as mayMarioJump() and isMarioOnGround()
-	private final int amountOfInput = (viewDim+1)*(viewDim + 1) + miscDims;
+	private final int amountOfInput = (viewDim + 1)*(viewDim + 1) + miscDims;
 	private double[] representation = new double[amountOfInput];
 	
 	public static transient double xPos = 32;
@@ -57,7 +57,7 @@ public class MarioState implements State
 	private final int REWARD_KILLED_STOMP = 0;
 	private final int REWARD_KILLED_FIRE = 0;
 	private final int REWARD_KILLED_SHELL = 0;
-	private final int REWARD_COLLIDED = -50; //Should be negative
+	private final int REWARD_COLLIDED = -100; //Should be negative
 	private final int REWARD_FLOWER = 1;
 	private final int REWARD_MUSHROOM = 1;
 	private final int REWARD_COIN = 10;
@@ -119,7 +119,7 @@ public class MarioState implements State
 	        	case 21:
 	        		value = 16; // nice brick same categorie as brick
 	        	case 20:
-	        		value = -11; // flower pot/cannon equals border
+	        		value = -10; // flower pot/cannon equals border
 	        		
 	        	} // end switch
 	        		
@@ -150,6 +150,7 @@ public class MarioState implements State
 		// calculate if collided (lose mario mode)
 	    if(marioMode < lastMarioMode){
 	    	collided = 1;
+	    	System.out.println("Collided!");
 	    	lastMarioMode = marioMode;
 	    }
 	    else
@@ -204,6 +205,9 @@ public class MarioState implements State
 		
 		rewardSoFar += reward;
 		currentReward = reward;
+		
+		if(collided != 0)
+			System.out.println("Collided, reward: " + currentReward);
 		return reward;
 	} // end getReward
 

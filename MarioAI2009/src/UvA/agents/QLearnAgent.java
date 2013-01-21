@@ -319,5 +319,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	public void reset(){
 		state.reset();
 		oldState.reset();
+		MarioState.resetStatic(2);
 	}// end reset
 } // end class
