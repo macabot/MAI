@@ -53,14 +53,14 @@ public class MarioState implements State
 	private boolean dieCheck;
 
 	// Parameters for how important the reward for X is 
-	private final int REWARD_DISTANCE = 2; //Positive for moving to right, negative for left
-	private final int REWARD_KILLED_STOMP = 1;
+	private final int REWARD_DISTANCE = 1; //Positive for moving to right, negative for left
+	private final int REWARD_KILLED_STOMP = 0;
 	private final int REWARD_KILLED_FIRE = 0;
 	private final int REWARD_KILLED_SHELL = 0;
 	private final int REWARD_COLLIDED = -100; //Should be negative
-	private final int REWARD_FLOWER = 1;
-	private final int REWARD_MUSHROOM = 1;
-	private final int REWARD_COIN = 10;
+	private final int REWARD_FLOWER = 0;
+	private final int REWARD_MUSHROOM = 0;
+	private final int REWARD_COIN = 0;
 	private final int REWARD_FALL = -1000;
 	
 	
@@ -201,9 +201,7 @@ public class MarioState implements State
 		
 		rewardSoFar += reward;
 		currentReward = reward;
-		
-		if(collided != 0)
-			System.out.println("Collided, reward: " + currentReward);
+
 		return reward;
 	} // end getReward
 
