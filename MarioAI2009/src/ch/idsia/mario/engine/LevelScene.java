@@ -121,6 +121,8 @@ public class LevelScene extends Scene implements SpriteContext
             case(1):
                 switch(el)
                 {
+              		case(34): // Coin, irrelevant for the current contest
+              			return 34;
                     case 16:  // brick, simple, without any surprise.
                     case 17:  // brick with a hidden coin
                     case 18:  // brick with a hidden flower
@@ -132,8 +134,8 @@ public class LevelScene extends Scene implements SpriteContext
                     case(-107):
                     case(-106):
                     case(15): // Sparcle, irrelevant
-                    case(34): // Coin, irrelevant for the current contest
-                        return 0;
+//                    case(34): // Coin, irrelevant for the current contest
+//                        return 0;
                     case(-128):
                     case(-127):
                     case(-126):
@@ -188,12 +190,14 @@ public class LevelScene extends Scene implements SpriteContext
             case(2):
                 switch(el)
                 {
+                	case(34): // coins
+                		return 34;
                     //cancel out half-borders, that could be passed through
                     case(0):
                     case(-108):
                     case(-107):
                     case(-106):
-                    case(34): // coins
+//                    case(34): // coins
                     case(15): // Sparcle, irrelevant
                         return 0;
                 }

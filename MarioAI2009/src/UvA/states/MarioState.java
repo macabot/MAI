@@ -94,6 +94,7 @@ public class MarioState implements State
 		// 2 = stompable enemy
 		// 9 = not stompable enemy
 		// 25 = fireball from mario
+		// 34 = coin
 		
 	    int which = 0;
 	    for (int i = -viewDim/2; i < viewDim/2; i++)
