@@ -263,9 +263,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 				return new MarioState(environmentIn, curState.xPos);
 			else{
 //				// first creation of the state
-//				int marioMode = 2;
-//				MarioState.resetStatic(marioMode); //TODO test
-				System.out.println("TEST");
 				return new MarioState(environmentIn, 32);
 			}
 		}
