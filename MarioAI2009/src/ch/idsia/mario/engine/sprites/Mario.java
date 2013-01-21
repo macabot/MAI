@@ -7,8 +7,6 @@ import ch.idsia.mario.engine.LevelScene;
 import ch.idsia.mario.engine.Scene;
 import ch.idsia.mario.engine.level.Level;
 
-import UvA.states.MarioState;
-
 public class Mario extends Sprite
 {
     public static boolean large = false;
@@ -30,7 +28,6 @@ public class Mario extends Sprite
         coins = 0;
         gainedMushrooms = 0;
         gainedFlowers = 0;
-        MarioState.resetStatic(marioMode);
 //        lives = 65536;
 //        levelString = "none";
 //        numberOfAttempts = 0;

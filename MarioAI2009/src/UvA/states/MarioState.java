@@ -91,6 +91,9 @@ public class MarioState implements State
 	 */
 	private void updateRepresentation(Environment environment) {
 		byte[][] scene = environment.getMergedObservationZ(1, 1);
+		// 2 = stompable enemy
+		// 9 = not stompable enemy
+		// 25 = fireball from mario
 		
 	    int which = 0;
 	    for (int i = -viewDim/2; i < viewDim/2; i++)
@@ -102,7 +105,6 @@ public class MarioState implements State
 	        		representation[which++] = value;
 	        }
 	    }
-	    //TODO add representation blocks to representation enemies
 	    
 	    representation[representation.length - 4] = environment.getMarioMode();
 	    representation[representation.length - 3] = environment.mayMarioJump() ? 1.0 : 0.0;
@@ -126,7 +128,6 @@ public class MarioState implements State
 	    if(marioMode < lastMarioMode){
 	    	collided = 1;
 	    	lastMarioMode = marioMode;
-	    	System.out.println("Collided!");
 	    }
 	    else
 	    	collided = 0;
