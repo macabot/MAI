@@ -5,9 +5,7 @@
 package UvA.agents;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import UvA.stateSpaceReduction.PCAMeans;
 import UvA.states.MarioState;
@@ -22,37 +20,9 @@ public class PCAQLAgent extends QLearnAgent
 	static private final String name = "PCAQLAgent";
 	protected final String stateType = "PCAState";
 
-	protected Set<double[]> seenRepresentations; // representations of visited states
 	protected final PCAMeans pcam;
 	
-	public PCAQLAgent()
-	{
-		this(name);
-	}
-	
-	public PCAQLAgent(String name)
-	{
-		this(null, name);
-	}
-	
-	public PCAQLAgent(PCAMeans pcam)
-	{
-		this(pcam, name);
-	}
-	
-	public PCAQLAgent(PCAMeans pcam, String name)
-	{
-		this(new HashMap<StateActionPair, Double>(), pcam, name);		
-	}
-
-	public PCAQLAgent(Map<StateActionPair, Double> qValuesIn, PCAMeans pcam, String name) 
-	{
-		super(qValuesIn, name);
-		this.pcam = pcam;
-		this.seenRepresentations = new HashSet<double[]>();
-	}//end constructors
-	
-	public PCAQLAgent(String name, Map<StateActionPair, Double> qValuesIn, 
+	public PCAQLAgent(Map<StateActionPair, Double> qValuesIn, 
 			int numComponents, int clusterAmount, int iterations)
 	{
 		super(name);
@@ -90,26 +60,6 @@ public class PCAQLAgent extends QLearnAgent
 		}
 		return representations;
 	}
-
-	/**
-	 * getAction function is called by the engine to retrieve an action from mario
-	 */
-	public boolean[] getAction(Environment environment)
-	{
-
-		state = createState(environment);
-		seenRepresentations.add(state.getRepresentation());	// add MarioState
-
-		// update q and return action
-		updateQValue();
-		returnAction = eGreedyAction();
-
-		// update oldState for updateQValue()
-		oldState = state.clone();
-
-		return returnAction;
-
-	} // end getAction()
 	
 	public State createState(Environment environmentIn)
 	{
@@ -126,8 +76,8 @@ public class PCAQLAgent extends QLearnAgent
 		}
 		else
 		{
-			System.out.printf("Unknown state-type: %s\n", stateType);
-			return null;
+			String error = String.format("Unknown state-type: %s", stateType);
+			throw new IllegalArgumentException(error);
 		}			
 	}
 	
@@ -144,17 +94,6 @@ public class PCAQLAgent extends QLearnAgent
 		}
 	} // end loadQValues
 	
-	@SuppressWarnings("unchecked")
-	public void loadSeenRepresentations(String path)
-	{
-		try{
-			this.seenRepresentations = (Set<double[]>) SLAPI.load(path);
-		}catch( Exception e )
-		{
-			e.printStackTrace();
-		}		
-	}
-	
 	/**
 	 * Save pcam according to path
 	 * @param path is the path where the pcam is to be saved
@@ -167,14 +106,5 @@ public class PCAQLAgent extends QLearnAgent
 		}
 		
 	} // end loadQValues
-	
-	public void writeSeenRepresentations(String path)
-	{
-		try {
-			SLAPI.save(seenRepresentations, path);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 
 }//end class

@@ -11,7 +11,7 @@ public class MarioState implements State
 	private static final long serialVersionUID = 4326470085716280782L;
 	
 	// state representation
-	public static final int viewDim = 6;//22;//6;	//size of statespace that  is represented
+	public static final int viewDim = 7;//22;//6;	//size of statespace that  is represented
 	public static final int miscDims = 4; // dimensions for extra information about state
 
 	// 2 windows that contain info on objects and enemies = viewDim x viewDim
@@ -20,7 +20,7 @@ public class MarioState implements State
 	private double[] representation = new double[amountOfInput];
 	
 	public static transient double xPos = 32;
-	protected static transient double oldXPos = 32;
+	public static transient double oldXPos = 32;
 	
 	
 	// enemies killed total
@@ -110,6 +110,7 @@ public class MarioState implements State
 	    representation[representation.length - 2] = environment.isMarioOnGround() ? 1.0 : 0.0;
 	    representation[representation.length - 1] = environment.canShoot() ? 1.0 : 0.0;
 
+	    oldXPos = xPos;
 	    xPos = environment.getMarioFloatPos()[0];
 	    dieCheck = environment.getMarioFloatPos()[1] > 225;
 	    

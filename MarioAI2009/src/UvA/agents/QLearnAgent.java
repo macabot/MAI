@@ -272,8 +272,8 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		}
 		else
 		{
-			System.out.println("Unknown state-type");
-			return null;
+			String error = String.format("Unknown state-type: %s", stateType);
+			throw new IllegalArgumentException(error);
 		}			
 	} // end create state
 	
