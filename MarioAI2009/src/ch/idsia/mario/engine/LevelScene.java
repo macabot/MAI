@@ -135,7 +135,7 @@ public class LevelScene extends Scene implements SpriteContext
                     case(-106):
                     case(15): // Sparcle, irrelevant
 //                    case(34): // Coin, irrelevant for the current contest
-//                        return 0;
+                        return 0;
                     case(-128):
                     case(-127):
                     case(-126):
@@ -917,7 +917,7 @@ public class LevelScene extends Scene implements SpriteContext
         // draw intermediate reward
         drawStringDropShadow(g, "REWARD: " + df.format(MarioState.rewardSoFar), 19, 5, 2);
         //TODO just for testing
-        drawStringDropShadow(g, "TEST REWARD: " + df.format(MarioState.testReward), 19, 6, 2);
+        drawStringDropShadow(g, "CURRENT REWARD: " + df.format(MarioState.currentReward), 19, 6, 2);
 
         drawStringDropShadow(g, "TIME", 32, 0, 7);
         int time = (timeLeft+15-1)/15;

@@ -48,7 +48,7 @@ public class MarioState implements State
 	
 	
 	public static double rewardSoFar = 0;
-	public static double testReward = 0; //TODO just for testing, see engine.LevelScene
+	public static double currentReward = 0;
 	private boolean dieCheck;
 
 	// Parameters for how important the reward for X is 
@@ -61,7 +61,7 @@ public class MarioState implements State
 	private final int REWARD_MUSHROOM = 1;
 	private final int REWARD_COIN = 10;
 	private final int REWARD_FALL = -1000;
-
+	
 	
 	/**
 	 * Constructor, creates state representation
@@ -161,7 +161,7 @@ public class MarioState implements State
 	    
 	} // end updateRepresentation
 		
-	/** TODO better reward function
+	/**
 	 * Get the reward of prey or predator based on the state.
 	 * @return reward of mario
 	 */ 
@@ -179,7 +179,7 @@ public class MarioState implements State
 				collectedCoins*REWARD_COIN + REWARD_FALL*fall);
 		
 		rewardSoFar += reward;
-		testReward += distance;
+		currentReward = reward;
 		return reward;
 	} // end getReward
 
@@ -227,7 +227,7 @@ public class MarioState implements State
 		lastMarioMode = marioMode;
 		collided = 0;
 		rewardSoFar = 0;
-		testReward = 0; //TODO just for testing
+		currentReward = 0;
 		gainedFlowersSoFar = 0;
 		collectedFlowers = 0;
 		gainedMushroomsSoFar = 0;
