@@ -11,8 +11,8 @@ public class MarioState implements State
 	private static final long serialVersionUID = 4326470085716280782L;
 	
 	// state representation
-	public static final int viewDim = 7;//22;//6;	//size of statespace that  is represented
-	public static final int miscDims = 4; // dimensions for extra information about state
+	public static final int viewDim = 6;//max 20;// 	//size of statespace that  is represented
+	public static final int miscDims = 1; // dimensions for extra information about state
 
 	// 2 windows that contain info on objects and enemies = viewDim x viewDim
 	// miscDims spaces for features such as mayMarioJump() and isMarioOnGround()
@@ -54,8 +54,8 @@ public class MarioState implements State
 	// Parameters for how important the reward for X is 
 	private final int REWARD_DISTANCE = 1; //Positive for moving to right, negative for left
 	private final int REWARD_KILLED_STOMP = 0;
-	private final int REWARD_KILLED_FIRE = 1;
-	private final int REWARD_KILLED_SHELL = 1;
+	private final int REWARD_KILLED_FIRE = 0;
+	private final int REWARD_KILLED_SHELL = 0;
 	private final int REWARD_COLLIDED = -50; //Should be negative
 	private final int REWARD_FLOWER = 1;
 	private final int REWARD_MUSHROOM = 1;
@@ -89,15 +89,16 @@ public class MarioState implements State
 	 */
 	private void updateRepresentation(Environment environment) {
 		byte[][] scene = environment.getMergedObservationZ(1, 1);
+
 		// 2 = stompable enemy
 		// 9 = not stompable enemy
 		// 25 = fireball from mario
 		// 34 = coin
 		
-	    int which = 0;
-	    for (int i = -viewDim/2; i < viewDim/2; i++)
+		int which = 0;
+	    for (int i = -viewDim/2; i <= viewDim/2; i++)
 	    {
-	        for (int j = -viewDim/2; j < viewDim/2; j++)
+	        for (int j = -viewDim/2; j <= viewDim/2; j++)
 	        {
 	        	double value = probe(i,j,scene);
 	        	if(value != 25) // ignore fire balls from mario
@@ -105,11 +106,8 @@ public class MarioState implements State
 	        }
 	    }
 	    
-	    representation[representation.length - 4] = environment.getMarioMode();
-	    representation[representation.length - 3] = environment.mayMarioJump() ? 1.0 : 0.0;
-	    representation[representation.length - 2] = environment.isMarioOnGround() ? 1.0 : 0.0;
-	    representation[representation.length - 1] = environment.canShoot() ? 1.0 : 0.0;
-
+	    representation[representation.length - 1] = environment.getMarioMode();
+	    
 	    oldXPos = xPos;
 	    xPos = environment.getMarioFloatPos()[0];
 	    dieCheck = environment.getMarioFloatPos()[1] > 225;
@@ -157,8 +155,7 @@ public class MarioState implements State
 	    }
 	    else
 	    	collectedCoins = 0;
-	    
-	    
+
 	} // end updateRepresentation
 		
 	/**

@@ -279,17 +279,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	
 
 	/**
-	 * Evaluate end, so that dieing can be punished
-	 * @param won is a boolean whether mario has won or not
-	 */
-	public void evaluateEnd(boolean won) {
-		if(won)
-			updateQValue(winReward);
-		else
-			updateQValue(-winReward);
-	} // end evaluateEnd
-	
-	/**
 	 * Load qvalues according to path, called from main run
 	 * @param path is the path where the qvalues are stored
 	 */
