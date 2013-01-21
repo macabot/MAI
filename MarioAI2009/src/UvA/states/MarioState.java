@@ -11,7 +11,7 @@ public class MarioState implements State
 	private static final long serialVersionUID = 4326470085716280782L;
 	
 	// state representation
-	public static final int viewDim = 10;//22;//6;	//size of statespace that  is represented
+	public static final int viewDim = 12;//22;//6;	//size of statespace that  is represented
 	public static final int miscDims = 4; // dimensions for extra information about state
 	// 2 windows that contain info on objects and enemies = viewDim x viewDim
 	// miscDims spaces for features such as mayMarioJump() and isMarioOnGround()
@@ -122,7 +122,7 @@ public class MarioState implements State
 		
 		// calculate if collided (lose mario mode)
 	    if(marioMode < lastMarioMode){
-	    	collided += 1; //TODO shouldn't this be: collided = 1; ??
+	    	collided = 1; 
 	    	lastMarioMode = marioMode;
 	    }
 	    else
