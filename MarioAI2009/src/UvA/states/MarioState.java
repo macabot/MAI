@@ -16,7 +16,7 @@ public class MarioState implements State
 
 	// 2 windows that contain info on objects and enemies = viewDim x viewDim
 	// miscDims spaces for features such as mayMarioJump() and isMarioOnGround()
-	private final int amountOfInput = viewDim*viewDim+miscDims;
+	private final int amountOfInput = (viewDim+1)*(viewDim + 1) + miscDims;
 	private double[] representation = new double[amountOfInput];
 	
 	public static transient double xPos = 32;
@@ -103,8 +103,12 @@ public class MarioState implements State
 	        	double value = probe(i,j,scene);
 	        	if(value != 25) // ignore fire balls from mario
 	        		representation[which++] = value;
+	        	
+	        	
 	        }
 	    }
+
+	    //TODO add representation blocks to representation enemies
 	    
 	    representation[representation.length - 1] = environment.getMarioMode();
 	    
@@ -158,7 +162,8 @@ public class MarioState implements State
 
 	} // end updateRepresentation
 		
-	/**
+
+	/** 
 	 * Get the reward of prey or predator based on the state.
 	 * @return reward of mario
 	 */ 
