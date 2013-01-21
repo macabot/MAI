@@ -4,7 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import UvA.stateSpaceReduction.PCAMeans;
-import UvA.states.MarioState;
 import UvA.states.PCAState;
 import UvA.states.State;
 import UvA.states.StateActionPair;
@@ -67,20 +66,12 @@ public class PCAQLAgent extends QLearnAgent
 		return representations;
 	}
 	
+	@Override
 	public State createState(Environment environmentIn)
-	{
-		return createState(environmentIn, stateType);
-	}
-	
-	public State createState(Environment environmentIn, String stateType)
 	{
 		if( stateType.equals("PCAState") ) {
 			return new PCAState(environmentIn, pcam);
-		} else if( stateType.equals("MarioState") ) 
-		{
-			return new MarioState(environmentIn);
-		}
-		else
+		}else
 		{
 			String error = String.format("Unknown state-type: %s", stateType);
 			throw new IllegalArgumentException(error);
@@ -98,8 +89,7 @@ public class PCAQLAgent extends QLearnAgent
 			Map<StateActionPair, Double> qValuesTemp = (HashMap<StateActionPair, Double>) SLAPI.load(path);
 			double[][] representations = extractRepresentations(qValuesTemp);
 			this.pcam = new PCAMeans(representations, numComponents, clusterAmount, iterations);
-			super.qValues = projectQValues(qValuesTemp); //TODO change
-			// if clusterAmount = -1 then just use index of Dataset.. if not, just cluster
+			super.qValues = projectQValues(qValuesTemp);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

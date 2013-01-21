@@ -211,8 +211,8 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	}// end function initialiseActions
 	
 	/**
-	 * Get valid actions returns the valid actions by adding all actions possible manually
-	 * @return validactions boolean array
+	 * Get list of all possible actions. Each action is a boolean array.
+	 * @return list of all possible actions
 	 */
 	public List<boolean[]> getAllActions()
 	{
@@ -254,21 +254,14 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	} // end getvalidactions
 	
 	/**
-	 * Creates a state depending on type declared at top of file
-	 * @param stateType The type of state to be created
-	 * @param environmentIn The information state needs in order to create a state
+	 * Creates a state depending on type declared at top of file, i.e. 'stateType'
+	 * @param environmentIn The information 'state' needs in order to create a state
 	 * @return the correct state type including information
 	 */
 	public State createState(Environment environmentIn)
 	{
 		if( stateType.equals("MarioState") ) {
-			MarioState curState = (MarioState) state;
-			if(curState != null)
-				return new MarioState(environmentIn);
-			else{
-//				// first creation of the state
-				return new MarioState(environmentIn);
-			}
+			return new MarioState(environmentIn);
 		}
 		else
 		{

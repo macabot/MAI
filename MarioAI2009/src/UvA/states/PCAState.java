@@ -7,15 +7,13 @@ public class PCAState extends MarioState
 {
 	private static final long serialVersionUID = -2154874387050576333L;
 	
-	final private int meanIndex;
+	private int meanIndex;
 	
 	public PCAState(Environment environmentIn, PCAMeans pcam) 
 	{
 		super(environmentIn);
 		if( pcam!=null )
 			this.meanIndex = pcam.sampleToMean(super.getRepresentation());
-		else
-			this.meanIndex = 0;
 	}
 	
 	public PCAState(Environment environmentIn, int meanIndexIn)
@@ -62,6 +60,12 @@ public class PCAState extends MarioState
 		if (meanIndex != other.meanIndex)
 			return false;
 		return true;
+	}
+	
+	@Override
+	public String toString()
+	{
+		return String.format("%d", this.meanIndex);
 	}
 
 

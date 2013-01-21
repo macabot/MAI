@@ -12,7 +12,7 @@ public class MarioState implements State
 	private static final long serialVersionUID = 4326470085716280782L;
 	
 	// state representation
-	public static final int viewDim = 6;//max 20;// 	//size of statespace that  is represented
+	public static final int viewDim = 8;//max 20;// 	//size of statespace that  is represented
 	public static final int miscDims = 1; // dimensions for extra information about state
 
 	// 2 windows that contain info on objects and enemies = viewDim x viewDim
@@ -123,11 +123,10 @@ public class MarioState implements State
 	        		
 	        	} // end switch
 	        		
-	        	representation[which++] = value;
-	        	
+	        	representation[which++] = value;	
 	        }
-	        
 	    }
+	    
 	    representation[representation.length - 1] = environment.getMarioMode();
 	    
 	    oldXPos = xPos;
