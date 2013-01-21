@@ -53,8 +53,8 @@ public class MarioState implements State
 	private boolean dieCheck;
 
 	// Parameters for how important the reward for X is 
-	private final int REWARD_DISTANCE = 1; //Positive for moving to right, negative for left
-	private final int REWARD_KILLED_STOMP = 0;
+	private final int REWARD_DISTANCE = 2; //Positive for moving to right, negative for left
+	private final int REWARD_KILLED_STOMP = 1;
 	private final int REWARD_KILLED_FIRE = 0;
 	private final int REWARD_KILLED_SHELL = 0;
 	private final int REWARD_COLLIDED = -100; //Should be negative
@@ -123,15 +123,11 @@ public class MarioState implements State
 	        		
 	        	} // end switch
 	        		
-	        	if(value != 25) // ignore fire balls from mario
-	        		representation[which++] = value;
-	        	
+	        	representation[which++] = value;
 	        	
 	        }
+	        
 	    }
-
-	    //TODO add representation blocks to representation enemies
-	    
 	    representation[representation.length - 1] = environment.getMarioMode();
 	    
 	    oldXPos = xPos;
