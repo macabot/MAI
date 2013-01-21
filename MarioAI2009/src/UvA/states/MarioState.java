@@ -3,6 +3,7 @@ package UvA.states;
 import java.util.Arrays;
 
 import ch.idsia.mario.engine.sprites.Mario;
+import ch.idsia.mario.engine.sprites.Sprite;
 import ch.idsia.mario.environments.Environment;
 
 
@@ -94,6 +95,13 @@ public class MarioState implements State
 		// 9 = not stompable enemy
 		// 25 = fireball from mario
 		// 34 = coin
+		// -10 = border 
+		// -11 = half border --> border
+		// 21 = nice brick (coin/mush
+		// Sprite.KIND_MUSHROOM = mushroom
+		// Sprite.KIND_FIRE_FLOWER = flower
+		// 16 = cheatingboxes = normal brick => question brick
+		// 20 = flower pot/cannon ==> border
 		
 		int which = 0;
 	    for (int i = -viewDim/2; i <= viewDim/2; i++)
@@ -101,6 +109,20 @@ public class MarioState implements State
 	        for (int j = -viewDim/2; j <= viewDim/2; j++)
 	        {
 	        	double value = probe(i,j,scene);
+	        	switch((int) value) { 
+	        	case 25:
+	        		value = 0; // fireball becomes 0
+	        	case -11:
+	        		value = -10; // half border becomes border
+	        	case Sprite.KIND_FIRE_FLOWER: 
+	        		value = Sprite.KIND_MUSHROOM; // fireflower equals to mushroom
+	        	case 21:
+	        		value = 16; // nice brick same categorie as brick
+	        	case 20:
+	        		value = -11; // flower pot/cannon equals border
+	        		
+	        	} // end switch
+	        		
 	        	if(value != 25) // ignore fire balls from mario
 	        		representation[which++] = value;
 	        	
