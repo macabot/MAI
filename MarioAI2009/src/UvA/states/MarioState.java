@@ -11,7 +11,7 @@ public class MarioState implements State
 	private static final long serialVersionUID = 4326470085716280782L;
 	
 	// state representation
-	public static final int viewDim = 12;//22;//6;	//size of statespace that  is represented
+	public static final int viewDim = 6;//22;//6;	//size of statespace that  is represented
 	public static final int miscDims = 4; // dimensions for extra information about state
 
 	// 2 windows that contain info on objects and enemies = viewDim x viewDim
@@ -90,18 +90,19 @@ public class MarioState implements State
 	 * updateRepresentation creates the representation of the state
 	 */
 	private void updateRepresentation(Environment environment) {
-        byte[][] scene = environment.getCompleteObservation();
-		
+		byte[][] scene = environment.getMergedObservationZ(1, 1);
 		
 	    int which = 0;
 	    for (int i = -viewDim/2; i < viewDim/2; i++)
 	    {
 	        for (int j = -viewDim/2; j < viewDim/2; j++)
 	        {
-	        	double value = probe(i, j, scene);
-	        	representation[which++] = value;
+	        	double value = probe(i,j,scene);
+	        	if(value != 25) // ignore fire balls from mario
+	        		representation[which++] = value;
 	        }
 	    }
+	    //TODO add representation blocks to representation enemies
 	    
 	    representation[representation.length - 4] = environment.getMarioMode();
 	    representation[representation.length - 3] = environment.mayMarioJump() ? 1.0 : 0.0;
