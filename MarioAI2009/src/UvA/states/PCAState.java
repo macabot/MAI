@@ -9,37 +9,37 @@ public class PCAState extends MarioState
 	
 	final private int meanIndex;
 	
-	public PCAState(Environment environmentIn, double xPosIn, PCAMeans pcam) 
+	public PCAState(Environment environmentIn, PCAMeans pcam) 
 	{
-		super(environmentIn, xPosIn);
+		super(environmentIn);
 		if( pcam!=null )
 			this.meanIndex = pcam.sampleToMean(super.getRepresentation());
 		else
 			this.meanIndex = 0;
 	}
 	
-	public PCAState(Environment environmentIn, double xPosIn, int meanIndexIn)
+	public PCAState(Environment environmentIn, int meanIndexIn)
 	{
-		super(environmentIn, xPosIn);
+		super(environmentIn);
 		this.meanIndex = meanIndexIn;
 	}
 	
-	public PCAState(double[] reprIn, double oldXPosIn, PCAMeans pcam) 
+	public PCAState(double[] reprIn, PCAMeans pcam) 
 	{
-		super(reprIn, oldXPosIn);
+		super(reprIn);
 		this.meanIndex = pcam.sampleToMean(super.getRepresentation());
 	}
 	
-	public PCAState(double[] reprIn, double oldXPosIn, int meanIndexIn)
+	public PCAState(double[] reprIn, int meanIndexIn)
 	{
-		super(reprIn, oldXPosIn);
+		super(reprIn);
 		this.meanIndex = meanIndexIn;
 	}
 	
 	@Override
 	public State clone()
 	{
-		return new PCAState(getRepresentation(), oldXPos, meanIndex);
+		return new PCAState(getRepresentation(), meanIndex);
 	}
 
 	@Override

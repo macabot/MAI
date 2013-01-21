@@ -51,6 +51,45 @@ public class PCAQLAgent extends QLearnAgent
 		this.pcam = pcam;
 		this.seenRepresentations = new HashSet<double[]>();
 	}//end constructors
+	
+	public PCAQLAgent(String name, Map<StateActionPair, Double> qValuesIn, 
+			int numComponents, int clusterAmount, int iterations)
+	{
+		super(name);
+		double[][] representations = extractRepresentations(qValuesIn);
+		this.pcam = new PCAMeans(representations, numComponents, clusterAmount, iterations);
+		super.qValues = projectQValues(qValuesIn);
+	}
+	
+	/**
+	 * Convert the states in 'qValues' with pcam and create new q-values.
+	 * @param qValues dictionary that maps state-action pairs to their value
+	 * @return projected q-values
+	 */
+	public Map<StateActionPair, Double> projectQValues(Map<StateActionPair, Double> qValues)
+	{
+		Map<StateActionPair, Double> projectedQValues = new HashMap<StateActionPair, Double>();
+		for( StateActionPair sap: qValues.keySet() )
+		{
+			int index = pcam.sampleToMean(sap.state.getRepresentation());
+			State projectedState = new PCAState(sap.state.getRepresentation(), index);
+			StateActionPair projectedSap = new StateActionPair(projectedState, sap.action);
+			projectedQValues.put(projectedSap, qValues.get(sap));
+		}
+		return projectedQValues;
+	}
+	
+	public static double[][] extractRepresentations(Map<StateActionPair, Double> qValues)
+	{
+		double[][] representations = new double[qValues.size()][];
+		int i=0;
+		for( StateActionPair sap: qValues.keySet() )
+		{
+			representations[i] = sap.state.getRepresentation();
+			i++;
+		}
+		return representations;
+	}
 
 	/**
 	 * getAction function is called by the engine to retrieve an action from mario
@@ -80,18 +119,10 @@ public class PCAQLAgent extends QLearnAgent
 	public State createState(Environment environmentIn, String stateType)
 	{
 		if( stateType.equals("PCAState") ) {
-			PCAState curState = (PCAState) state;
-			if(curState != null)
-				return new PCAState(environmentIn, curState.xPos, pcam);
-			else
-				return new PCAState(environmentIn, 32, pcam);
+			return new PCAState(environmentIn, pcam);
 		} else if( stateType.equals("MarioState") ) 
 		{
-			MarioState curState = (MarioState) state;
-			if(curState != null)
-				return new MarioState(environmentIn, curState.xPos);
-			else
-				return new MarioState(environmentIn, 32);
+			return new MarioState(environmentIn);
 		}
 		else
 		{

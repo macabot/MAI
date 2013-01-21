@@ -27,7 +27,7 @@ public class PCAMeans implements Serializable
 	private PrincipleComponentAnalysis pca;
 	private Dataset means;
 
-	private int verbose;
+	private int verbose = 0;
 	private String path = System.getProperty("user.dir") + "/debugPCAM.db";;
 
 	/**
@@ -39,16 +39,11 @@ public class PCAMeans implements Serializable
 	 */
 	public PCAMeans(List<State> states, int numComponents, int clusterAmount, int iterations)
 	{
-		this(statesToVectors(states), numComponents, clusterAmount, iterations, 0);
+		this(statesToVectors(states), numComponents, clusterAmount, iterations);
 	}
-
+	
 	public PCAMeans(double[][] vectors, int numComponents, int clusterAmount, int iterations)
 	{
-		this(vectors, numComponents, clusterAmount, iterations, 0);
-	}
-	public PCAMeans(double[][] vectors, int numComponents, int clusterAmount, int iterations, int verbose)
-	{
-		this.verbose = verbose;
 		// perform PCA
 		int numSamples = vectors.length;
 		int sampleSize = vectors[0].length;

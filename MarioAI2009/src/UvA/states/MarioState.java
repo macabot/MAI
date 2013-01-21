@@ -19,8 +19,8 @@ public class MarioState implements State
 	private final int amountOfInput = viewDim*viewDim+miscDims;
 	private double[] representation = new double[amountOfInput];
 	
-	public transient double xPos = 32;
-	protected transient double oldXPos = 32;
+	public static transient double xPos = 32;
+	protected static transient double oldXPos = 32;
 	
 	
 	// enemies killed total
@@ -68,21 +68,19 @@ public class MarioState implements State
 	 * @param environment is the mario environment
 	 */
 
-	public MarioState(Environment environment, double xPosIn) {
+	public MarioState(Environment environment) {
 		if(environment != null) 
 			updateRepresentation( (Environment) environment);
 			
-		this.oldXPos = xPosIn;
 	} // end constructor env + xPosIn used by mario
 	
 	/**
 	 * Constructor for when environment was not available: input is representation alone
 	 * Used by clone
 	 */
-	public MarioState(double[] reprIn, double oldXPosIn){
+	public MarioState(double[] reprIn){
 		this.representation = new double[reprIn.length];
 		System.arraycopy(reprIn, 0, this.representation, 0, reprIn.length);
-		this.oldXPos = oldXPosIn;
 	} // end constructor for representation input used by clone
 	
 	
@@ -112,7 +110,6 @@ public class MarioState implements State
 	    representation[representation.length - 2] = environment.isMarioOnGround() ? 1.0 : 0.0;
 	    representation[representation.length - 1] = environment.canShoot() ? 1.0 : 0.0;
 
-	    this.oldXPos = xPos;
 	    xPos = environment.getMarioFloatPos()[0];
 	    dieCheck = environment.getMarioFloatPos()[1] > 225;
 	    
@@ -206,7 +203,7 @@ public class MarioState implements State
 	 * @return clone
 	 */
 	public State clone() {
-		return new MarioState(representation, oldXPos);
+		return new MarioState(representation);
 	} // end clone
 	
 	/**
@@ -216,8 +213,6 @@ public class MarioState implements State
 		for(int i = 0; i < representation.length; i++){
 			representation[i] = 0.0;
 		}
-		oldXPos = 32;
-		xPos = 32;
 	} // end reset
 	
 	public static void resetStatic(int mode){
@@ -238,6 +233,8 @@ public class MarioState implements State
 		collectedMushrooms = 0;
 		gainedCoinsSoFar = 0;
 		collectedCoins = 0;
+		xPos = 32;
+		oldXPos = 32;
 	}// end resetStatic
 	
 	
@@ -287,13 +284,5 @@ public class MarioState implements State
 	public double[] getRepresentation() {
 		return this.representation;
 	}
-	
-	/**
-	 * getxPos, necessarily to create new state
-	 */
-	public double getXPos() {
-		return this.oldXPos;
-	} // end get xPos
-
 
 } // end mariostate class

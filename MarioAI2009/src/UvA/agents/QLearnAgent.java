@@ -59,8 +59,12 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 *  Constructor of qlearn agent with a blank policy (to be learned)
 	 */
 	public QLearnAgent() {
-		this(new HashMap<StateActionPair, Double>(), name);	
+		this(name);	
 	} // end constructor without policy
+	
+	public QLearnAgent(String name) {
+		this(new HashMap<StateActionPair, Double>(), name);
+	}
 	
 	/**
 	 * Constructor for a q learning agent with a given policy
@@ -260,10 +264,10 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		if( stateType.equals("MarioState") ) {
 			MarioState curState = (MarioState) state;
 			if(curState != null)
-				return new MarioState(environmentIn, curState.xPos);
+				return new MarioState(environmentIn);
 			else{
 //				// first creation of the state
-				return new MarioState(environmentIn, 32);
+				return new MarioState(environmentIn);
 			}
 		}
 		else
