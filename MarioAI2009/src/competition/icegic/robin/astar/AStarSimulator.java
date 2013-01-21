@@ -27,6 +27,7 @@ public class AStarSimulator
 	private float maxMarioSpeed = 10.9090909f;
 	private boolean requireReplanning = false;
 
+	public boolean trackMouse = false;
 	public int targetX = 0;
 	public int targetY = 0;
 
@@ -56,9 +57,11 @@ public class AStarSimulator
 
 		public float calcRemainingTime(float marioX, float marioXA)
 		{
+			if(trackMouse)
 			return getDistance(marioX, marioXA);
-//			return (100000 - (maxForwardMovement(marioXA, 1000) + marioX)) 
-//					/ maxMarioSpeed - 1000;
+			else
+			return (100000 - (maxForwardMovement(marioXA, 1000) + marioX)) 
+					/ maxMarioSpeed - 1000;
 		}
 
 		public float getRemainingTime()
@@ -73,8 +76,11 @@ public class AStarSimulator
 		{
 			float[] childbehaviorDistanceAndSpeed = estimateMaximumForwardMovement(
 					levelScene.mario.xa, action, repetitions);
-			return calcRemainingTime(targetX,targetY);//levelScene.mario.x + childbehaviorDistanceAndSpeed[0],
-					//childbehaviorDistanceAndSpeed[1]);			
+			if(trackMouse)
+			return calcRemainingTime(targetX,targetY);
+			else
+				return calcRemainingTime(levelScene.mario.x + childbehaviorDistanceAndSpeed[0],
+					childbehaviorDistanceAndSpeed[1]);			
 		}
 
 		public SearchPos(boolean[] action, int repetitions, SearchPos parent)
@@ -86,7 +92,12 @@ public class AStarSimulator
 				this.distanceFromOrigin = parent.distanceFromOrigin+1;
 			}
 			else
+			{
+				if(trackMouse)
 				this.remainingTimeEstimated = calcRemainingTime(targetX, targetY);
+				else
+				this.remainingTimeEstimated = calcRemainingTime(levelScene.mario.x, 0);
+			}
 			this.action = action;
 			this.repetitions = repetitions;
 			if (parent != null)
@@ -137,16 +148,20 @@ public class AStarSimulator
 //			
 //			}
 			
-			remainingTime = calcRemainingTime(targetX, targetY)
-					+ (getMarioDamage() - initialDamage)*1000000;// * (1000000 - 100 * distanceFromOrigin) + goalPenalty;
-			if(levelScene.mario.x > targetX && (this.action[1]))
+			if(trackMouse)
+			{
+				remainingTime = calcRemainingTime(targetX, targetY)
+						+ (getMarioDamage() - initialDamage)*1000000;// * (1000000 - 100 * distanceFromOrigin) + goalPenalty;
+				if(levelScene.mario.x > targetX && (this.action[1]))
+						remainingTime += 100;
+				if(levelScene.mario.x < targetX && (this.action[0]))
 					remainingTime += 100;
-			if(levelScene.mario.x < targetX && (this.action[0]))
-				remainingTime += 100;
-			if((this.action[4]==true))
-				remainingTime *= 0.9;
-				
-
+				if((this.action[4]==true))
+					remainingTime *= 0.9;
+			}
+			else	
+				remainingTime = calcRemainingTime(levelScene.mario.x, levelScene.mario.xa)
+				+ (getMarioDamage() - initialDamage) * (1000000 - 100 * distanceFromOrigin) + goalPenalty;
 			hasBeenHurt = (getMarioDamage() - initialDamage) != 0;
 			
 
@@ -302,18 +317,18 @@ public class AStarSimulator
 							currentGood = true;
 							posPool.addAll(current.generateChildren());    			
 			    		}
-//			    		if (currentGood) 
-//			    		{
-//			    			bestPosition = current;
-//			    			if (current.sceneSnapshot.mario.x >= bestPosition.sceneSnapshot.mario.x)
-//			    				furthest = current;
-//			    		}
+			    		if (currentGood&&!trackMouse) 
+			    		{
+			    			bestPosition = current;
+			    			if (current.sceneSnapshot.mario.x >= bestPosition.sceneSnapshot.mario.x)
+			    				furthest = current;
+			    		}
 			}
-//		    	if (levelScene.mario.x - currentSearchStartingMarioXPos < 176)
-//		    	{
-//		    		// Couldnt plan till end of screen, take furthest
-//		    		bestPosition = furthest;
-//		    	}
+		    	if ((levelScene.mario.x - currentSearchStartingMarioXPos < 176) && !trackMouse)
+		    	{
+		    		// Couldnt plan till end of screen, take furthest
+		    		bestPosition = furthest;
+		    	}
 
 		//bestPosition = current;
 		if (levelScene.verbose > 1) System.out.println("Search stopped. Remaining pool size: "+ posPool.size() + " Current remaining time: " + current.remainingTime);

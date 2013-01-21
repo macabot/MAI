@@ -113,7 +113,7 @@ public class AStarAgent extends BasicAIAgent implements Agent
 		//sim.targetY = MC.mouseListener.goal.y/4;
 		sim.targetX = (MC.mouseListener.goal.x + (int)sim.levelScene.xCamO);
 		sim.targetY = MC.mouseListener.goal.y;
-		System.out.println(sim.targetX);
+		//System.out.println(sim.targetX);
         action = sim.optimise(MC.mouseListener.goal);        
         
         
