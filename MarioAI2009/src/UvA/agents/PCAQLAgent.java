@@ -1,7 +1,3 @@
-/*
- * TODO should pcam be trained with visitedStates that contains duplicate states
- */
-
 package UvA.agents;
 
 import java.util.HashMap;
@@ -20,15 +16,12 @@ public class PCAQLAgent extends QLearnAgent
 	static private final String name = "PCAQLAgent";
 	protected final String stateType = "PCAState";
 
-	protected final PCAMeans pcam;
+	protected PCAMeans pcam;
 	
-	public PCAQLAgent(Map<StateActionPair, Double> qValuesIn, 
-			int numComponents, int clusterAmount, int iterations)
+	public PCAQLAgent()
 	{
 		super(name);
-		double[][] representations = extractRepresentations(qValuesIn);
-		this.pcam = new PCAMeans(representations, numComponents, clusterAmount, iterations);
-		super.qValues = projectQValues(qValuesIn);
+		pcam = null;
 	}
 	
 	/**
@@ -38,13 +31,26 @@ public class PCAQLAgent extends QLearnAgent
 	 */
 	public Map<StateActionPair, Double> projectQValues(Map<StateActionPair, Double> qValues)
 	{
+		
+		Map<StateActionPair, Integer> frequencies = new HashMap<StateActionPair, Integer>();
 		Map<StateActionPair, Double> projectedQValues = new HashMap<StateActionPair, Double>();
 		for( StateActionPair sap: qValues.keySet() )
 		{
 			int index = pcam.sampleToMean(sap.state.getRepresentation());
 			State projectedState = new PCAState(sap.state.getRepresentation(), index);
 			StateActionPair projectedSap = new StateActionPair(projectedState, sap.action);
-			projectedQValues.put(projectedSap, qValues.get(sap));
+			if( projectedQValues.containsKey(projectedSap) )
+			{
+				int newFreq = frequencies.get(projectedSap)+1;	// add 1 to frequency
+				frequencies.put(projectedSap, newFreq);	
+				// newAverage = (newValue + (freq-1)*average) / freq
+				double newQValue = (qValues.get(sap) + (newFreq-1)*projectedQValues.get(projectedQValues)) / newFreq;	// take average over all qValues
+				projectedQValues.put(projectedSap, newQValue);
+			}else
+			{
+				frequencies.put(projectedSap, 1);
+				projectedQValues.put(projectedSap, qValues.get(sap));
+			}
 		}
 		return projectedQValues;
 	}
@@ -80,6 +86,24 @@ public class PCAQLAgent extends QLearnAgent
 			throw new IllegalArgumentException(error);
 		}			
 	}
+	
+	/**
+	 * Load qvalues according to path, called from main run
+	 * @param path is the path where the qvalues are stored
+	 */
+	@SuppressWarnings("unchecked") // hack to remove annoying warning of casting
+	public void loadAndProjectQValues(String path, int numComponents, int clusterAmount, int iterations) 
+	{
+		try {
+			Map<StateActionPair, Double> qValuesTemp = (HashMap<StateActionPair, Double>) SLAPI.load(path);
+			double[][] representations = extractRepresentations(qValuesTemp);
+			this.pcam = new PCAMeans(representations, numComponents, clusterAmount, iterations);
+			super.qValues = projectQValues(qValuesTemp); //TODO change
+			// if clusterAmount = -1 then just use index of Dataset.. if not, just cluster
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	} // end loadQValues
 	
 	/**
 	 * Load pcam according to path

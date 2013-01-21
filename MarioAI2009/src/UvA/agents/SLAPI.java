@@ -21,7 +21,7 @@ public class SLAPI {
     
     public static Object load(String path) throws FileNotFoundException, IOException, ClassNotFoundException
     {
-    	System.out.println("Loading qValues from " + path);
+    	System.out.println("Loading from " + path);
         ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path));
         Object result = ois.readObject();
         ois.close();

@@ -1,16 +1,14 @@
-/*
- * TODO test if projection matrix is the same for a set of states
- * that does contains duplicates and a set of states that doesn't.
- * 
- */
-
 package UvA.stateSpaceReduction;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import net.sf.javaml.clustering.Clusterer;
 import net.sf.javaml.clustering.KMeans;
@@ -18,6 +16,8 @@ import net.sf.javaml.core.Dataset;
 import net.sf.javaml.core.DefaultDataset;
 import net.sf.javaml.core.DenseInstance;
 import net.sf.javaml.core.Instance;
+import net.sf.javaml.distance.DistanceMeasure;
+import net.sf.javaml.distance.EuclideanDistance;
 import UvA.states.State;
 
 public class PCAMeans implements Serializable
@@ -26,9 +26,10 @@ public class PCAMeans implements Serializable
 
 	private PrincipleComponentAnalysis pca;
 	private Dataset means;
+	private Map<Instance, Integer> projectToMeanCache;	// cache contains previous conversions from projected vector (using PCA) to mean-index
 
 	private int verbose = 0;
-	private String path = System.getProperty("user.dir") + "/debugPCAM.db";;
+	private String path = System.getProperty("user.dir") + "/debugPCAM.debug";;
 
 	/**
 	 * Constructor performs PCA on states and clusters the eigen space projections.
@@ -41,9 +42,10 @@ public class PCAMeans implements Serializable
 	{
 		this(statesToVectors(states), numComponents, clusterAmount, iterations);
 	}
-	
+
 	public PCAMeans(double[][] vectors, int numComponents, int clusterAmount, int iterations)
 	{
+		this.projectToMeanCache = new HashMap<Instance, Integer>();
 		// perform PCA
 		int numSamples = vectors.length;
 		int sampleSize = vectors[0].length;
@@ -52,12 +54,25 @@ public class PCAMeans implements Serializable
 		pca.computeBasis(numComponents);
 		double[][] projections = pca.samplesToEigenSpace(vectors);
 
-		// cluster PCA results		
-		this.means = calculateMeans(projections, clusterAmount, iterations);
+		// cluster PCA results	
+		if( clusterAmount < 0 )	
+		{
+			this.means = doubleArrayToDataset(projections); // each projection is a cluster
+			for(int i=0; i<means.size(); i++)
+			{
+				projectToMeanCache.put(means.get(i), i); // cache the conversions
+			}
+		}else
+		{
+			Dataset[] clusters = createClusters(projections, clusterAmount, iterations);
+			if( verbose==1 )
+				clustersToFile(clusters);
+			this.means = calculateMeans(clusters);
+		}
 	}
 	//end constructors
 
-	public static double[][] statesToVectors(List<State> states)
+	private static double[][] statesToVectors(List<State> states)
 	{
 		// create vectors for PCA
 		int numSamples = states.size();
@@ -70,25 +85,28 @@ public class PCAMeans implements Serializable
 	}
 
 	/**
-	 * Calculate the means of the clusters found in 'vectors'.
+	 * Create clusters of vectors.
 	 * @param vectors	n vectors with m dimensions
 	 * @param clusterAmount		amount of clusters for kMeans clustering
 	 * @param iterations		amount of iterations for kMeans clustering
-	 * @return Dataset containing means of clusters
+	 * @return Dataset[] containing clusters of vectors
 	 */
-	public Dataset calculateMeans(double[][] vectors, int clusterAmount, int iterations)
+	private Dataset[] createClusters(double[][] vectors, int clusterAmount, int iterations)
 	{
 		Clusterer km = new KMeans(clusterAmount, iterations);
+		Dataset data = doubleArrayToDataset(vectors);
+		return km.cluster(data);
+	}
+
+	private Dataset doubleArrayToDataset(double[][] vectors)
+	{
 		Dataset data = new DefaultDataset();
 		for (int i = 0; i < vectors.length; i++) 
 		{
 			Instance instance = new DenseInstance(vectors[i]);
 			data.add(instance);
 		}
-		Dataset[] clusters = km.cluster(data);
-		if( verbose==1 )
-			clustersToFile(clusters);
-		return calcMeans(clusters);
+		return data;
 	}
 
 	/**
@@ -96,22 +114,25 @@ public class PCAMeans implements Serializable
 	 * @param clusters kMeans clusters
 	 * @return Dataset containing means of clusters
 	 */
-	public static Dataset calcMeans(Dataset[] clusters)
+	private Dataset calculateMeans(Dataset[] clusters)
 	{
 		Dataset means = new DefaultDataset();
+		int index = 0;
 		for(Dataset dataset: clusters)
 		{
 			Instance sum = new DenseInstance(new double[dataset.get(0).noAttributes()]);
 			for(Instance instance: dataset)
 			{
+				projectToMeanCache.put(instance, index);	// cache conversion
 				sum = sum.add(instance);
 			}
 			means.add(sum.divide(dataset.size()));
+			index++;
 		}
 		return means;
 	}
 
-	public void clustersToFile(Dataset[] clusters)
+	private void clustersToFile(Dataset[] clusters)
 	{
 		try {
 			BufferedWriter out = new BufferedWriter(new FileWriter(path));
@@ -136,7 +157,7 @@ public class PCAMeans implements Serializable
 		}		
 	}
 
-	public static String instanceToString(Instance vector)
+	private static String instanceToString(Instance vector)
 	{
 		String s = vector.toString();		
 		String[] toReplace = {"{", "}", "[", "]", ";", "null"};
@@ -147,34 +168,37 @@ public class PCAMeans implements Serializable
 		return s;
 	}
 
+	/**
+	 * Convert a vector to a mean-index, i.e. project the vector with PCA and find 
+	 * the mean of the cluster that has the smallest distance to the projected vector.  
+	 * @param sample	vector
+	 * @return index of mean that belongs to the cluster that has the smallest distance
+	 * to the projected sample.
+	 */
 	public int sampleToMean(double[] sample)
 	{
-		Instance projection = new DenseInstance(pca.sampleToEigenSpace(sample));
-		int nearestMeanIndex = 0;
-		double bestDist = distance(projection, means.get(nearestMeanIndex));
-		for(int i=1; i<means.size(); i++)
+		Instance projection = sampleToProjection(sample);
+		if( projectToMeanCache.containsKey(projection) )
 		{
-			double tempDist = distance(projection, means.get(i)); 
-			if( tempDist < bestDist)
-			{
-				nearestMeanIndex = i;
-				bestDist = tempDist;
-			}
+			return projectToMeanCache.get(projection);
 		}
+		DistanceMeasure dm = new EuclideanDistance();
+		Set<Instance> closestSet = means.kNearest(1, projection, dm);	// find nearest neighbor
+		Iterator<Instance> iter = closestSet.iterator();
+		Instance closest = iter.next();
+		int nearestMeanIndex = means.indexOf(closest);	// find index of nearest neighbor
+		projectToMeanCache.put(projection, nearestMeanIndex);	// cache conversion
 		return nearestMeanIndex;
 	}
-
-	public static double distance(Instance a, Instance b)
+	
+	/**
+	 * Project a vector with PCA.
+	 * @param sample	a vector
+	 * @return	projection of given sample
+	 */
+	public Instance sampleToProjection(double[] sample)
 	{
-		Instance diff = a.minus(b);
-		Instance squaredDiff = diff.multiply(diff);
-		double sum = 0;
-		for(int i=0; i<squaredDiff.noAttributes(); i++)
-			sum += squaredDiff.get(i);
-
-		return Math.sqrt(sum);		
+		return new DenseInstance(pca.sampleToEigenSpace(sample));
 	}
-
-
 
 }//end class
