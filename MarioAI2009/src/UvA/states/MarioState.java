@@ -146,7 +146,6 @@ public class MarioState implements State
 		// calculate if collided (lose mario mode)
 	    if(marioMode < lastMarioMode){
 	    	collided = 1;
-	    	System.out.println("Collided!");
 	    	lastMarioMode = marioMode;
 	    }
 	    else
@@ -188,11 +187,10 @@ public class MarioState implements State
 	 */ 
 	public double getReward() {
 		int fall = 0;
-		if(dieCheck) {
-			System.out.println("Dieing!!!!!");
+		if(dieCheck) 
 			fall = 1;
-		} // end hack to check if gonna die
-		double distance = xPos - oldXPos;
+
+			double distance = xPos - oldXPos;
 		
 		double reward = (double) (distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
 				killedByFire*REWARD_KILLED_FIRE + killedByShell*REWARD_KILLED_SHELL + 
@@ -201,7 +199,7 @@ public class MarioState implements State
 		
 		rewardSoFar += reward;
 		currentReward = reward;
-
+	
 		return reward;
 	} // end getReward
 
