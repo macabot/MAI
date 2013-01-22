@@ -48,9 +48,19 @@ public class MarioState implements State
 	private static int killedByFire = 0;
 	private static int killedByShell = 0;
 	
+	
 	private static int marioMode = 2;
 	private static int lastMarioMode = 2;
+	
+	// used for heavy negative reward
 	private static int collided = 0;
+	private boolean dieCheck = false;
+	
+	// following values are used in displaying total reward 
+	// and calculating current reward
+	// -SoFar values are for displaying total reward
+	// Rest is used for storing current reward, at the end the total 
+	/// reward is incremented with the current reward 
 	
 	private static int gainedFlowersSoFar = 0;
 	private static int collectedFlowers = 0;
@@ -65,9 +75,6 @@ public class MarioState implements State
 	public static double rewardSoFar = 0;
 	public static double currentReward = 0;
 	
-	private boolean dieCheck;
-
-
 	
 	/**
 	 * Constructor, creates state representation
@@ -118,15 +125,18 @@ public class MarioState implements State
 	        	switch((int) value) { 
 	        	case 25:
 	        		value = 0; // fireball becomes 0
+	        		break;
 	        	case -11:
 	        		value = -10; // half border becomes border
+	        		break;
 	        	case Sprite.KIND_FIRE_FLOWER: 
 	        		value = Sprite.KIND_MUSHROOM; // fireflower equals to mushroom
+	        		break;
 	        	case 21:
 	        		value = 16; // nice brick same categorie as brick
+	        		break;
 	        	case 20:
 	        		value = -10; // flower pot/cannon equals border
-	        		
 	        	} // end switch
 	        		
 	        	representation[which++] = value;	
