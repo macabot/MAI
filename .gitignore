@@ -16,9 +16,10 @@ MarioAI2009/bin
 # temp
 temp
 
-# Mario Main
+# Test files
 MarioAI2009/src/ch/idsia/scenarios/Play.java
 MarioAI2009/src/ch/idsia/scenarios/PlaySam.java
+MarioAI2009/src/UvA/stateSpaceReduction/Test.java
 
 # Serializable files
 #   denote exceptions with prefix !

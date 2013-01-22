@@ -17,16 +17,21 @@ public class PCAQLAgent extends QLearnAgent
 
 	protected PCAMeans pcam;
 	
+	/**
+	 * Create new PCAQLAgent. Q-values and pcam must be loaded with 
+	 * loadQValues/1 (located in QLearnAgent) and loadPCAM/1. 
+	 */
 	public PCAQLAgent()
 	{
 		super(name);
 		pcam = null;
-	}
+	}//end constructor
 	
 	/**
-	 * Convert the states in 'qValues' with pcam and create new q-values.
-	 * @param qValues dictionary that maps state-action pairs to their value
-	 * @return projected q-values
+	 * Convert the states in 'qValues' to PCAState using pcam 
+	 * and return the new q-values.
+	 * @param qValues - dictionary that maps state-action pairs to their value
+	 * @return converted q-values
 	 */
 	public Map<StateActionPair, Double> projectQValues(Map<StateActionPair, Double> qValues)
 	{
@@ -35,7 +40,7 @@ public class PCAQLAgent extends QLearnAgent
 		Map<StateActionPair, Double> projectedQValues = new HashMap<StateActionPair, Double>();
 		for( StateActionPair sap: qValues.keySet() )
 		{
-			int index = pcam.sampleToMean(sap.state.getRepresentation());
+			int index = pcam.sampleToMean(sap.state.getRepresentation()); // convert State to PCAState
 			State projectedState = new PCAState(sap.state.getRepresentation(), index);
 			StateActionPair projectedSap = new StateActionPair(projectedState, sap.action);
 			if( projectedQValues.containsKey(projectedSap) )
@@ -52,9 +57,14 @@ public class PCAQLAgent extends QLearnAgent
 			}
 		}
 		return projectedQValues;
-	}
+	}//end projectQValues
 	
-	public static double[][] extractRepresentations(Map<StateActionPair, Double> qValues)
+	/**
+	 * Extract all the states in 'qValues' and return their representations.
+	 * @param qValues - dictionary mapping state-action pairs to their value
+	 * @return double array containing representations of states in 'qValues'
+	 */
+	private static double[][] extractRepresentations(Map<StateActionPair, Double> qValues)
 	{
 		double[][] representations = new double[qValues.size()][];
 		int i=0;
@@ -69,18 +79,12 @@ public class PCAQLAgent extends QLearnAgent
 	@Override
 	public State createState(Environment environmentIn)
 	{
-		if( stateType.equals("PCAState") ) {
-			return new PCAState(environmentIn, pcam);
-		}else
-		{
-			String error = String.format("Unknown state-type: %s", stateType);
-			throw new IllegalArgumentException(error);
-		}			
+		return new PCAState(environmentIn, pcam);			
 	}
 	
 	/**
-	 * Load qvalues according to path, called from main run
-	 * @param path is the path where the qvalues are stored
+	 * Load q-values according to path and project the states in the state-action pairs
+	 * @param path - path where the q-values are stored
 	 */
 	@SuppressWarnings("unchecked") // hack to remove annoying warning of casting
 	public void loadAndProjectQValues(String path, int numComponents, int clusterAmount, int iterations) 
@@ -93,24 +97,23 @@ public class PCAQLAgent extends QLearnAgent
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-	} // end loadQValues
+	} 
 	
 	/**
 	 * Load pcam according to path
-	 * @param path is the path where the pcam is stored
+	 * @param path - path where the pcam is stored
 	 */
-	public static PCAMeans loadPCAM(String path) {
+	public void loadPCAM(String path) {
 		try {
-			return (PCAMeans) SLAPI.load(path);
+			this.pcam = (PCAMeans) SLAPI.load(path);
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
 		}
 	} // end loadQValues
 	
 	/**
 	 * Save pcam according to path
-	 * @param path is the path where the pcam is to be saved
+	 * @param path - path where the pcam is to be saved
 	 */
 	public void writePCAM(String path) {
 		try {
@@ -118,7 +121,6 @@ public class PCAQLAgent extends QLearnAgent
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
 	} // end loadQValues
 
 }//end class

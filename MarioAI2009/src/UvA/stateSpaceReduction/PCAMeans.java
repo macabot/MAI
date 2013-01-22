@@ -1,3 +1,8 @@
+/**
+ * PCAMeans is used to compress a vector using PCA and find the cluster who's
+ * mean is nearest to this vector.
+ */
+
 package UvA.stateSpaceReduction;
 
 import java.io.BufferedWriter;
@@ -33,16 +38,23 @@ public class PCAMeans implements Serializable
 
 	/**
 	 * Constructor performs PCA on states and clusters the eigen space projections.
-	 * @param states	training data for PCA
-	 * @param numComponents		number of components for PCA
-	 * @param clusterAmount		amount of clusters for kMeans clustering
-	 * @param iterations		amount of iterations for kMeans clustering
+	 * @param states - training data for PCA
+	 * @param numComponents - number of components for PCA
+	 * @param clusterAmount - amount of clusters for k-means clustering
+	 * @param iterations - amount of iterations for k-means clustering
 	 */
 	public PCAMeans(List<State> states, int numComponents, int clusterAmount, int iterations)
 	{
 		this(statesToVectors(states), numComponents, clusterAmount, iterations);
 	}
 
+	/**
+	 * Create new PCAMeans by clustering the eigen space projections of 'vectors'
+	 * @param vectors - training data for PCA
+	 * @param numComponents - number of components for PCA
+	 * @param clusterAmount - amount of clusters for k-means clustering
+	 * @param iterations - amount of iterations for k-means clustering
+	 */
 	public PCAMeans(double[][] vectors, int numComponents, int clusterAmount, int iterations)
 	{
 		this.projectToMeanCache = new HashMap<Instance, Integer>();
@@ -66,12 +78,17 @@ public class PCAMeans implements Serializable
 		{
 			Dataset[] clusters = createClusters(projections, clusterAmount, iterations);
 			if( verbose==1 )
-				clustersToFile(clusters);
+				clustersToFile(clusters);	// write the clusters to file
 			this.means = calculateMeans(clusters);
 		}
-	}
-	//end constructors
+	}//end constructors
 
+	/**
+	 * Convert a list of states to an array of vectors. Each vector is the 
+	 * representation of the corresponding state
+	 * @param states - list of states
+	 * @return double array containing vectors
+	 */
 	private static double[][] statesToVectors(List<State> states)
 	{
 		// create vectors for PCA
@@ -86,9 +103,9 @@ public class PCAMeans implements Serializable
 
 	/**
 	 * Create clusters of vectors.
-	 * @param vectors	n vectors with m dimensions
-	 * @param clusterAmount		amount of clusters for kMeans clustering
-	 * @param iterations		amount of iterations for kMeans clustering
+	 * @param vectors - n vectors with m dimensions
+	 * @param clusterAmount - amount of clusters for kMeans clustering
+	 * @param iterations - amount of iterations for kMeans clustering
 	 * @return Dataset[] containing clusters of vectors
 	 */
 	private Dataset[] createClusters(double[][] vectors, int clusterAmount, int iterations)
@@ -98,6 +115,11 @@ public class PCAMeans implements Serializable
 		return km.cluster(data);
 	}
 
+	/**
+	 * Convert double array of vectors to a Dataset
+	 * @param vectors - double array of vectors
+	 * @return Dataset containing vectors
+	 */
 	private Dataset doubleArrayToDataset(double[][] vectors)
 	{
 		Dataset data = new DefaultDataset();
@@ -111,8 +133,8 @@ public class PCAMeans implements Serializable
 
 	/**
 	 * Calculate the means of clusters
-	 * @param clusters kMeans clusters
-	 * @return Dataset containing means of clusters
+	 * @param clusters - clusters of vectors
+	 * @return Dataset containing means of each clusters
 	 */
 	private Dataset calculateMeans(Dataset[] clusters)
 	{
@@ -132,6 +154,10 @@ public class PCAMeans implements Serializable
 		return means;
 	}
 
+	/**
+	 * Write 'clusters' to file
+	 * @param clusters - clusters of vectors
+	 */
 	private void clustersToFile(Dataset[] clusters)
 	{
 		try {
@@ -147,16 +173,19 @@ public class PCAMeans implements Serializable
 					if( i!=cluster.size()-1 )
 						out.write("; ");
 				}
-
 				out.write("]\n");
 			}
-
 			out.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}		
-	}
+	}//end clustersToFile
 
+	/**
+	 * Create a string containing only the values of an Instance
+	 * @param vector - an Instance containing values
+	 * @return string containing only values of 'vector'
+	 */
 	private static String instanceToString(Instance vector)
 	{
 		String s = vector.toString();		
