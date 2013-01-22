@@ -24,6 +24,8 @@ public interface State extends Serializable
 	
 	public double[] getRepresentation();
 	
+	public double[] getTotalReward();
+	
 	@Override
 	public String toString();
 

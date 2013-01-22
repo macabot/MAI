@@ -12,13 +12,13 @@ public class MarioState implements State
 	private static final long serialVersionUID = 4326470085716280782L;
 	
 	// state representation, settable
-	public static final int viewDim = 8;//max 20;// 	//size of statespace that  is represented
+	public static final int viewDim = 7;//max 20;// 	//size of statespace that  is represented
 	public static final int miscDims = 1; // dimensions for extra information about state
 
 	
-	// 2 windows that contain info on objects and enemies = viewDim x viewDim
-	// miscDims spaces for features such as mayMarioJump() and isMarioOnGround()
-	private final int amountOfInput = (viewDim + 1)*(viewDim + 1) + miscDims;
+	// 2 windows that contain info on objects and enemies = (viewDim + 1) x viewDim (X x Y)
+	// miscDims spaces for features mario mode
+	private final int amountOfInput = (viewDim + 1)*(viewDim) + miscDims;
 	private double[] representation = new double[amountOfInput];
 	
 	// used for reward calculation
@@ -27,14 +27,14 @@ public class MarioState implements State
 
 	// Parameters for how important the reward for X is 
 	// TODO: settings file?
-	private final int REWARD_DISTANCE = 1; //Positive for moving to right, negative for left
+	private final int REWARD_DISTANCE = 2; //Positive for moving to right, negative for left
 	private final int REWARD_KILLED_STOMP = 0;
 	private final int REWARD_KILLED_FIRE = 0;
 	private final int REWARD_KILLED_SHELL = 0;
-	private final int REWARD_COLLIDED = -100; //Should be negative
-	private final int REWARD_FLOWER = 0;
-	private final int REWARD_MUSHROOM = 0;
-	private final int REWARD_COIN = 0;
+	private final int REWARD_COLLIDED = -1000; //Should be negative
+	private final int REWARD_FLOWER = 10;
+	private final int REWARD_MUSHROOM = 10;
+	private final int REWARD_COIN = 1;
 	private final int REWARD_DIE = -1000; // should be negative
 	
 	
@@ -119,7 +119,7 @@ public class MarioState implements State
 		int which = 0;
 	    for (int i = -viewDim/2; i <= viewDim/2; i++)
 	    {
-	        for (int j = -viewDim/2; j <= viewDim/2; j++)
+	        for (int j = -viewDim/2; j < viewDim/2; j++)
 	        {
 	        	double value = probe(i,j,scene);
 	        	switch((int) value) { 
@@ -204,19 +204,24 @@ public class MarioState implements State
 	 */ 
 	public double getReward() {
 		// If dieing, return the reward for dieing
-		if(dieCheck) 
+		if(dieCheck) {
+			System.out.print("Dieing! Reward: " + REWARD_DIE + " ");
 			return REWARD_DIE;
+		}
+		
 		
 		double distance = xPos - oldXPos;
 		
 		double reward = (double) (distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
 				killedByFire*REWARD_KILLED_FIRE + killedByShell*REWARD_KILLED_SHELL + 
 				collided*REWARD_COLLIDED + collectedFlowers*REWARD_FLOWER + collectedMushrooms*REWARD_MUSHROOM +
-				collectedCoins*REWARD_COIN);
+				collectedCoins*REWARD_COIN) - 1;
 		
 		rewardSoFar += reward; // used in mario engine for displaying total reward
 		currentReward = reward;
 	
+		if(collided!= 0)
+			System.out.print("Collided! Reward: " + reward + " ");
 		return reward;
 	} // end getReward
 
@@ -351,5 +356,15 @@ public class MarioState implements State
 	public double[] getRepresentation() {
 		return this.representation;
 	}
+	
+	/**
+	 * Returns reward of current state
+	 * @return - of which the first element is the x position of mario, 
+	 * and the second command is the reward according to mario
+	 */
+	public double[] getTotalReward() {
+		double[] reward = {MarioState.xPos, MarioState.rewardSoFar};
+		return reward;
+	} // end get total reward
 
 } // end mariostate class

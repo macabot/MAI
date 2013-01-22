@@ -290,7 +290,17 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	}
 	
 	/**
+	 * get total reward of mario, gets from state
+	 * @return double[] result, of which the first element is the x position of mario, 
+	 * and the second command is the reward according to mario
+	 */
+	public double[] getTotalReward() {
+		double[] result = state.getTotalReward();
+		return result;
+	} // 
+	/**
 	 * Reset states and static values of states, overrides default reset (for mario agents)
+	 * Is called by mario engine on every game start
 	 */
 	@Override
 	public void reset(){

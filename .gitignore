@@ -25,6 +25,7 @@ MarioAI2009/src/UvA/stateSpaceReduction/Test.java
 #   denote exceptions with prefix !
 *.ser
 !showQlearn.ser
+!dif1lev2qlearn.ser
 
 # debug files
 *.debug
