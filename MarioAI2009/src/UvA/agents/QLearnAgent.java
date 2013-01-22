@@ -137,11 +137,16 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		return bestAction;	// choose best action
 	}
 
+	public void updateQValue()
+	{
+		updateQValue(oldState, state);
+	}
+	
 	/**
 	 * Update the qValues according to Q learning methods, 
 	 * 
 	 */
-	public void updateQValue()
+	public void updateQValue(State oldState, State state)
 	{
 		// update according to reward of current state
 		double reward = state.getReward();

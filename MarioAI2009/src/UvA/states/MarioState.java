@@ -1,9 +1,12 @@
 package UvA.states;
 
 import java.util.Arrays;
+
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.engine.sprites.Sprite;
 import ch.idsia.mario.environments.Environment;
+
+import competition.icegic.robin.astar.LevelScene;
 
 
 public class MarioState implements State 
@@ -86,6 +89,11 @@ public class MarioState implements State
 			updateRepresentation( (Environment) environment);
 	} // end constructor env + xPosIn used by mario
 	
+	public MarioState(LevelScene levelScene) {
+		if(levelScene != null) 
+			updateRepresentation( levelScene);
+	} // end constructor env + xPosIn used by mario
+	
 	/**
 	 * Constructor for when environment was not available: input is representation alone
 	 * Used by clone
@@ -95,6 +103,11 @@ public class MarioState implements State
 		System.arraycopy(reprIn, 0, this.representation, 0, reprIn.length);
 	} // end constructor for representation input used by clone
 	
+	
+	private void updateRepresentation(LevelScene levelScene)
+	{
+		//TODO make this
+	}
 	
 	/**
 	 * updateRepresentation creates the representation of the state
