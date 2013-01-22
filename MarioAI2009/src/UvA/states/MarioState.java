@@ -12,7 +12,7 @@ public class MarioState implements State
 	private static final long serialVersionUID = 4326470085716280782L;
 	
 	// state representation, settable
-	public static final int viewDim = 7;//max 20;// 	//size of statespace that  is represented
+	public static final int viewDim = 8;//max 20;// 	//size of statespace that  is represented
 	public static final int miscDims = 1; // dimensions for extra information about state
 
 	
