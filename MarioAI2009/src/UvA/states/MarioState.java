@@ -1,7 +1,6 @@
 package UvA.states;
 
 import java.util.Arrays;
-
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.engine.sprites.Sprite;
 import ch.idsia.mario.environments.Environment;
@@ -9,19 +8,34 @@ import ch.idsia.mario.environments.Environment;
 
 public class MarioState implements State 
 {
+	// necessarily for serializing
 	private static final long serialVersionUID = 4326470085716280782L;
 	
-	// state representation
+	// state representation, settable
 	public static final int viewDim = 8;//max 20;// 	//size of statespace that  is represented
 	public static final int miscDims = 1; // dimensions for extra information about state
 
+	
 	// 2 windows that contain info on objects and enemies = viewDim x viewDim
 	// miscDims spaces for features such as mayMarioJump() and isMarioOnGround()
 	private final int amountOfInput = (viewDim + 1)*(viewDim + 1) + miscDims;
 	private double[] representation = new double[amountOfInput];
 	
+	// used for reward calculation
 	public static transient double xPos = 32;
 	public static transient double oldXPos = 32;
+
+	// Parameters for how important the reward for X is 
+	// TODO: settings file?
+	private final int REWARD_DISTANCE = 1; //Positive for moving to right, negative for left
+	private final int REWARD_KILLED_STOMP = 0;
+	private final int REWARD_KILLED_FIRE = 0;
+	private final int REWARD_KILLED_SHELL = 0;
+	private final int REWARD_COLLIDED = -100; //Should be negative
+	private final int REWARD_FLOWER = 0;
+	private final int REWARD_MUSHROOM = 0;
+	private final int REWARD_COIN = 0;
+	private final int REWARD_DIE = -1000; // should be negative
 	
 	
 	// enemies killed total
@@ -50,19 +64,10 @@ public class MarioState implements State
 	
 	public static double rewardSoFar = 0;
 	public static double currentReward = 0;
+	
 	private boolean dieCheck;
 
-	// Parameters for how important the reward for X is 
-	private final int REWARD_DISTANCE = 1; //Positive for moving to right, negative for left
-	private final int REWARD_KILLED_STOMP = 0;
-	private final int REWARD_KILLED_FIRE = 0;
-	private final int REWARD_KILLED_SHELL = 0;
-	private final int REWARD_COLLIDED = -100; //Should be negative
-	private final int REWARD_FLOWER = 0;
-	private final int REWARD_MUSHROOM = 0;
-	private final int REWARD_COIN = 0;
-	private final int REWARD_FALL = -1000;
-	
+
 	
 	/**
 	 * Constructor, creates state representation
@@ -72,7 +77,6 @@ public class MarioState implements State
 	public MarioState(Environment environment) {
 		if(environment != null) 
 			updateRepresentation( (Environment) environment);
-			
 	} // end constructor env + xPosIn used by mario
 	
 	/**
@@ -87,6 +91,7 @@ public class MarioState implements State
 	
 	/**
 	 * updateRepresentation creates the representation of the state
+	 * @param environment is the environment created by mario engine
 	 */
 	private void updateRepresentation(Environment environment) {
 		byte[][] scene = environment.getMergedObservationZ(1, 1);
@@ -103,6 +108,7 @@ public class MarioState implements State
 		// 16 = cheatingboxes = normal brick => question brick
 		// 20 = flower pot/cannon ==> border
 		
+		// returns representation
 		int which = 0;
 	    for (int i = -viewDim/2; i <= viewDim/2; i++)
 	    {
@@ -128,9 +134,14 @@ public class MarioState implements State
 	    }
 	    
 	    representation[representation.length - 1] = environment.getMarioMode();
+	    // end representation
+	    
+	    /////////////////// sets variables for reward function
 	    
 	    oldXPos = xPos;
 	    xPos = environment.getMarioFloatPos()[0];
+	    
+	    // check for below point of no return
 	    dieCheck = environment.getMarioFloatPos()[1] > 225;
 	    
 	    // update enemies killed
@@ -142,41 +153,38 @@ public class MarioState implements State
 		totalKilledByShell = environment.getKillsByShell();
 		marioMode = environment.getMarioMode();
 		
-		// calculate if collided (lose mario mode)
-	    if(marioMode < lastMarioMode){
-	    	collided = 1;
-	    	lastMarioMode = marioMode;
+		// calculate dynamic values
+		
+		// first set them to 0 (reset)
+		collided = 0;
+		collectedFlowers = 0;
+		collectedMushrooms = 0;
+		collectedCoins = 0;
+		
+		// check collided
+		if(marioMode < lastMarioMode) {
+			collided = 1; 
+			lastMarioMode = marioMode; // set for next evaluation
+		}
+			
+		// check pickup flower
+		if(Mario.gainedFlowers > gainedFlowersSoFar) {
+			collectedFlowers = Mario.gainedFlowers - gainedFlowersSoFar;
+			gainedFlowersSoFar = Mario.gainedFlowers;
+		}
+		
+		// check if pickup mushroom
+		if(Mario.gainedMushrooms > gainedMushroomsSoFar) {
+			collectedMushrooms = Mario.gainedMushrooms-gainedMushroomsSoFar;
+	    	gainedMushroomsSoFar = Mario.gainedMushrooms;
+		}
+			
+	    // check pickup coins
+	    if(Mario.coins > gainedCoinsSoFar){
+	    	collectedCoins = Mario.coins-gainedCoinsSoFar;
+	    	gainedCoinsSoFar = Mario.coins;
 	    }
-	    else
-	    	collided = 0;
 	    
-	    // calculate if picked up a flower
-	    int flowers = Mario.gainedFlowers;
-	    if(flowers > gainedFlowersSoFar){
-	    	collectedFlowers = flowers-gainedFlowersSoFar;
-	    	gainedFlowersSoFar = flowers;
-	    }
-	    else
-	    	collectedFlowers = 0;
-	    
-	    // calculate if picked up a mushroom
-	    int mushrooms = Mario.gainedMushrooms;
-	    if(mushrooms > gainedMushroomsSoFar){
-	    	collectedMushrooms = mushrooms-gainedMushroomsSoFar;
-	    	gainedMushroomsSoFar = mushrooms;
-	    }
-	    else
-	    	collectedMushrooms = 0;
-	    
-	    // calculate coins collected
-	    int coins = Mario.coins;
-	    if(coins > gainedCoinsSoFar){
-	    	collectedCoins = coins-gainedCoinsSoFar;
-	    	gainedCoinsSoFar = coins;
-	    }
-	    else
-	    	collectedCoins = 0;
-
 	} // end updateRepresentation
 		
 
@@ -185,18 +193,18 @@ public class MarioState implements State
 	 * @return reward of mario
 	 */ 
 	public double getReward() {
-		int fall = 0;
+		// If dieing, return the reward for dieing
 		if(dieCheck) 
-			fall = 1;
-
-			double distance = xPos - oldXPos;
+			return REWARD_DIE;
+		
+		double distance = xPos - oldXPos;
 		
 		double reward = (double) (distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
 				killedByFire*REWARD_KILLED_FIRE + killedByShell*REWARD_KILLED_SHELL + 
 				collided*REWARD_COLLIDED + collectedFlowers*REWARD_FLOWER + collectedMushrooms*REWARD_MUSHROOM +
-				collectedCoins*REWARD_COIN + REWARD_FALL*fall);
+				collectedCoins*REWARD_COIN);
 		
-		rewardSoFar += reward;
+		rewardSoFar += reward; // used in mario engine for displaying total reward
 		currentReward = reward;
 	
 		return reward;
@@ -227,7 +235,7 @@ public class MarioState implements State
 	} // end clone
 	
 	/**
-	 * Reset the info to no info
+	 * Reset the info to zero
 	 */
 	public void reset() {
 		for(int i = 0; i < representation.length; i++){
@@ -235,6 +243,17 @@ public class MarioState implements State
 		}
 	} // end reset
 	
+	/**
+	 * Calls resetStatic with mode value 2 (flower-powered mario, default)
+	 */
+	public static void resetStatic() {
+		resetStatic(2);
+	} // end resetStatic without params
+
+	/**
+	 * This function resets all static values
+	 * @param mode is the new mode of mario (default is 2)
+	 */
 	public static void resetStatic(int mode){
 		totalKilledByStomp = 0;
 		totalKilledByFire = 0;
@@ -258,6 +277,10 @@ public class MarioState implements State
 	}// end resetStatic
 	
 	
+	/**
+	 * Overrides toString method, simply prints a dim x dim matrix of the representation
+	 * @return A string representation the object
+	 */
 	@Override
 	public String toString() {
 		String string = "";
@@ -272,6 +295,13 @@ public class MarioState implements State
 		return string; 
 	} // end toString
 
+	/**
+	 * Equals overriddes normal equals, used for hashmapping, 
+	 * automatically created by eclipse
+	 * 
+	 * @param a object to compare with
+	 * @return -- a boolean, whether object is equal to input or not
+	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -288,6 +318,12 @@ public class MarioState implements State
 		return true;
 	}
 		
+	/**
+	 * hashCode() overrides hashcode for hashmapping, 
+	 * automatically created by ecipse
+	 * 
+	 * @return an int (the hashcode)
+	 */
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -299,6 +335,7 @@ public class MarioState implements State
 
 	/**
 	 * Override getrepresentation, returns representation of the state
+	 * @return A double array (double[]), the representation of the mario state
 	 */
 	@Override
 	public double[] getRepresentation() {

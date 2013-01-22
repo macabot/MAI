@@ -18,7 +18,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	// agent specific values
 	static private final String name = "QLearnAgent";
 
-	
 	// used to create state
 	State state = null;
 	State oldState = null;
@@ -33,10 +32,8 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	// settings for q learning
 	final int initialValue = 20; // initial qvalues
 	protected double epsilon = 0.1; // epsilon used in picking an action
-
 	final double gamma = 0.9; // gamma is penalty on delayed result
 	final double alpha = 0.3; // learning rate
-	final double winReward = 100; // reward for winning
 	
 	// actions
 	final boolean[] STAY = new boolean[Environment.numberOfButtons];
@@ -55,24 +52,28 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	
 	/**
 	 *  Constructor of qlearn agent with a blank policy (to be learned)
+	 *  Calls constructor with private string name
 	 */
 	public QLearnAgent() {
 		this(name);	
-	} // end constructor without policy
+	} // end constructor 
 	
+	/**
+	 * Constructor with name, calls constructor with emtpy qvalues
+	 * @param name -- the name of the agent
+	 */
 	public QLearnAgent(String name) {
 		this(new HashMap<StateActionPair, Double>(), name);
 	}
 	
 	/**
-	 * Constructor for a q learning agent with a given policy
-	 * 
-	 * @param plc is the policy the agent should handle
+	 * Constructor for a q learning agent with a given qValues, initiates the agent
+	 * @param qValuesIn are the qValues the agent will use
+	 * @param name is the name of the agent
 	 */
 	public QLearnAgent(Map<StateActionPair, Double> qValuesIn, String name) {
 		super(name);
 		initiateValues();
-		initialiseActions();
 		this.qValues = qValuesIn;
 	} // end constructor with policy
 	
@@ -82,7 +83,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 */
 	public boolean[] getAction(Environment environment)
 	{
-		
 		state = createState(environment);
 		
 		// update q and return action
@@ -94,7 +94,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		// update oldState for updateQValue()
 	    oldState = state.clone();
 	    
-
 	    return returnAction;
 
 	} // end getAction()
@@ -126,7 +125,8 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 			}
 		}
 		
-		if( generator.nextDouble() < epsilon )	//  choose random action
+		//  choose random action
+		if( generator.nextDouble() < epsilon )	
 		{
 			List<boolean[]> randomActions = new ArrayList<boolean[]>(validActions);
 			randomActions.remove(bestAction);	// don't choose the best action
@@ -139,23 +139,18 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 
 	/**
 	 * Update the qValues according to Q learning methods, 
-	 * first calculates reward and then updates with updateQValue(reward)
+	 * 
 	 */
 	public void updateQValue()
 	{
 		// update according to reward of current state
-		updateQValue(state.getReward());
-	}
-	
-	/**
-	 * This function actually updates the qvalue according to reward given
-	 * @param reward is the reward that comes with the new state
-	 */
-	public void updateQValue(double reward) {
-		
+		double reward = state.getReward();
 		// get bets QValue for calculating updated qvalue
 		List<boolean[]> actions = getValidActions();
 		double bestQValue = 0;
+		
+		// for each action, get stateaction pair and compare highest qValue 
+		// to return the future reward
 		for(int i=0; i<actions.size(); i++)
 		{
 			StateActionPair sap = new StateActionPair(state, actions.get(i));
@@ -168,12 +163,12 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		StateActionPair oldSap = new StateActionPair(oldState, returnAction);
 		double oldQ = getStateActionValue(oldSap);
 
-		// calculate reward
+		// calculate reward according to qLearn
 		double updatedValue = oldQ + alpha*(reward + gamma*bestQValue - oldQ);
 		
 		qValues.put(oldSap, updatedValue);	// update qValue of State-action pair
-
-	} // end updateQValue(reward);
+	}
+	
 	
 	/**
 	 * This function returns the q value if present, else returns the initialValue
@@ -186,11 +181,38 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 				qValues.get(sap):initialValue;
 	}
 
-
 	/**
-	 * This function initializes the possible actions manually	
+	 * getValidActions returns the valid actions in mario
+	 * @return a booleanarray[] representating actions
 	 */
-	public void initialiseActions(){
+	public List<boolean[]> getValidActions()
+	{
+		List<boolean[]> validActions = new ArrayList<boolean[]>(allActions);
+		//TODO remove actions that contain jump if environment.mayMarioJump() is false
+		return validActions;
+	}
+	
+	/**
+	 * Creates state for mario
+	 * @return the state including information
+	 */
+	public State createState(Environment environmentIn)
+	{
+		return new MarioState(environmentIn);
+	} // end create state
+	
+	/**
+	 * Function is used for declaring some values necessarily for qLearning, 
+	 * such as states and actions, which needs to have a value
+	 */
+	public void initiateValues() {
+		// initialis states and actions
+		oldState = createState(null);
+		state =  createState(null);
+		returnAction = new boolean[Environment.numberOfButtons];
+		allActions = getAllActions();
+		
+		// hardcoded set the possible actions
 		JUMP[Mario.KEY_JUMP] = true;
 		SPEED[Mario.KEY_SPEED] = true;
 		JUMP_SPEED[Mario.KEY_JUMP] = JUMP_SPEED[Mario.KEY_SPEED] = true;
@@ -204,7 +226,9 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		LEFT_SPEED[Mario.KEY_LEFT] = LEFT_SPEED[Mario.KEY_SPEED] = true;
 		LEFT_JUMP_SPEED[Mario.KEY_LEFT] = LEFT_JUMP_SPEED[Mario.KEY_JUMP] = 
 				LEFT_JUMP_SPEED[Mario.KEY_SPEED] = true;
-	}// end function initialiseActions
+
+	} // end getvalidactions
+
 	
 	/**
 	 * Get list of all possible actions. Each action is a boolean array.
@@ -231,34 +255,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		return allActions;
 	} // end getValidActions()
 	
-	public List<boolean[]> getValidActions()
-	{
-		List<boolean[]> validActions = new ArrayList<boolean[]>(allActions);
-		//TODO remove actions that contain jump if environment.mayMarioJump() is false
-		return validActions;
-	}
-	
-	/**
-	 * Function is used for declaring some values necessarily for qLearning, 
-	 * such as oldState, which needs to have a value
-	 */
-	public void initiateValues() {
-		oldState = createState(null);
-		state =  createState(null);
-		returnAction = new boolean[Environment.numberOfButtons];
-		allActions = getAllActions();
-	} // end getvalidactions
-	
-	/**
-	 * Creates state for mario
-	 * @return the state including information
-	 */
-	public State createState(Environment environmentIn)
-	{
-		return new MarioState(environmentIn);
-	} // end create state
-	
-
 	/**
 	 * Load qvalues according to path, called from main run
 	 * @param path is the path where the qvalues are stored
@@ -294,12 +290,13 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	}
 	
 	/**
-	 * Reset oldXPos
+	 * Reset states and static values of states, overrides default reset (for mario agents)
 	 */
 	@Override
 	public void reset(){
 		state.reset();
 		oldState.reset();
-		MarioState.resetStatic(2);
+		MarioState.resetStatic();
 	}// end reset
+	
 } // end class
