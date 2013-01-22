@@ -23,8 +23,14 @@ Dependencies
 
 Eclipse
 ===
-Import project as follows:
+Import project:
 - File > New > Java Project
 - uncheck 'Use default location'
 - Browse to location of project
+- Finish
+
+Add library:
+- right-click on project
+- Build Path > Add External Archive...
+- Browse to loaction of library (.jar)
 - Finish
