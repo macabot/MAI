@@ -17,8 +17,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 
 	// agent specific values
 	static private final String name = "QLearnAgent";
-	protected final String stateType = "MarioState";
-	private int run = 0; // used for choosing new actions every 1/2th time
+
 	
 	// used to create state
 	State state = null;
@@ -31,7 +30,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	protected Map<StateActionPair, Double> qValues;	// state-action values
 	protected List<boolean[]> allActions;
  
-	
 	// settings for q learning
 	final int initialValue = 20; // initial qvalues
 	protected double epsilon = 0.1; // epsilon used in picking an action
@@ -91,9 +89,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		updateQValue();
 		
 		// only pick a new action every 2nd question
-		if(run % 2 == 0)
-			returnAction = eGreedyAction();
-		run++;
+		returnAction = eGreedyAction();
 
 		// update oldState for updateQValue()
 	    oldState = state.clone();
@@ -254,20 +250,12 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	} // end getvalidactions
 	
 	/**
-	 * Creates a state depending on type declared at top of file, i.e. 'stateType'
-	 * @param environmentIn The information 'state' needs in order to create a state
-	 * @return the correct state type including information
+	 * Creates state for mario
+	 * @return the state including information
 	 */
 	public State createState(Environment environmentIn)
 	{
-		if( stateType.equals("MarioState") ) {
-			return new MarioState(environmentIn);
-		}
-		else
-		{
-			String error = String.format("Unknown state-type: %s", stateType);
-			throw new IllegalArgumentException(error);
-		}			
+		return new MarioState(environmentIn);
 	} // end create state
 	
 
