@@ -27,5 +27,8 @@ MarioAI2009/src/UvA/stateSpaceReduction/Test.java
 !showQlearn.ser
 !dif1lev2qlearn.ser
 
+# Settings file
+config.properties
+
 # debug files
 *.debug
