@@ -18,7 +18,7 @@ public class MarioState implements State
 	private static final long serialVersionUID = 4326470085716280782L;
 	
 	// state representation, settable
-	public static final int viewDim = 6;//max 20;// 	//size of statespace that  is represented
+	public static int viewDim = 8;//max 20;// 	//size of statespace that  is represented
 	public static final int miscDims = 1; // dimensions for extra information about state
 
 	
@@ -409,6 +409,7 @@ public class MarioState implements State
 	}// end function readPropertiesFile
 	
 	public static void setAllProperties(Properties properties){
+		// rewards
 		REWARD_DISTANCE = Integer.parseInt(properties.getProperty("reward_distance", "2"));;
 		REWARD_KILLED_STOMP = Integer.parseInt(properties.getProperty("reward_stomp", "0"));;
 		REWARD_KILLED_FIRE = Integer.parseInt(properties.getProperty("reward_fire", "0"));
@@ -418,6 +419,8 @@ public class MarioState implements State
 		REWARD_MUSHROOM = Integer.parseInt(properties.getProperty("reward_mushroom","10"));
 		REWARD_COIN = Integer.parseInt(properties.getProperty("reward_coin","1"));
 		REWARD_DIE = Integer.parseInt(properties.getProperty("reward_die", "-1000"));
+		// representation
+		viewDim = Integer.parseInt(properties.getProperty("viewDim", "8"));
 	}
 
 } // end mariostate class
