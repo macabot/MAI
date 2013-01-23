@@ -22,13 +22,15 @@ public class PCAQLAgent extends QLearnAgent
 	private static int iterations;
 	
 	/**
-	 * Create new PCAQLAgent. Q-values and pcam must be loaded with 
-	 * loadQValues/1 (located in QLearnAgent) and loadPCAM/1. 
+	 * Create new PCAQLAgent. Q-values must be loaded with 
+	 * loadQValues/1 (located in QLearnAgent) or loadAndProjectQValues/1.
+	 * pcam must be loaded with loadPCAM/1. numComponents, clusterAmount and
+	 * iterations are set with setAllProperties/1.
 	 */
 	public PCAQLAgent()
 	{
 		super(name);
-		pcam = null;
+		this.pcam = null;
 	}//end constructor
 	
 	/**
