@@ -10,6 +10,11 @@ import competition.icegic.robin.astar.LevelScene;
 
 public class StateAgent extends QLearnAstarAgent {
 
+	
+	public StateAgent()
+	{
+		super("StateAgent");
+	}
 	public boolean[] getAction(Environment observation)
 	{
 
