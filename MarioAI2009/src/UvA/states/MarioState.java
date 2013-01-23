@@ -18,8 +18,8 @@ public class MarioState implements State
 	private static final long serialVersionUID = 4326470085716280782L;
 	
 	// state representation, settable
-	public static int viewDim = 8;//max 20;// 	//size of statespace that  is represented
-	public static int miscDims = 1; // dimensions for extra information about state
+	public static final int viewDim = 6;//max 20;// 	//size of statespace that  is represented
+	public static final int miscDims = 1; // dimensions for extra information about state
 
 	
 	// 2 windows that contain info on objects and enemies = (viewDim + 1) x viewDim (X x Y)
@@ -32,7 +32,6 @@ public class MarioState implements State
 	public static transient double oldXPos = 32;
 
 	// Parameters for how important the reward for X is 
-	// TODO: settings file?
 	private static int REWARD_DISTANCE = 2; //Positive for moving to right, negative for left
 	private static int REWARD_KILLED_STOMP = 0;
 	private static int REWARD_KILLED_FIRE = 0;
@@ -388,7 +387,6 @@ public class MarioState implements State
 		return reward;
 	} // end get total reward
 	
-	//TODO test
 	public static Properties readPropertiesFile(String configFilePath){
 		//String configFilePath = "D:/settings.properties";
 		// load the properties file
@@ -410,7 +408,6 @@ public class MarioState implements State
 		return properties;
 	}// end function readPropertiesFile
 	
-	//TODO test
 	public static void setAllProperties(Properties properties){
 		REWARD_DISTANCE = Integer.parseInt(properties.getProperty("reward_distance", "2"));;
 		REWARD_KILLED_STOMP = Integer.parseInt(properties.getProperty("reward_stomp", "0"));;

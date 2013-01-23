@@ -34,7 +34,7 @@ public class PCAMeans implements Serializable
 	private Map<Instance, Integer> projectToMeanCache;	// cache contains previous conversions from projected vector (using PCA) to mean-index
 
 	private int verbose = 0;
-	private String path = System.getProperty("user.dir") + "/debugPCAM.debug";;
+	private String path = System.getProperty("user.dir") + "/clusters.debug";;
 
 	/**
 	 * Constructor performs PCA on states and clusters the eigen space projections.
