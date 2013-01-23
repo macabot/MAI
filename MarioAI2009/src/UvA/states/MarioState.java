@@ -1,6 +1,9 @@
 package UvA.states;
 
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Properties;
 
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.engine.sprites.Sprite;
@@ -15,8 +18,8 @@ public class MarioState implements State
 	private static final long serialVersionUID = 4326470085716280782L;
 	
 	// state representation, settable
-	public static final int viewDim = 8;//max 20;// 	//size of statespace that  is represented
-	public static final int miscDims = 1; // dimensions for extra information about state
+	public static int viewDim = 8;//max 20;// 	//size of statespace that  is represented
+	public static int miscDims = 1; // dimensions for extra information about state
 
 	
 	// 2 windows that contain info on objects and enemies = (viewDim + 1) x viewDim (X x Y)
@@ -30,15 +33,15 @@ public class MarioState implements State
 
 	// Parameters for how important the reward for X is 
 	// TODO: settings file?
-	private final int REWARD_DISTANCE = 2; //Positive for moving to right, negative for left
-	private final int REWARD_KILLED_STOMP = 0;
-	private final int REWARD_KILLED_FIRE = 0;
-	private final int REWARD_KILLED_SHELL = 0;
-	private final int REWARD_COLLIDED = -1000; //Should be negative
-	private final int REWARD_FLOWER = 10;
-	private final int REWARD_MUSHROOM = 10;
-	private final int REWARD_COIN = 1;
-	private final int REWARD_DIE = -1000; // should be negative
+	private static int REWARD_DISTANCE = 2; //Positive for moving to right, negative for left
+	private static int REWARD_KILLED_STOMP = 0;
+	private static int REWARD_KILLED_FIRE = 0;
+	private static int REWARD_KILLED_SHELL = 0;
+	private static int REWARD_COLLIDED = -1000; //Should be negative
+	private static int REWARD_FLOWER = 10;
+	private static int REWARD_MUSHROOM = 10;
+	private static int REWARD_COIN = 1;
+	private static int REWARD_DIE = -1000; // should be negative
 	
 	
 	// enemies killed total
@@ -379,5 +382,40 @@ public class MarioState implements State
 		double[] reward = {MarioState.xPos, MarioState.rewardSoFar};
 		return reward;
 	} // end get total reward
+	
+	//TODO test
+	public static Properties readPropertiesFile(String configFilePath){
+		//String configFilePath = "D:/settings.properties";
+		// load the properties file
+		Properties properties = new Properties();
+		try {
+			FileInputStream  fis = new FileInputStream(configFilePath);
+			properties.load(fis);
+		
+			// close file input stream
+			if (fis != null){
+				fis.close();
+			}// end if
+			
+		} catch (IOException e) {
+			System.out.println("Unknown properties file as input! Using default values.");
+			e.printStackTrace();
+		}
+		
+		return properties;
+	}// end function readPropertiesFile
+	
+	//TODO test
+	public static void setAllProperties(Properties properties){
+		REWARD_DISTANCE = Integer.parseInt(properties.getProperty("reward_distance", "2"));;
+		REWARD_KILLED_STOMP = Integer.parseInt(properties.getProperty("reward_stomp", "0"));;
+		REWARD_KILLED_FIRE = Integer.parseInt(properties.getProperty("reward_fire", "0"));
+		REWARD_KILLED_SHELL = Integer.parseInt(properties.getProperty("reward_shell", "0"));
+		REWARD_COLLIDED = Integer.parseInt(properties.getProperty("reward_collided", "-1000"));
+		REWARD_FLOWER = Integer.parseInt(properties.getProperty("reward_flower", "10"));
+		REWARD_MUSHROOM = Integer.parseInt(properties.getProperty("reward_mushroom","10"));
+		REWARD_COIN = Integer.parseInt(properties.getProperty("reward_coin","1"));
+		REWARD_DIE = Integer.parseInt(properties.getProperty("reward_die", "-1000"));
+	}
 
 } // end mariostate class

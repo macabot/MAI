@@ -2,6 +2,7 @@ package UvA.agents;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 import UvA.stateSpaceReduction.PCAMeans;
 import UvA.states.PCAState;
@@ -16,6 +17,9 @@ public class PCAQLAgent extends QLearnAgent
 	protected final String stateType = "PCAState";
 
 	protected PCAMeans pcam;
+	private static int numComponents;
+	private static int clusterAmount;
+	private static int iterations;
 	
 	/**
 	 * Create new PCAQLAgent. Q-values and pcam must be loaded with 
@@ -87,7 +91,7 @@ public class PCAQLAgent extends QLearnAgent
 	 * @param path - path where the q-values are stored
 	 */
 	@SuppressWarnings("unchecked") // hack to remove annoying warning of casting
-	public void loadAndProjectQValues(String path, int numComponents, int clusterAmount, int iterations) 
+	public void loadAndProjectQValues(String path) 
 	{
 		try {
 			Map<StateActionPair, Double> qValuesTemp = (HashMap<StateActionPair, Double>) SLAPI.load(path);
@@ -122,5 +126,15 @@ public class PCAQLAgent extends QLearnAgent
 			e.printStackTrace();
 		}
 	} // end loadQValues
+	
+	/**
+	 * Set all the properties via a config.properties file
+	 * @param properties
+	 */
+	public static void setAllProperties(Properties properties){
+		numComponents = Integer.parseInt(properties.getProperty("numComponents", "2"));
+		clusterAmount = Integer.parseInt(properties.getProperty("clusterAmount", "-1"));
+		iterations = Integer.parseInt(properties.getProperty("iterations", "10"));
+	}// end setAllProperties
 
 }//end class

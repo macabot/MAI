@@ -6,12 +6,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import java.util.Properties;
+
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.ai.agents.ai.BasicAIAgent;
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
 import UvA.states.*;
-
 
 public class QLearnAgent extends BasicAIAgent implements Agent {
 
@@ -30,10 +31,10 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	protected List<boolean[]> allActions;
  
 	// settings for q learning
-	final int initialValue = 20; // initial qvalues
-	protected double epsilon = 0.1; // epsilon used in picking an action
-	final double gamma = 0.9; // gamma is penalty on delayed result
-	final double alpha = 0.3; // learning rate
+	static int initialValue = 20; // initial qvalues
+	static protected double epsilon = 0.1; // epsilon used in picking an action
+	static double gamma = 0.9; // gamma is penalty on delayed result
+	static double alpha = 0.3; // learning rate
 	
 	// actions
 	final boolean[] STAY = new boolean[Environment.numberOfButtons];
@@ -48,7 +49,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	final boolean[] LEFT_JUMP = new boolean[Environment.numberOfButtons];
 	final boolean[] LEFT_SPEED = new boolean[Environment.numberOfButtons];
 	final boolean[] LEFT_JUMP_SPEED = new boolean[Environment.numberOfButtons];
-	
 	
 	/**
 	 *  Constructor of qlearn agent with a blank policy (to be learned)
@@ -290,8 +290,8 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 * @param newEpsilon
 	 */
 	public void setEpsilon(int newEpsilon) {
-		this.epsilon = newEpsilon;
-		System.out.println("New epsilon is set: " + this.epsilon);
+		epsilon = newEpsilon;
+		System.out.println("New epsilon is set: " + epsilon);
 	}
 	
 	/**
@@ -313,5 +313,13 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		oldState.reset();
 		MarioState.resetStatic();
 	}// end reset
+	
+	//TODO test
+	public static void setAllProperties(Properties properties){
+		initialValue = Integer.parseInt(properties.getProperty("initialValue", "20"));
+		epsilon = Double.parseDouble(properties.getProperty("epsilon", "0.1"));
+		gamma = Double.parseDouble(properties.getProperty("gamma", "0.9"));
+		alpha = Double.parseDouble(properties.getProperty("alpha", "0.3"));
+	}// end function setAllProperties
 	
 } // end class
