@@ -381,13 +381,16 @@ public class Level implements Cloneable
         if (y >= height) return;
         if ((Level.TILE_BEHAVIORS[map[x][y] & 0xff] & Level.BIT_BREAKABLE) > 0 && b == 0)
         {
+        	System.out.printf("%d, %d is modified \n", x, y);
         	int[] modified = new int[2];
         	modified[0] = x;
         	modified[1] = y;
         	modifiedMapTiles.add(modified);
         }
-        else
+        else {
         	map[x][y] = b;
+        	System.out.printf("%d, %d is added as usual \n", x, y);
+        }
     }
     
     public void setBlockData(int x, int y, byte b)

@@ -110,6 +110,8 @@ public class MarioState implements State
 	private void updateRepresentation(LevelScene levelScene)
 	{
 		//TODO make this
+		byte[][] scene = levelScene.level.map;
+		
 	}
 	
 	/**
@@ -133,11 +135,11 @@ public class MarioState implements State
 		
 		// returns representation
 		int which = 0;
-	    for (int i = -viewDim/2; i <= viewDim/2; i++)
+	    for (int y = -viewDim/2; y < viewDim/2; y++)
 	    {
-	        for (int j = -viewDim/2; j < viewDim/2; j++)
+	        for (int x = -viewDim/2; x <= viewDim/2; x++)
 	        {
-	        	double value = probe(i,j,scene);
+	        	double value = probe(x,y,scene);
 	        	switch((int) value) { 
 	        	case 25:
 	        		value = 0; // fireball becomes 0
@@ -252,7 +254,8 @@ public class MarioState implements State
 	{
 	    int realX = x + Environment.HalfObsWidth;
 	    int realY = y + Environment.HalfObsHeight;
-	    return (double) scene[realX][realY];
+	    return (double) scene[realY][realX];
+	    
 	    //return (scene[realX][realY] != 0) ? 1.0 : 0.0;
 	} // end probe
 	
@@ -314,16 +317,18 @@ public class MarioState implements State
 	 */
 	@Override
 	public String toString() {
-		String string = "";
-		for(int i = 0; i<representation.length; i++) 
+		String string = String.format("%.0f ", representation[0]);
+		for(int i = 1; i<representation.length; i++) 
 		{
-			string += String.format(" %.0f", representation[i]);
-			if( ( (i+1) % viewDim) == 0 )
+			if( ( (i) % (viewDim+1)) == 0 )
 				string += "\n";
-			if( (i+1) % (viewDim*viewDim) == 0 )
+			
+			string += String.format("%.0f ", representation[i]);
+
+			if( (i+1) % ((viewDim + 1)*viewDim) == 0 )
 				string += "\n";
 		}
-		return string; 
+		return string += "\n\n"; 
 	} // end toString
 
 	/**
