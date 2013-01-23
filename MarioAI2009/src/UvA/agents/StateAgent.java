@@ -12,11 +12,11 @@ public class StateAgent extends QLearnAstarAgent {
 
 	public boolean[] getAction(Environment observation)
 	{
-		
+
 		int depth =3;
 		byte[][] scene = observation.getLevelSceneObservation();
 		float[] enemies = observation.getEnemiesFloatPos();
-		
+
 		LevelScene oldScene = sim.levelScene;
 		oldState = new  MarioState(oldScene);//save old state
 		State futureState = oldState.clone();
@@ -34,11 +34,17 @@ public class StateAgent extends QLearnAstarAgent {
 				updateQValue(tempOldState, futureState); //update Q
 			}
 			sim.levelScene = (LevelScene) oldState.clone(); //reset state to old
-			
+
 		}
 		sim.setLevelPart(scene, enemies);
 
-		return null;
+		// only pick a new action every 2nd question
+		returnAction = eGreedyAction();
+
+		// update oldState for updateQValue()
+		oldState = state.clone();
+
+		return returnAction;
 	}
 
 }
