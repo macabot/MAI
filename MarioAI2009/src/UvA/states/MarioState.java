@@ -1,9 +1,6 @@
 package UvA.states;
 
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.Properties;
 
 import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.engine.sprites.Sprite;
@@ -19,6 +16,7 @@ public class MarioState implements State
 	
 	// state representation, settable
 	public static int viewDim = 8;//max 20;// 	//size of statespace that  is represented
+
 	public static final int miscDims = 1; // dimensions for extra information about state
 
 	
@@ -41,7 +39,6 @@ public class MarioState implements State
 	private static int REWARD_MUSHROOM = 10;
 	private static int REWARD_COIN = 1;
 	private static int REWARD_DIE = -1000; // should be negative
-	
 	
 	// enemies killed total
 	private static int totalKilledByStomp = 0;
@@ -108,10 +105,126 @@ public class MarioState implements State
 	
 	private void updateRepresentation(LevelScene levelScene)
 	{
-		//TODO make this
+
+		// levenscene.level.map == getmerged without sprites
 		byte[][] scene = levelScene.level.map;
+	
+		// add sprites
+/*	     for (competition.icegic.robin.astar.sprites.Sprite sprite : levelScene.sprites)
+	        {
+	            if (sprite.mapX >= 0 &&
+	                sprite.mapX > MarioXInMap - Environment.HalfObsWidth &&
+	                sprite.mapX < MarioXInMap + Environment.HalfObsWidth &&
+	                sprite.mapY >= 0 &&
+	                sprite.mapY > MarioYInMap - Environment.HalfObsHeight &&
+	                sprite.mapY < MarioYInMap + Environment.HalfObsHeight )
+	            {
+	                int obsX = sprite.mapY - MarioYInMap + Environment.HalfObsHeight;
+	                int obsY = sprite.mapX - MarioXInMap + Environment.HalfObsWidth;
+	                // quick fix TODO: handle this in more general way.
+	                if (scene[obsX][obsY] != 14)
+	                {
+	                    byte tmp = ZLevelEnemyGeneralization(sprite.kind, ZLevelEnemies);
+	                    if (tmp != Sprite.KIND_NONE)
+	                        ret[obsX][obsY] = tmp;
+	                }
+	            }
+	        } */
 		
-	}
+		// 2 = stompable enemy
+		// 9 = not stompable enemy
+		// 25 = fireball from mario
+		// 34 = coin
+		// -10 = border 
+		// -11 = half border --> border
+		// 21 = nice brick (coin/mush
+		// Sprite.KIND_MUSHROOM = mushroom
+		// Sprite.KIND_FIRE_FLOWER = flower
+		// 16 = cheatingboxes = normal brick => question brick
+		// 20 = flower pot/cannon ==> border
+		
+		// returns representation
+		int which = 0;
+	    for (int y = -viewDim/2; y < viewDim/2; y++)
+	    {
+	        for (int x = -viewDim/2; x <= viewDim/2; x++)
+	        {
+	        	double value = probe(x,y,scene);
+	        	switch((int) value) { 
+	        	case 25:
+	        		value = 0; // fireball becomes 0
+	        		break;
+	        	case -11:
+	        		value = -10; // half border becomes border
+	        		break;
+	        	case Sprite.KIND_FIRE_FLOWER: 
+	        		value = Sprite.KIND_MUSHROOM; // fireflower equals to mushroom
+	        		break;
+	        	case 21:
+	        		value = 16; // nice brick same categorie as brick
+	        		break;
+	        	case 20:
+	        		value = -10; // flower pot/cannon equals border
+	        	} // end switch
+	        		
+	        	representation[which++] = value;	
+	        }
+	    }
+	    
+	    /////////////////// sets variables for reward function
+	    
+	    // TODO
+	    oldXPos = xPos;
+	    xPos = levelScene.mario.mapX;
+	    
+	    // check for below point of no return
+	    dieCheck = levelScene.mario.mapY > 225;
+	    
+	    // update enemies killed
+		killedByFire = levelScene.enemiesKilled - totalKilledByFire; // TODO: wrong
+		killedByStomp = levelScene.enemiesJumpedOn - totalKilledByStomp;
+		killedByShell = levelScene.enemiesKilled - totalKilledByShell; // TODO: wrong
+		totalKilledByFire = levelScene.enemiesKilled; // TODO: wrong
+		totalKilledByStomp = levelScene.enemiesJumpedOn;
+		totalKilledByShell = levelScene.enemiesKilled; // TODO: wrong
+		marioMode = 2 - levelScene.mario.damage;
+		
+		// calculate dynamic values
+		
+		// first set them to 0 (reset)
+		collided = 0;
+		collectedFlowers = 0;
+		collectedMushrooms = 0;
+		collectedCoins = 0;
+		
+		// check collided
+		if(marioMode < lastMarioMode) {
+			collided = 1; 
+			lastMarioMode = marioMode; // set for next evaluation
+		}
+			
+		// check pickup flower
+		if(Mario.gainedFlowers > gainedFlowersSoFar) {
+			collectedFlowers = Mario.gainedFlowers - gainedFlowersSoFar;
+			gainedFlowersSoFar = Mario.gainedFlowers;
+		}
+		
+		// check if pickup mushroom
+		if(Mario.gainedMushrooms > gainedMushroomsSoFar) {
+			collectedMushrooms = Mario.gainedMushrooms-gainedMushroomsSoFar;
+	    	gainedMushroomsSoFar = Mario.gainedMushrooms;
+		}
+			
+	    // check pickup coins
+	    if(Mario.coins > gainedCoinsSoFar){
+	    	collectedCoins = Mario.coins-gainedCoinsSoFar;
+	    	gainedCoinsSoFar = Mario.coins;
+	    }
+		
+		
+
+
+	} // end update levelScene (astar)
 	
 	/**
 	 * updateRepresentation creates the representation of the state
@@ -120,6 +233,7 @@ public class MarioState implements State
 	private void updateRepresentation(Environment environment) {
 		byte[][] scene = environment.getMergedObservationZ(1, 1);
 
+		
 		// 2 = stompable enemy
 		// 9 = not stompable enemy
 		// 25 = fireball from mario

@@ -19,7 +19,7 @@ import competition.icegic.robin.astar.sprites.SpriteContext;
 
 public class LevelScene implements SpriteContext, Cloneable
 {
-    private List<Sprite> sprites = new ArrayList<Sprite>();
+    public List<Sprite> sprites = new ArrayList<Sprite>();
     private List<Sprite> spritesToAdd = new ArrayList<Sprite>();
     private List<Sprite> spritesToRemove = new ArrayList<Sprite>();
 
