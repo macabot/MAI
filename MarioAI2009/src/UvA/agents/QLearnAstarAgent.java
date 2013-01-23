@@ -3,6 +3,7 @@ package UvA.agents;
 import java.util.HashMap;
 import java.util.Map;
 
+import UvA.states.MarioState;
 import UvA.states.StateActionPair;
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.MarioComponent;
@@ -31,9 +32,12 @@ public class QLearnAstarAgent extends QLearnAgent implements Agent {
 	 *  Constructor of qlearn agent with a blank policy (to be learned)
 	 */
 	public QLearnAstarAgent() {
-		this(new HashMap<StateActionPair, Double>(), name, "Astar");	
+		this("QLearnAstarAgent");	
 	} // end constructor without policy
 	
+	public QLearnAstarAgent(String name) {
+		this(new HashMap<StateActionPair, Double>(), name, "Astar");	
+	} // end constructor without policy
 	/**
 	 * Constructor for a q learning agent with a given policy
 	 * 
@@ -173,6 +177,7 @@ public class QLearnAstarAgent extends QLearnAgent implements Agent {
 		oldState.reset();
 		action = new boolean[Environment.numberOfButtons];// Empty action
         sim = new AStarSimulator();
+        MarioState.resetStatic();
 	}// end reset
 
 } // end class
