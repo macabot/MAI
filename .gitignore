@@ -32,3 +32,6 @@ config.properties
 
 # debug files
 *.debug
+
+# Matlab files
+*.mat
