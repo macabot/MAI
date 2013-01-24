@@ -27,7 +27,7 @@ public class PsychicAgent extends QLearnAgent {
 	public boolean[] getAction(Environment observation)
 	{
 		
-		// int depth =3;
+		int depth =3;
 		byte[][] scene = observation.getLevelSceneObservation();
 		float[] enemies = observation.getEnemiesFloatPos();
 
@@ -57,9 +57,7 @@ public class PsychicAgent extends QLearnAgent {
 			e.printStackTrace();
 		}
 		
-		
-		/*  ////////// old loop for learning from astar (future)
-		state = new  MarioState(oldScene);	//save old state
+		state = new  MarioState(oldScene, oldState);	//save old state
 		State futureState = state.clone();
 		List<boolean[]>listAction = getAllActions();//get all actions
 		for(int i = 0; i < listAction.size();i++)//for all possible actions
@@ -71,13 +69,13 @@ public class PsychicAgent extends QLearnAgent {
 				State tempState = futureState.clone(); 
 				sim.advanceStep(tempAction);//simulate action
 				LevelScene simulatedScene = sim.levelScene;//get new state from action
-				futureState = new  MarioState(simulatedScene);
+				futureState = new  MarioState(simulatedScene, tempState);
 				updateQValue(tempState, futureState); //update Q
 			}
 			sim.levelScene = oldScene; //reset scene
 
 		}
-		*/
+		
 		
 		
 		

@@ -15,9 +15,9 @@ public class PCAState extends MarioState
 	 * @param environmentIn - information needed to create MarioState
 	 * @param pcam - object that dictates how to perform PCA and cluster the results
 	 */
-	public PCAState(Environment environmentIn, PCAMeans pcam) 
+	public PCAState(Environment environmentIn, State oldState, PCAMeans pcam) 
 	{
-		super(environmentIn);
+		super(environmentIn, oldState);
 		if( pcam!=null )
 			this.meanIndex = pcam.sampleToMean(super.getRepresentation());
 	}
@@ -27,10 +27,17 @@ public class PCAState extends MarioState
 	 * @param reprIn - representation of MarioState
 	 * @param pcam - object that dictates how to project and cluster a representation
 	 */
+	/* TODO remove
 	public PCAState(double[] reprIn, PCAMeans pcam) 
 	{
 		super(reprIn);
 		this.meanIndex = pcam.sampleToMean(super.getRepresentation());
+	}
+	*/
+	
+	public PCAState(State pcaState, int meanIndexIn)
+	{
+		this((MarioState) pcaState, meanIndexIn);
 	}
 	
 	/**
@@ -38,16 +45,16 @@ public class PCAState extends MarioState
 	 * @param reprIn - representation of MarioState
 	 * @param meanIndexIn - index of PCAState
 	 */
-	public PCAState(double[] reprIn, int meanIndexIn)
+	public PCAState(MarioState pcaState, int meanIndexIn)
 	{
-		super(reprIn);
+		super(pcaState);
 		this.meanIndex = meanIndexIn;
 	}//end constructors
 	
 	@Override
 	public State clone()
 	{
-		return new PCAState(getRepresentation(), meanIndex);
+		return new PCAState(this, meanIndex);
 	}
 
 	@Override

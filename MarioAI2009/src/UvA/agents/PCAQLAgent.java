@@ -17,9 +17,9 @@ public class PCAQLAgent extends QLearnAgent
 	protected final String stateType = "PCAState";
 
 	protected PCAMeans pcam;
-	private static int numComponents;
-	private static int clusterAmount;
-	private static int iterations;
+	private int numComponents;
+	private int clusterAmount;
+	private int iterations;
 	
 	/**
 	 * Create new PCAQLAgent. Q-values must be loaded with 
@@ -47,7 +47,7 @@ public class PCAQLAgent extends QLearnAgent
 		for( StateActionPair sap: qValues.keySet() )
 		{
 			int index = pcam.sampleToMean(sap.state.getRepresentation()); // convert State to PCAState
-			State projectedState = new PCAState(sap.state.getRepresentation(), index);
+			State projectedState = new PCAState(sap.state, index);
 			StateActionPair projectedSap = new StateActionPair(projectedState, sap.action);
 			if( projectedQValues.containsKey(projectedSap) )
 			{
@@ -83,9 +83,9 @@ public class PCAQLAgent extends QLearnAgent
 	}
 	
 	@Override
-	public State createState(Environment environmentIn)
+	public State createState(Environment environmentIn, State oldState)
 	{
-		return new PCAState(environmentIn, pcam);			
+		return new PCAState(environmentIn, oldState, pcam);			
 	}
 	
 	/**
@@ -129,14 +129,29 @@ public class PCAQLAgent extends QLearnAgent
 		}
 	} // end loadQValues
 	
+	public int getNumComponents()
+	{
+		return this.numComponents;
+	}
+	
+	public int getClusterAmount()
+	{
+		return this.clusterAmount;
+	}
+	
+	public int getIterations()
+	{
+		return this.iterations;
+	}
+	
 	/**
 	 * Set all the properties via a config.properties file
 	 * @param properties
 	 */
-	public static void setAllProperties(Properties properties){
-		numComponents = Integer.parseInt(properties.getProperty("numComponents", "2"));
-		clusterAmount = Integer.parseInt(properties.getProperty("clusterAmount", "-1"));
-		iterations = Integer.parseInt(properties.getProperty("iterations", "10"));
+	public void setAllProperties(Properties properties){
+		this.numComponents = Integer.parseInt(properties.getProperty("numComponents", "2"));
+		this.clusterAmount = Integer.parseInt(properties.getProperty("clusterAmount", "-1"));
+		this.iterations = Integer.parseInt(properties.getProperty("iterations", "10"));
 	}// end setAllProperties
 
 }//end class

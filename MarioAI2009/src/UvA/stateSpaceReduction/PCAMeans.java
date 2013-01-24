@@ -40,7 +40,7 @@ public class PCAMeans implements Serializable
 	private Dataset means;
 	private Map<Instance, Integer> projectToMeanCache;	// cache contains previous conversions from projected vector (using PCA) to mean-index
 
-	private int verbose = 0;
+	private int verbose = 1;
 
 	/**
 	 * Constructor performs PCA on states and clusters the eigen space projections.
@@ -82,6 +82,11 @@ public class PCAMeans implements Serializable
 			for(int i=0; i<means.size(); i++)
 			{
 				projectToMeanCache.put(means.get(i), i); // cache the conversions
+			}
+			if( verbose==1 )
+			{
+				Dataset[] clusters = {means};
+				clustersToMatFile(clusters);	// write single cluster to file
 			}
 		}else
 		{
@@ -179,10 +184,10 @@ public class PCAMeans implements Serializable
 			matClusters.add(matArray);
 		}
 		
-		try {
-			//TODO put numComponents, clusterAmount and iterations in name
+		try {			
 			String fileName = String.format("clusters_nC%d_cA%d_i%d.mat", 
 					numComponents, clusterAmount, iterations);
+			System.out.printf("Write to file %s\n", fileName);
 			new MatFileWriter( fileName, matClusters );	
 		} catch (IOException e) {
 			e.printStackTrace();

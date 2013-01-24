@@ -87,7 +87,7 @@ public class MarioState implements State
 	 * @param st is the oldstate (null aswell)
 	 * @param configFile -- string where the config file is situated
 	 */
-	public MarioState(Environment env, State st, String configFile) {
+	public MarioState(Environment env, String configFile) {
     	Properties properties = MarioState.readPropertiesFile(configFile);
     	representation[representation.length - 1] = 2; // set mariomode to 2
     	setAllProperties(properties); 

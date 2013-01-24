@@ -18,7 +18,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 
 	// agent specific values
 	static private final String name = "QLearnAgent";
-	private final String configFile = System.getProperty("user.dir") + "/config.properties";
+	protected final String configFile = System.getProperty("user.dir") + "/config.properties";
 	
 	// used to create state
 	State state = null;
@@ -220,8 +220,8 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 */
 	public void initiateValues() {
 		// initialise states and actions
-		oldState = new MarioState(null,null, configFile);
-		state =  new MarioState(null,null, configFile);
+		oldState = new MarioState(null, configFile);
+		state =  new MarioState(null, configFile);
 		
 		returnAction = new boolean[Environment.numberOfButtons];
 		allActions = getAllActions();
@@ -331,7 +331,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		oldState.reset();
 		returnAction = new boolean[Environment.numberOfButtons]; 
 	}// end reset
-	
 	
 	public void setAllProperties(Properties properties){
 		initialValue = Integer.parseInt(properties.getProperty("initialValue", "20"));
