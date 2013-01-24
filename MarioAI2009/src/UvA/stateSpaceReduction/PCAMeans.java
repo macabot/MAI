@@ -31,13 +31,16 @@ import com.jmatio.types.MLDouble;
 public class PCAMeans implements Serializable
 {
 	private static final long serialVersionUID = -2478983458498184932L;
+	
+	private final int numComponents;
+	private final int clusterAmount;
+	private final int iterations;
 
 	private PrincipleComponentAnalysis pca;
 	private Dataset means;
 	private Map<Instance, Integer> projectToMeanCache;	// cache contains previous conversions from projected vector (using PCA) to mean-index
 
 	private int verbose = 0;
-	private String path = System.getProperty("user.dir") + "/clusters.debug";;
 
 	/**
 	 * Constructor performs PCA on states and clusters the eigen space projections.
@@ -60,6 +63,9 @@ public class PCAMeans implements Serializable
 	 */
 	public PCAMeans(double[][] vectors, int numComponents, int clusterAmount, int iterations)
 	{
+		this.numComponents = numComponents;
+		this.clusterAmount = clusterAmount;
+		this.iterations = iterations;
 		this.projectToMeanCache = new HashMap<Instance, Integer>();
 		// perform PCA
 		int numSamples = vectors.length;
@@ -175,7 +181,9 @@ public class PCAMeans implements Serializable
 		
 		try {
 			//TODO put numComponents, clusterAmount and iterations in name
-			new MatFileWriter( "clusters.mat", matClusters );	
+			String fileName = String.format("clusters_nC%d_cA%d_i%d.mat", 
+					numComponents, clusterAmount, iterations);
+			new MatFileWriter( fileName, matClusters );	
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -194,23 +202,10 @@ public class PCAMeans implements Serializable
 	
 	public double[] instanceToArray(Instance vector)
 	{
-		return null; //TODO implement
-	}
-
-	/**
-	 * Create a string containing only the values of an Instance
-	 * @param vector - an Instance containing values
-	 * @return string containing only values of 'vector'
-	 */
-	private static String instanceToString(Instance vector)
-	{
-		String s = vector.toString();		
-		String[] toReplace = {"{", "}", "[", "]", ";", "null"};
-		for(String repl: toReplace)
-		{
-			s = s.replace(repl, "");
-		}
-		return s;
+		double[] array = new double[vector.noAttributes()];
+		for(int i=0; i<array.length; i++)
+			array[i] = vector.value(i);
+		return array;
 	}
 
 	/**
