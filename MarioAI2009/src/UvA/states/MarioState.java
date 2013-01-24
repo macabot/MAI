@@ -16,18 +16,18 @@ public class MarioState implements State
 {
 	// necessarily for serializing
 	private static final long serialVersionUID = 4326470085716280782L;
-	
+
 	// state representation, settable
 	public static int viewDim = 8;//max 20;// 	//size of statespace that  is represented
 
 	public static final int miscDims = 1; // dimensions for extra information about state
 
-	
+
 	// 2 windows that contain info on objects and enemies = (viewDim + 1) x viewDim (X x Y)
 	// miscDims spaces for features mario mode
 	private final int amountOfInput = (viewDim + 1)*(viewDim) + miscDims;
 	private double[] representation = new double[amountOfInput];
-	
+
 	// used for reward calculation
 	public static transient double xPos = 32;
 	public static transient double oldXPos = 32;
@@ -42,45 +42,45 @@ public class MarioState implements State
 	private static int REWARD_MUSHROOM = 10;
 	private static int REWARD_COIN = 1;
 	private static int REWARD_DIE = -1000; // should be negative
-	
+
 	// enemies killed total
 	private static int totalKilledByStomp = 0;
 	private static int totalKilledByFire = 0;
 	private static int totalKilledByShell = 0;
-	
+
 	// enemies killed in current scene
 	private static int killedByStomp = 0;
 	private static int killedByFire = 0;
 	private static int killedByShell = 0;
-	
-	
+
+
 	private static int marioMode = 2;
 	private static int lastMarioMode = 2;
-	
+
 	// used for heavy negative reward
 	private static int collided = 0;
 	private boolean dieCheck = false;
-	
+
 	// following values are used in displaying total reward 
 	// and calculating current reward
 	// -SoFar values are for displaying total reward
 	// Rest is used for storing current reward, at the end the total 
 	/// reward is incremented with the current reward 
-	
+
 	private static int gainedFlowersSoFar = 0;
 	private static int collectedFlowers = 0;
-	
+
 	private static int gainedMushroomsSoFar = 0;
 	private static int collectedMushrooms = 0;
-	
+
 	private static int gainedCoinsSoFar = 0;
 	private static int collectedCoins = 0;
-	
-	
+
+
 	public static double rewardSoFar = 0;
 	public static double currentReward = 0;
-	
-	
+
+
 	/**
 	 * Constructor, creates state representation
 	 * @param environment is the mario environment
@@ -90,12 +90,12 @@ public class MarioState implements State
 		if(environment != null) 
 			updateRepresentation( (Environment) environment);
 	} // end constructor env + xPosIn used by mario
-	
+
 	public MarioState(LevelScene levelScene) {	//TODO uncomment
 		if(levelScene != null) 
 			updateRepresentation( levelScene);
 	} // end constructor env + xPosIn used by mario
-	
+
 	/**
 	 * Constructor for when environment was not available: input is representation alone
 	 * Used by clone
@@ -104,16 +104,16 @@ public class MarioState implements State
 		this.representation = new double[reprIn.length];
 		System.arraycopy(reprIn, 0, this.representation, 0, reprIn.length);
 	} // end constructor for representation input used by clone
-	
-	
+
+
 	private void updateRepresentation(LevelScene levelScene)
 	{
 
 		// levenscene.level.map == getmerged without sprites
 		byte[][] scene = levelScene.level.map;
-	
+
 		int MarioXInMap = (int)levelScene.mario.x/16;
-    int MarioYInMap = (int)levelScene.mario.y/16;
+		int MarioYInMap = (int)levelScene.mario.y/16;
 
         int which = -1;
         for (int y = MarioYInMap-viewDim/2; y < (MarioYInMap + viewDim/2); y++)
@@ -164,25 +164,78 @@ public class MarioState implements State
 
                     }
 		        	/*
+=======
+		int MarioYInMap = (int)levelScene.mario.y/16;
+
+		int which = -1;
+		for (int y = MarioYInMap-viewDim/2; y < (MarioYInMap + viewDim/2); y++)
+		{
+			for (int x = MarioXInMap-viewDim/2; x <= (MarioXInMap + viewDim/2); x++)
+			{
+				which++;
+
+				// TODO: set these right (do not understand what is 0 yet)
+				if (x >=0 && x <= levelScene.level.xExit && y >= 0 && y < levelScene.level.height) {// if y is in map and x is in map
+					// 2 = stompable enemy
+					// 9 = not stompable enemy
+					// 25 = fireball from mario
+					// 34 = coin
+					// -10 = border 
+					// -11 = half border --> border
+					// 21 = nice brick (coin/mush
+					// Sprite.KIND_MUSHROOM = mushroom
+					// Sprite.KIND_FIRE_FLOWER = flower
+					// 16 = cheatingboxes = normal brick => question brick
+					// 20 = flower pot/cannon ==> border
+
+					double value = scene[x][y];
+
+					// inverse of levelScene setLevel
+					switch ((int) value)
+					{
+					case -106: value = 0; break;
+					case 4: value = -10;break;
+					case 9: value = -12;break;
+					case -123: value = -10;break;//-76;break;
+					case 10: value = -10;break;
+
+					case 25:
+						value = 0; // fireball becomes 0
+						break;
+					case -11:
+						value = -10; // half border becomes border
+						break;
+					case Sprite.KIND_FIRE_FLOWER: 
+						value = Sprite.KIND_MUSHROOM; // fireflower equals to mushroom
+						break;
+					case 21:
+						value = 16; // nice brick same categorie as brick
+						break;
+					case 20:
+						value = -10; // flower pot/cannon equals border
+
+					}
+					/*
+>>>>>>> tabs correctly
 		        	switch((int) value) { 
 		        	} // end switch
-		        	*/	
-		        	
-                    representation[which] = value;
-	        	} // end if in range
-	        	
-	        } // for y
-	    } // end for x
-        representation[representation.length-1] = 2- levelScene.mario.damage;
-        System.out.println("Create representation");
-        // TODO
-	    /*
+					 */	
+
+					representation[which] = value;
+				} // end if in range
+
+			} // for y
+		} // end for x
+		representation[representation.length-1] = 2- levelScene.mario.damage;
+		System.out.println("Create representation");
+		// TODO
+		/*
         oldXPos = xPos;
 	    xPos = levelScene.mario.x;
-	    
+
 	    // check for below point of no return
 	    dieCheck = levelScene.mario.y > 225;
-	    
+
 	    // update enemies killed
 		killedByFire = levelScene.enemiesKilled - totalKilledByFire; 
 		killedByStomp = levelScene.enemiesJumpedOn - totalKilledByStomp;
@@ -191,45 +244,45 @@ public class MarioState implements State
 		totalKilledByStomp = levelScene.enemiesJumpedOn;
 		totalKilledByShell = levelScene.enemiesKilled;
 		marioMode = 2 - levelScene.mario.damage;
-		
+
 		// calculate dynamic values
-		
+
 		// first set them to 0 (reset)
 		collided = 0;
 		collectedFlowers = 0;
 		collectedMushrooms = 0;
 		collectedCoins = 0;
-		
+
 		// check collided
 		if(marioMode < lastMarioMode) {
 			collided = 1; 
 			lastMarioMode = marioMode; // set for next evaluation
 		}
-			
+
 		// check pickup flower
 		if(Mario.gainedFlowers > gainedFlowersSoFar) {
 			collectedFlowers = Mario.gainedFlowers - gainedFlowersSoFar;
 			gainedFlowersSoFar = Mario.gainedFlowers;
 		}
-		
+
 		// check if pickup mushroom
 		if(Mario.gainedMushrooms > gainedMushroomsSoFar) {
 			collectedMushrooms = Mario.gainedMushrooms-gainedMushroomsSoFar;
 	    	gainedMushroomsSoFar = Mario.gainedMushrooms;
 		}
-			
+
 	    // check pickup coins
 	    if(Mario.coins > gainedCoinsSoFar){
 	    	collectedCoins = Mario.coins-gainedCoinsSoFar;
 	    	gainedCoinsSoFar = Mario.coins;
 	    }
-		
-        */
-		
+
+		 */
+
 
 
 	} // end update levelScene (astar)
-	
+
 	/**
 	 * updateRepresentation creates the representation of the state
 	 * @param environment is the environment created by mario engine
@@ -237,7 +290,7 @@ public class MarioState implements State
 	private void updateRepresentation(Environment environment) {
 		byte[][] scene = environment.getMergedObservationZ(1, 1);
 
-		
+
 		// 2 = stompable enemy
 		// 9 = not stompable enemy
 		// 25 = fireball from mario
@@ -249,47 +302,47 @@ public class MarioState implements State
 		// Sprite.KIND_FIRE_FLOWER = flower
 		// 16 = cheatingboxes = normal brick => question brick
 		// 20 = flower pot/cannon ==> border
-		
+
 		// returns representation
 		int which = 0;
-	    for (int y = -viewDim/2; y < viewDim/2; y++)
-	    {
-	        for (int x = -viewDim/2; x <= viewDim/2; x++)
-	        {
-	        	double value = probe(x,y,scene);
-	        	switch((int) value) { 
-	        	case 25:
-	        		value = 0; // fireball becomes 0
-	        		break;
-	        	case -11:
-	        		value = -10; // half border becomes border
-	        		break;
-	        	case Sprite.KIND_FIRE_FLOWER: 
-	        		value = Sprite.KIND_MUSHROOM; // fireflower equals to mushroom
-	        		break;
-	        	case 21:
-	        		value = 16; // nice brick same categorie as brick
-	        		break;
-	        	case 20:
-	        		value = -10; // flower pot/cannon equals border
-	        	} // end switch
-	        		
-	        	representation[which++] = value;	
-	        }
-	    }
-	    
-	    representation[representation.length - 1] = environment.getMarioMode();
-	    // end representation
-	    
-	    /////////////////// sets variables for reward function
-	    
-	    oldXPos = xPos;
-	    xPos = environment.getMarioFloatPos()[0];
-	    
-	    // check for below point of no return
-	    dieCheck = environment.getMarioFloatPos()[1] > 225;
-	    
-	    // update enemies killed
+		for (int y = -viewDim/2; y < viewDim/2; y++)
+		{
+			for (int x = -viewDim/2; x <= viewDim/2; x++)
+			{
+				double value = probe(x,y,scene);
+				switch((int) value) { 
+				case 25:
+					value = 0; // fireball becomes 0
+					break;
+				case -11:
+					value = -10; // half border becomes border
+					break;
+				case Sprite.KIND_FIRE_FLOWER: 
+					value = Sprite.KIND_MUSHROOM; // fireflower equals to mushroom
+					break;
+				case 21:
+					value = 16; // nice brick same categorie as brick
+					break;
+				case 20:
+					value = -10; // flower pot/cannon equals border
+				} // end switch
+
+				representation[which++] = value;	
+			}
+		}
+
+		representation[representation.length - 1] = environment.getMarioMode();
+		// end representation
+
+		/////////////////// sets variables for reward function
+
+		oldXPos = xPos;
+		xPos = environment.getMarioFloatPos()[0];
+
+		// check for below point of no return
+		dieCheck = environment.getMarioFloatPos()[1] > 225;
+
+		// update enemies killed
 		killedByFire = environment.getKillsByFire() - totalKilledByFire;
 		killedByStomp = environment.getKillsByStomp() - totalKilledByStomp;
 		killedByShell = environment.getKillsByShell() - totalKilledByShell;
@@ -297,41 +350,41 @@ public class MarioState implements State
 		totalKilledByStomp = environment.getKillsByStomp();
 		totalKilledByShell = environment.getKillsByShell();
 		marioMode = environment.getMarioMode();
-		
+
 		// calculate dynamic values
-		
+
 		// first set them to 0 (reset)
 		collided = 0;
 		collectedFlowers = 0;
 		collectedMushrooms = 0;
 		collectedCoins = 0;
-		
+
 		// check collided
 		if(marioMode < lastMarioMode) {
 			collided = 1; 
 			lastMarioMode = marioMode; // set for next evaluation
 		}
-			
+
 		// check pickup flower
 		if(Mario.gainedFlowers > gainedFlowersSoFar) {
 			collectedFlowers = Mario.gainedFlowers - gainedFlowersSoFar;
 			gainedFlowersSoFar = Mario.gainedFlowers;
 		}
-		
+
 		// check if pickup mushroom
 		if(Mario.gainedMushrooms > gainedMushroomsSoFar) {
 			collectedMushrooms = Mario.gainedMushrooms-gainedMushroomsSoFar;
-	    	gainedMushroomsSoFar = Mario.gainedMushrooms;
+			gainedMushroomsSoFar = Mario.gainedMushrooms;
 		}
-			
-	    // check pickup coins
-	    if(Mario.coins > gainedCoinsSoFar){
-	    	collectedCoins = Mario.coins-gainedCoinsSoFar;
-	    	gainedCoinsSoFar = Mario.coins;
-	    }
-	    
+
+		// check pickup coins
+		if(Mario.coins > gainedCoinsSoFar){
+			collectedCoins = Mario.coins-gainedCoinsSoFar;
+			gainedCoinsSoFar = Mario.coins;
+		}
+
 	} // end updateRepresentation
-		
+
 
 		/** 
 	 * Get the reward of prey or predator based on the state.
@@ -353,6 +406,7 @@ public class MarioState implements State
 		
 		rewardSoFar += reward; // used in mario engine for displaying total reward
 		currentReward = reward;
+
 		return reward;
 	} // end getReward
 
@@ -366,14 +420,14 @@ public class MarioState implements State
 	 */
 	private double probe(int x, int y, byte[][] scene)
 	{
-	    int realX = x + Environment.HalfObsWidth;
-	    int realY = y + Environment.HalfObsHeight;
-	    return (double) scene[realY][realX];
-	    
-	    //return (scene[realX][realY] != 0) ? 1.0 : 0.0;
+		int realX = x + Environment.HalfObsWidth;
+		int realY = y + Environment.HalfObsHeight;
+		return (double) scene[realY][realX];
+
+		//return (scene[realX][realY] != 0) ? 1.0 : 0.0;
 	} // end probe
-	
-	
+
+
 	/**
 	 * Return a clone of this state
 	 * @return clone
@@ -381,7 +435,7 @@ public class MarioState implements State
 	public State clone() {
 		return new MarioState(representation);
 	} // end clone
-	
+
 	/**
 	 * Reset the info to zero
 	 */
@@ -390,7 +444,7 @@ public class MarioState implements State
 			representation[i] = 0.0;
 		}
 	} // end reset
-	
+
 	/**
 	 * Calls resetStatic with mode value 2 (flower-powered mario, default)
 	 */
@@ -423,8 +477,8 @@ public class MarioState implements State
 		xPos = 32;
 		oldXPos = 32;
 	}// end resetStatic
-	
-	
+
+
 	/**
 	 * Overrides toString method, simply prints a dim x dim matrix of the representation
 	 * @return A string representation the object
@@ -436,7 +490,7 @@ public class MarioState implements State
 		{
 			if( ( (i) % (viewDim+1)) == 0 )
 				string += "\n";
-			
+
 			string += String.format("%.0f ", representation[i]);
 
 			if( (i+1) % ((viewDim + 1)*viewDim) == 0 )
@@ -467,7 +521,7 @@ public class MarioState implements State
 			return false;
 		return true;
 	}
-		
+
 	/**
 	 * hashCode() overrides hashcode for hashmapping, 
 	 * automatically created by ecipse
@@ -491,7 +545,7 @@ public class MarioState implements State
 	public double[] getRepresentation() {
 		return this.representation;
 	}
-	
+
 	/**
 	 * Returns reward of current state
 	 * @return - of which the first element is the x position of mario, 
@@ -501,7 +555,7 @@ public class MarioState implements State
 		double[] reward = {MarioState.xPos, MarioState.rewardSoFar};
 		return reward;
 	} // end get total reward
-	
+
 	public static Properties readPropertiesFile(String configFilePath){
 		//String configFilePath = "D:/settings.properties";
 		// load the properties file
@@ -509,20 +563,20 @@ public class MarioState implements State
 		try {
 			FileInputStream  fis = new FileInputStream(configFilePath);
 			properties.load(fis);
-		
+
 			// close file input stream
 			if (fis != null){
 				fis.close();
 			}// end if
-			
+
 		} catch (IOException e) {
 			System.out.println("Unknown properties file as input! Using default values.");
 			e.printStackTrace();
 		}
-		
+
 		return properties;
 	}// end function readPropertiesFile
-	
+
 	public static void setAllProperties(Properties properties){
 		// rewards
 		REWARD_DISTANCE = Integer.parseInt(properties.getProperty("reward_distance", "2"));;
