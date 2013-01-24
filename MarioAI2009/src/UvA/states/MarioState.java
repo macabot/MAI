@@ -285,7 +285,7 @@ public class MarioState implements State
 	    xPos = environment.getMarioFloatPos()[0];
 	    
 	    // check for below point of no return
-	    dieCheck = environment.getMarioFloatPos()[1] > 225;
+	    dieCheck = environment.getMarioFloatPos()[1] > 220;
 	    
 	    // update enemies killed
 		killedByFire = environment.getKillsByFire() - totalKilledByFire;
@@ -336,25 +336,21 @@ public class MarioState implements State
 	 * @return reward of mario
 	 */ 
 	public double getReward() {
+		double reward;
 		// If dieing, return the reward for dieing
 		if(dieCheck) {
-			//System.out.print("Dieing! Reward: " + REWARD_DIE + " ");
-			return REWARD_DIE;
-		}
-		
-		
+			reward = REWARD_DIE;
+		} else {
 		double distance = xPos - oldXPos;
 		
-		double reward = (double) (distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
+		reward = (double) (distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
 				killedByFire*REWARD_KILLED_FIRE + killedByShell*REWARD_KILLED_SHELL + 
 				collided*REWARD_COLLIDED + collectedFlowers*REWARD_FLOWER + collectedMushrooms*REWARD_MUSHROOM +
 				collectedCoins*REWARD_COIN) - 1;
+		} // end if/else diecheck
 		
 		rewardSoFar += reward; // used in mario engine for displaying total reward
 		currentReward = reward;
-	
-		//if(collided!= 0)
-		//	System.out.print("Collided! Reward: " + reward + " ");
 		return reward;
 	} // end getReward
 
