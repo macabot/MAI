@@ -112,56 +112,69 @@ public class MarioState implements State
 		// levenscene.level.map == getmerged without sprites
 		byte[][] scene = levelScene.level.map;
 	
-        int HalfObsWidth = viewDim/2;
-        int HalfObsHeight = viewDim/2;
-        int MarioXInMap = (int)levelScene.mario.x/16;
-        int MarioYInMap = (int)levelScene.mario.y/16;
+        int MarioXInMap = (int)levelScene.mario.mapX;
+        int MarioYInMap = (int)levelScene.mario.mapY;
 
-        int which = 0;
-		for (int y = MarioYInMap - viewDim/2, obsX = 0; y <= MarioYInMap + viewDim/2; y++, obsX++)
-        {
-            for (int x = MarioXInMap - viewDim/2, obsY = 0; x < MarioXInMap + viewDim/2; x++, obsY++)
-            {
-            	if (x >=0 && x <= levelScene.level.xExit && y >= 0 && y < levelScene.level.height) {
-        		// 2 = stompable enemy
-        		// 9 = not stompable enemy
-        		// 25 = fireball from mario
-        		// 34 = coin
-        		// -10 = border 
-        		// -11 = half border --> border
-        		// 21 = nice brick (coin/mush
-        		// Sprite.KIND_MUSHROOM = mushroom
-        		// Sprite.KIND_FIRE_FLOWER = flower
-        		// 16 = cheatingboxes = normal brick => question brick
-        		// 20 = flower pot/cannon ==> border
-                
-	        	double value = scene[obsX][obsY];
-	        	/*
-	        	switch((int) value) { 
-	        	case 25:
-	        		value = 0; // fireball becomes 0
-	        		break;
-	        	case -11:
-	        		value = -10; // half border becomes border
-	        		break;
-	        	case Sprite.KIND_FIRE_FLOWER: 
-	        		value = Sprite.KIND_MUSHROOM; // fireflower equals to mushroom
-	        		break;
-	        	case 21:
-	        		value = 16; // nice brick same categorie as brick
-	        		break;
-	        	case 20:
-	        		value = -10; // flower pot/cannon equals border
-	        	} // end switch
-	        		
-	        	representation[which++] = value;
-	        	*/
-            	} // end if ingame
-            } // end for x
-        } // end for y
-	    /////////////////// sets variables for reward function
-	    
-	    // TODO
+        int which = -1;
+        for (int y = MarioYInMap-viewDim/2; y < (MarioYInMap + viewDim/2); y++)
+	    {
+	        for (int x = MarioXInMap-viewDim/2; x <= (MarioXInMap + viewDim/2); x++)
+	        {
+	        	which++;
+	        	
+	        	// TODO: set these right (do not understand what is 0 yet)
+	        	if (x >=0 && x <= levelScene.level.xExit && y >= 0 && y < levelScene.level.height) {// if y is in map and x is in map
+	        		// 2 = stompable enemy
+	        		// 9 = not stompable enemy
+	        		// 25 = fireball from mario
+	        		// 34 = coin
+	        		// -10 = border 
+	        		// -11 = half border --> border
+	        		// 21 = nice brick (coin/mush
+	        		// Sprite.KIND_MUSHROOM = mushroom
+	        		// Sprite.KIND_FIRE_FLOWER = flower
+	        		// 16 = cheatingboxes = normal brick => question brick
+	        		// 20 = flower pot/cannon ==> border
+	                
+		        	double value = scene[x][y];
+		        	
+		        	// inverse of levelScene setLevel
+                    switch ((int) value)
+                    {
+                    case -106: value = 0; break;
+                    case 4: value = -10;break;
+                    case 9: value = -12;break;
+                    case -123: value = -10;break;//-76;break;
+                    case 10: value = -10;break;
+                    
+		        	case 25:
+		        		value = 0; // fireball becomes 0
+		        		break;
+		        	case -11:
+		        		value = -10; // half border becomes border
+		        		break;
+		        	case Sprite.KIND_FIRE_FLOWER: 
+		        		value = Sprite.KIND_MUSHROOM; // fireflower equals to mushroom
+		        		break;
+		        	case 21:
+		        		value = 16; // nice brick same categorie as brick
+		        		break;
+		        	case 20:
+		        		value = -10; // flower pot/cannon equals border
+
+                    }
+		        	/*
+		        	switch((int) value) { 
+		        	} // end switch
+		        	*/	
+		        	
+                    representation[which] = value;
+	        	} // end if in range
+	        	
+	        } // for y
+	    } // end for x
+        representation[representation.length-1] = 2- levelScene.mario.damage;
+        // TODO
 	    oldXPos = xPos;
 	    xPos = levelScene.mario.x;
 	    
@@ -169,12 +182,12 @@ public class MarioState implements State
 	    dieCheck = levelScene.mario.y > 225;
 	    
 	    // update enemies killed
-		killedByFire = levelScene.enemiesKilled - totalKilledByFire; // TODO: wrong
+		killedByFire = levelScene.enemiesKilled - totalKilledByFire; 
 		killedByStomp = levelScene.enemiesJumpedOn - totalKilledByStomp;
-		killedByShell = levelScene.enemiesKilled - totalKilledByShell; // TODO: wrong
-		totalKilledByFire = levelScene.enemiesKilled; // TODO: wrong
+		killedByShell = levelScene.enemiesKilled - totalKilledByShell;
+		totalKilledByFire = levelScene.enemiesKilled; 
 		totalKilledByStomp = levelScene.enemiesJumpedOn;
-		totalKilledByShell = levelScene.enemiesKilled; // TODO: wrong
+		totalKilledByShell = levelScene.enemiesKilled;
 		marioMode = 2 - levelScene.mario.damage;
 		
 		// calculate dynamic values
