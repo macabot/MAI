@@ -6,23 +6,49 @@ import UvA.states.MarioState;
 import UvA.states.State;
 import ch.idsia.mario.environments.Environment;
 
+import competition.icegic.robin.astar.AStarSimulator;
 import competition.icegic.robin.astar.LevelScene;
 
-public class PsychicAgent extends QLearnAstarAgent {
+public class PsychicAgent extends QLearnAgent {
 
+	protected AStarSimulator sim;
 	
+	// used to set x and y in simulator
+	private float lastX = 0; 
+    private float lastY = 0;
+    
 	public PsychicAgent()
 	{
 		super("StateAgent");
+		sim = new AStarSimulator();
 	}
+	
 	
 	public boolean[] getAction(Environment observation)
 	{
-
-		int depth =3;
+		
+		// int depth =3;
 		byte[][] scene = observation.getLevelSceneObservation();
 		float[] enemies = observation.getEnemiesFloatPos();
+
+		// set mario position in simulator (MUST BE SET BEFORE SETLEVELPART)
+		
+		float[] f = observation.getMarioFloatPos();
+		sim.levelScene.mario.x = f[0];
+		sim.levelScene.mario.y = f[1];
+		sim.levelScene.mario.xa = (f[0] - lastX) *0.89f;
+		sim.levelScene.mario.ya = (f[1] - lastY) * 0.85f + 3f;
+                
+		// set lastx and lasty for new round
+		lastX = f[0];
+		lastY = f[1];
+		
 		sim.setLevelPart(scene, enemies);
+
+
+		
+		
+
 		
 		LevelScene oldScene = null;
 		try {
@@ -30,16 +56,19 @@ public class PsychicAgent extends QLearnAstarAgent {
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
+		
+		
+		/*  ////////// old loop for learning from astar (future)
 		state = new  MarioState(oldScene);	//save old state
 		State futureState = state.clone();
 		List<boolean[]>listAction = getAllActions();//get all actions
 		for(int i = 0; i < listAction.size();i++)//for all possible actions
 		{
-			State tempState = state.clone();
+			futureState = state.clone();
 			boolean[] tempAction = listAction.get(i);
 			for(int j = 0 ; j < depth;j++)//repeat same action
 			{ 
-				tempState = futureState.clone(); 
+				State tempState = futureState.clone(); 
 				sim.advanceStep(tempAction);//simulate action
 				LevelScene simulatedScene = sim.levelScene;//get new state from action
 				futureState = new  MarioState(simulatedScene);
@@ -48,14 +77,29 @@ public class PsychicAgent extends QLearnAstarAgent {
 			sim.levelScene = oldScene; //reset scene
 
 		}
+		*/
+		
+		
+		
+		
+		
+		// regular qLearning
+		state = createState(observation);
+		
+		// testing purposes, comparing states
+		State aStarState = new MarioState(oldScene);
 
-		// get an action
+		// update q and return action
+		updateQValue();
+		
 		returnAction = eGreedyAction();
 
 		// update oldState for updateQValue()
-		oldState = state.clone();
-
-		return returnAction;
+	    oldState = state.clone();
+	    
+	    return returnAction;
+		
 	}//end getAction
 
+	
 }//end class

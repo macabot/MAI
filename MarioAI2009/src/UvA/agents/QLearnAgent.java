@@ -329,8 +329,13 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	public void reset(){
 		state.reset();
 		oldState.reset();
-		state.setAllProperties(MarioStateNonStatic.properties);
+//////////// head
+		// state.setAllProperties(MarioStateNonStatic.properties);
 		//MarioState.resetStatic();
+/////////////////end head
+		returnAction = new boolean[Environment.numberOfButtons]; 
+		MarioState.resetStatic();
+		/////////// end conflict
 	}// end reset
 	
 	

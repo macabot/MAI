@@ -112,8 +112,8 @@ public class MarioState implements State
 		// levenscene.level.map == getmerged without sprites
 		byte[][] scene = levelScene.level.map;
 	
-        int MarioXInMap = (int)levelScene.mario.mapX;
-        int MarioYInMap = (int)levelScene.mario.mapY;
+		int MarioXInMap = (int)levelScene.mario.x/16;
+    int MarioYInMap = (int)levelScene.mario.y/16;
 
         int which = -1;
         for (int y = MarioYInMap-viewDim/2; y < (MarioYInMap + viewDim/2); y++)
@@ -174,8 +174,10 @@ public class MarioState implements State
 	        } // for y
 	    } // end for x
         representation[representation.length-1] = 2- levelScene.mario.damage;
+        System.out.println("Create representation");
         // TODO
-	    oldXPos = xPos;
+	    /*
+        oldXPos = xPos;
 	    xPos = levelScene.mario.x;
 	    
 	    // check for below point of no return
@@ -222,7 +224,7 @@ public class MarioState implements State
 	    	gainedCoinsSoFar = Mario.coins;
 	    }
 		
-        
+        */
 		
 
 
@@ -285,7 +287,7 @@ public class MarioState implements State
 	    xPos = environment.getMarioFloatPos()[0];
 	    
 	    // check for below point of no return
-	    dieCheck = environment.getMarioFloatPos()[1] > 220;
+	    dieCheck = environment.getMarioFloatPos()[1] > 225;
 	    
 	    // update enemies killed
 		killedByFire = environment.getKillsByFire() - totalKilledByFire;
@@ -331,7 +333,7 @@ public class MarioState implements State
 	} // end updateRepresentation
 		
 
-	/** 
+		/** 
 	 * Get the reward of prey or predator based on the state.
 	 * @return reward of mario
 	 */ 
@@ -353,6 +355,7 @@ public class MarioState implements State
 		currentReward = reward;
 		return reward;
 	} // end getReward
+
 
 	/**
 	 * Used in getAction for getting x and y positions relative to mario
