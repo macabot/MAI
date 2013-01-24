@@ -92,8 +92,8 @@ public class MarioState implements State
 	} // end constructor env + xPosIn used by mario
 	
 	public MarioState(LevelScene levelScene) {	//TODO uncomment
-		//if(levelScene != null) 
-			//updateRepresentation( levelScene);
+		if(levelScene != null) 
+			updateRepresentation( levelScene);
 	} // end constructor env + xPosIn used by mario
 	
 	/**
@@ -118,10 +118,11 @@ public class MarioState implements State
         int MarioYInMap = (int)levelScene.mario.y/16;
 
         int which = 0;
-		for (int y = MarioYInMap - HalfObsHeight, obsX = 0; y < MarioYInMap + HalfObsHeight; y++, obsX++)
+		for (int y = MarioYInMap - viewDim/2, obsX = 0; y <= MarioYInMap + viewDim/2; y++, obsX++)
         {
-            for (int x = MarioXInMap - HalfObsWidth, obsY = 0; x < MarioXInMap + HalfObsWidth; x++, obsY++)
+            for (int x = MarioXInMap - viewDim/2, obsY = 0; x < MarioXInMap + viewDim/2; x++, obsY++)
             {
+            	if (x >=0 && x <= levelScene.level.xExit && y >= 0 && y < levelScene.level.height) {
         		// 2 = stompable enemy
         		// 9 = not stompable enemy
         		// 25 = fireball from mario
@@ -134,8 +135,8 @@ public class MarioState implements State
         		// 16 = cheatingboxes = normal brick => question brick
         		// 20 = flower pot/cannon ==> border
                 
-	        	double value = scene[x][y];
-	        	
+	        	double value = scene[obsX][obsY];
+	        	/*
 	        	switch((int) value) { 
 	        	case 25:
 	        		value = 0; // fireball becomes 0
@@ -153,18 +154,19 @@ public class MarioState implements State
 	        		value = -10; // flower pot/cannon equals border
 	        	} // end switch
 	        		
-	        	representation[which++] = value;	
-
+	        	representation[which++] = value;
+	        	*/
+            	} // end if ingame
             } // end for x
         } // end for y
 	    /////////////////// sets variables for reward function
 	    
 	    // TODO
 	    oldXPos = xPos;
-	    xPos = levelScene.mario.mapX;
+	    xPos = levelScene.mario.x;
 	    
 	    // check for below point of no return
-	    dieCheck = levelScene.mario.mapY > 225;
+	    dieCheck = levelScene.mario.y > 225;
 	    
 	    // update enemies killed
 		killedByFire = levelScene.enemiesKilled - totalKilledByFire; // TODO: wrong
@@ -207,6 +209,7 @@ public class MarioState implements State
 	    	gainedCoinsSoFar = Mario.coins;
 	    }
 		
+        
 		
 
 
