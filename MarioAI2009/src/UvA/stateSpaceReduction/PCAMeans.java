@@ -5,10 +5,9 @@
 
 package UvA.stateSpaceReduction;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +23,10 @@ import net.sf.javaml.core.Instance;
 import net.sf.javaml.distance.DistanceMeasure;
 import net.sf.javaml.distance.EuclideanDistance;
 import UvA.states.State;
+
+import com.jmatio.io.MatFileWriter;
+import com.jmatio.types.MLArray;
+import com.jmatio.types.MLDouble;
 
 public class PCAMeans implements Serializable
 {
@@ -78,7 +81,7 @@ public class PCAMeans implements Serializable
 		{
 			Dataset[] clusters = createClusters(projections, clusterAmount, iterations);
 			if( verbose==1 )
-				clustersToFile(clusters);	// write the clusters to file
+				clustersToMatFile(clusters);	// write the clusters to file
 			this.means = calculateMeans(clusters);
 		}
 	}//end constructors
@@ -158,28 +161,41 @@ public class PCAMeans implements Serializable
 	 * Write 'clusters' to file
 	 * @param clusters - clusters of vectors
 	 */
-	private void clustersToFile(Dataset[] clusters)
+	private void clustersToMatFile(Dataset[] clusters)
 	{
+		ArrayList<MLArray> matClusters = new ArrayList<MLArray>();
+		for(int i=0; i<clusters.length; i++)
+		{
+			Dataset cluster = clusters[i];
+			double[][] clusterDoubleArray = datasetToDoubleArray(cluster);
+			String clusterName = String.format("cluster%d", i);
+			MLArray matArray = new MLDouble(clusterName, clusterDoubleArray);
+			matClusters.add(matArray);
+		}
+		
 		try {
-			BufferedWriter out = new BufferedWriter(new FileWriter(path));
-			for(int c=0; c<clusters.length; c++)
-			{
-				Dataset cluster = clusters[c];
-				out.write(String.format("C%d = [",c));
-				for(int i=0; i<cluster.size(); i++)
-				{
-					Instance vector = cluster.get(i);
-					out.write(instanceToString(vector));
-					if( i!=cluster.size()-1 )
-						out.write("; ");
-				}
-				out.write("]\n");
-			}
-			out.close();
+			//TODO put numComponents, clusterAmount and iterations in name
+			new MatFileWriter( "clusters.mat", matClusters );	
 		} catch (IOException e) {
 			e.printStackTrace();
-		}		
-	}//end clustersToFile
+		}
+	}//end clustersToMatFile
+	
+	public double[][] datasetToDoubleArray(Dataset cluster)
+	{
+		double[][] doubleArray = new double[cluster.size()][];
+		for(int i=0; i<cluster.size(); i++)
+		{
+			Instance vector = cluster.get(i);
+			doubleArray[i] = instanceToArray(vector);
+		}
+		return doubleArray;
+	}
+	
+	public double[] instanceToArray(Instance vector)
+	{
+		return null; //TODO implement
+	}
 
 	/**
 	 * Create a string containing only the values of an Instance
