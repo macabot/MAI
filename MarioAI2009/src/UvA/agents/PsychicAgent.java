@@ -84,10 +84,10 @@ public class PsychicAgent extends QLearnAgent {
 		
 		
 		// regular qLearning
-		state = createState(observation);
+		state = createState(observation, oldState);
 		
 		// testing purposes, comparing states
-		State aStarState = new MarioState(oldScene);
+		State aStarState = new MarioState(oldScene, oldState);
 
 		// update q and return action
 		updateQValue();

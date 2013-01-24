@@ -18,7 +18,8 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 
 	// agent specific values
 	static private final String name = "QLearnAgent";
-
+	private final String configFile = System.getProperty("user.dir") + "/config.properties";
+	
 	// used to create state
 	State state = null;
 	State oldState = null;
@@ -73,6 +74,10 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 */
 	public QLearnAgent(Map<StateActionPair, Double> qValuesIn, String name) {
 		super(name);
+		
+		Properties properties = MarioState.readPropertiesFile(configFile);
+		setAllProperties(properties);
+		
 		initiateValues();
 		this.qValues = qValuesIn;
 	} // end constructor with policy
@@ -83,7 +88,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 */
 	public boolean[] getAction(Environment environment)
 	{
-		state = createState(environment);
+		state = createState(environment, oldState); // added oldSTate for non static
 		
 		// update q and return action
 		updateQValue();
@@ -197,23 +202,17 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		return validActions;
 	}
 	
-	/**
-	 * Creates state for mario
-	 * @return the state including information
-	 */
-	public State createState(Environment environmentIn)
-	{
-		return new MarioStateNonStatic(environmentIn);
-	} // end create state
 	
-	/** TODO TEST
+	/** 
 	 * Creates state for mario
+	 * @param Environment is the new environment to create the state
+	 * @param State is the oldState, from which the new state will calculate the reward from
 	 * @return the state including information
 	 */
-//	public State createState(Environment environmentIn, State oldState)
-//	{
-//		return new MarioStateNonStatic(environmentIn, oldState);
-//	} // end create state
+	public State createState(Environment environmentIn, State oldState)
+	{
+		return new MarioState(environmentIn, oldState);
+	} // end create state
 	
 	/**
 	 * Function is used for declaring some values necessarily for qLearning, 
@@ -221,8 +220,9 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 */
 	public void initiateValues() {
 		// initialise states and actions
-		oldState = createState(null);
-		state =  createState(null);
+		oldState = new MarioState(null,null, configFile);
+		state =  new MarioState(null,null, configFile);
+		
 		returnAction = new boolean[Environment.numberOfButtons];
 		allActions = getAllActions();
 		
@@ -329,19 +329,11 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	public void reset(){
 		state.reset();
 		oldState.reset();
-//////////// head
-		// state.setAllProperties(MarioStateNonStatic.properties);
-		//MarioState.resetStatic();
-/////////////////end head
 		returnAction = new boolean[Environment.numberOfButtons]; 
-		MarioState.resetStatic();
-		/////////// end conflict
 	}// end reset
 	
 	
-	
-	
-	public static void setAllProperties(Properties properties){
+	public void setAllProperties(Properties properties){
 		initialValue = Integer.parseInt(properties.getProperty("initialValue", "20"));
 		epsilon = Double.parseDouble(properties.getProperty("epsilon", "0.1"));
 		gamma = Double.parseDouble(properties.getProperty("gamma", "0.9"));
