@@ -32,7 +32,7 @@ public class QLearnAstarAgent extends QLearnAgent implements Agent {
 	 *  Constructor of qlearn agent with a blank policy (to be learned)
 	 */
 	public QLearnAstarAgent() {
-		this("QLearnAstarAgent");	
+		this(name);	
 	} // end constructor without policy
 	
 	public QLearnAstarAgent(String name) {
