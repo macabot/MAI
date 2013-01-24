@@ -112,47 +112,30 @@ public class MarioState implements State
 		// levenscene.level.map == getmerged without sprites
 		byte[][] scene = levelScene.level.map;
 	
-		// add sprites
-/*	     for (competition.icegic.robin.astar.sprites.Sprite sprite : levelScene.sprites)
-	        {
-	            if (sprite.mapX >= 0 &&
-	                sprite.mapX > MarioXInMap - Environment.HalfObsWidth &&
-	                sprite.mapX < MarioXInMap + Environment.HalfObsWidth &&
-	                sprite.mapY >= 0 &&
-	                sprite.mapY > MarioYInMap - Environment.HalfObsHeight &&
-	                sprite.mapY < MarioYInMap + Environment.HalfObsHeight )
-	            {
-	                int obsX = sprite.mapY - MarioYInMap + Environment.HalfObsHeight;
-	                int obsY = sprite.mapX - MarioXInMap + Environment.HalfObsWidth;
-	                // quick fix TODO: handle this in more general way.
-	                if (scene[obsX][obsY] != 14)
-	                {
-	                    byte tmp = ZLevelEnemyGeneralization(sprite.kind, ZLevelEnemies);
-	                    if (tmp != Sprite.KIND_NONE)
-	                        ret[obsX][obsY] = tmp;
-	                }
-	            }
-	        } */
-		
-		// 2 = stompable enemy
-		// 9 = not stompable enemy
-		// 25 = fireball from mario
-		// 34 = coin
-		// -10 = border 
-		// -11 = half border --> border
-		// 21 = nice brick (coin/mush
-		// Sprite.KIND_MUSHROOM = mushroom
-		// Sprite.KIND_FIRE_FLOWER = flower
-		// 16 = cheatingboxes = normal brick => question brick
-		// 20 = flower pot/cannon ==> border
-		
-		// returns representation
-		int which = 0;
-	    for (int y = -viewDim/2; y < viewDim/2; y++)
-	    {
-	        for (int x = -viewDim/2; x <= viewDim/2; x++)
-	        {
-	        	double value = probe(x,y,scene);
+        int HalfObsWidth = viewDim/2;
+        int HalfObsHeight = viewDim/2;
+        int MarioXInMap = (int)levelScene.mario.x/16;
+        int MarioYInMap = (int)levelScene.mario.y/16;
+
+        int which = 0;
+		for (int y = MarioYInMap - HalfObsHeight, obsX = 0; y < MarioYInMap + HalfObsHeight; y++, obsX++)
+        {
+            for (int x = MarioXInMap - HalfObsWidth, obsY = 0; x < MarioXInMap + HalfObsWidth; x++, obsY++)
+            {
+        		// 2 = stompable enemy
+        		// 9 = not stompable enemy
+        		// 25 = fireball from mario
+        		// 34 = coin
+        		// -10 = border 
+        		// -11 = half border --> border
+        		// 21 = nice brick (coin/mush
+        		// Sprite.KIND_MUSHROOM = mushroom
+        		// Sprite.KIND_FIRE_FLOWER = flower
+        		// 16 = cheatingboxes = normal brick => question brick
+        		// 20 = flower pot/cannon ==> border
+                
+	        	double value = scene[x][y];
+	        	
 	        	switch((int) value) { 
 	        	case 25:
 	        		value = 0; // fireball becomes 0
@@ -171,9 +154,9 @@ public class MarioState implements State
 	        	} // end switch
 	        		
 	        	representation[which++] = value;	
-	        }
-	    }
-	    
+
+            } // end for x
+        } // end for y
 	    /////////////////// sets variables for reward function
 	    
 	    // TODO

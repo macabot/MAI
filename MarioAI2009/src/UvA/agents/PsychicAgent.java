@@ -15,6 +15,7 @@ public class PsychicAgent extends QLearnAstarAgent {
 	{
 		super("StateAgent");
 	}
+	
 	public boolean[] getAction(Environment observation)
 	{
 
