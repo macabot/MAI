@@ -1,6 +1,7 @@
 package UvA.states;
 
 import java.io.Serializable;
+import java.util.Properties;
 
 
 public interface State extends Serializable
@@ -25,6 +26,8 @@ public interface State extends Serializable
 	public double[] getRepresentation();
 	
 	public double[] getTotalReward();
+	
+	public void setAllProperties(Properties p);
 	
 	@Override
 	public String toString();
