@@ -91,9 +91,9 @@ public class MarioState implements State
 			updateRepresentation( (Environment) environment);
 	} // end constructor env + xPosIn used by mario
 	
-	public MarioState(LevelScene levelScene) {
-		if(levelScene != null) 
-			updateRepresentation( levelScene);
+	public MarioState(LevelScene levelScene) {	//TODO uncomment
+		//if(levelScene != null) 
+			//updateRepresentation( levelScene);
 	} // end constructor env + xPosIn used by mario
 	
 	/**

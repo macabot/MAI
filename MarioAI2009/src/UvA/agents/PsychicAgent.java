@@ -21,29 +21,34 @@ public class PsychicAgent extends QLearnAstarAgent {
 		int depth =3;
 		byte[][] scene = observation.getLevelSceneObservation();
 		float[] enemies = observation.getEnemiesFloatPos();
-
-		LevelScene oldScene = sim.levelScene;
-		oldState = new  MarioState(oldScene);//save old state
-		State futureState = oldState.clone();
+		sim.setLevelPart(scene, enemies);
+		
+		LevelScene oldScene = null;
+		try {
+			oldScene = (LevelScene) sim.levelScene.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		state = new  MarioState(oldScene);	//save old state
+		State futureState = state.clone();
 		List<boolean[]>listAction = getAllActions();//get all actions
 		for(int i = 0; i < listAction.size();i++)//for all possible actions
 		{
-			State tempOldState = oldState.clone();
-			action = listAction.get(i);
+			State tempState = state.clone();
+			boolean[] tempAction = listAction.get(i);
 			for(int j = 0 ; j < depth;j++)//repeat same action
 			{ 
-				tempOldState = futureState.clone(); 
-				sim.advanceStep(action);//simulate action
+				tempState = futureState.clone(); 
+				sim.advanceStep(tempAction);//simulate action
 				LevelScene simulatedScene = sim.levelScene;//get new state from action
 				futureState = new  MarioState(simulatedScene);
-				updateQValue(tempOldState, futureState); //update Q
+				updateQValue(tempState, futureState); //update Q
 			}
-			sim.levelScene = (LevelScene) oldState.clone(); //reset state to old
+			sim.levelScene = oldScene; //reset scene
 
 		}
-		sim.setLevelPart(scene, enemies);
 
-		// only pick a new action every 2nd question
+		// get an action
 		returnAction = eGreedyAction();
 
 		// update oldState for updateQValue()

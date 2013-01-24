@@ -50,7 +50,7 @@ public class LevelScene implements SpriteContext, Cloneable
     }
 
     
-    @Override protected Object clone() throws CloneNotSupportedException 
+    @Override public Object clone() throws CloneNotSupportedException 
     {
     	LevelScene c = (LevelScene) super.clone();
     	c.mario = (Mario) this.mario.clone();
