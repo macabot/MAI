@@ -338,7 +338,7 @@ public class MarioState implements State
 	public double getReward() {
 		// If dieing, return the reward for dieing
 		if(dieCheck) {
-			System.out.print("Dieing! Reward: " + REWARD_DIE + " ");
+			//System.out.print("Dieing! Reward: " + REWARD_DIE + " ");
 			return REWARD_DIE;
 		}
 		
@@ -353,8 +353,8 @@ public class MarioState implements State
 		rewardSoFar += reward; // used in mario engine for displaying total reward
 		currentReward = reward;
 	
-		if(collided!= 0)
-			System.out.print("Collided! Reward: " + reward + " ");
+		//if(collided!= 0)
+		//	System.out.print("Collided! Reward: " + reward + " ");
 		return reward;
 	} // end getReward
 

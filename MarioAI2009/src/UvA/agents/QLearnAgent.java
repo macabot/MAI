@@ -32,9 +32,9 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
  
 	// settings for q learning
 	static int initialValue = 20; // initial qvalues
-	static protected double epsilon = 0.1; // epsilon used in picking an action
-	static double gamma = 0.9; // gamma is penalty on delayed result
-	static double alpha = 0.3; // learning rate
+	public static double epsilon = 0.1; // epsilon used in picking an action
+	public static double gamma = 0.9; // gamma is penalty on delayed result
+	public static double alpha = 0.3; // learning rate
 	
 	// actions
 	final boolean[] STAY = new boolean[Environment.numberOfButtons];
@@ -295,6 +295,15 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	}
 	
 	/**
+	 * Set alpha, used to test without learning
+	 * @param newAlpha
+	 */
+	public void setAlpha(int newAlpha) {
+		alpha = newAlpha;
+		System.out.println("New alpha is set: " + alpha);
+	}
+	
+	/**
 	 * get total reward of mario, gets from state
 	 * @return double[] result, of which the first element is the x position of mario, 
 	 * and the second command is the reward according to mario
@@ -314,7 +323,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		MarioState.resetStatic();
 	}// end reset
 	
-	//TODO test
+	
 	public static void setAllProperties(Properties properties){
 		initialValue = Integer.parseInt(properties.getProperty("initialValue", "20"));
 		epsilon = Double.parseDouble(properties.getProperty("epsilon", "0.1"));
