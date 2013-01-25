@@ -74,7 +74,7 @@ public class QLearnAstarAgent extends QLearnAgent implements Agent {
 	{
 		if(!this.useAstar)
 		{
-			state = createState(observation);
+			state = createState(observation, oldState);
 			
 			// update q and return action
 			updateQValue();
@@ -90,7 +90,7 @@ public class QLearnAstarAgent extends QLearnAgent implements Agent {
 		}
 		else
 	    {
-			state = createState(observation);
+			state = createState(observation, oldState);
 			
 			// update q and return action
 			updateQValue();
@@ -177,7 +177,6 @@ public class QLearnAstarAgent extends QLearnAgent implements Agent {
 		oldState.reset();
 		action = new boolean[Environment.numberOfButtons];// Empty action
         sim = new AStarSimulator();
-        MarioState.resetStatic();
 	}// end reset
 
 } // end class

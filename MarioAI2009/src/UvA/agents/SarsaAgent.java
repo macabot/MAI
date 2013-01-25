@@ -1,9 +1,6 @@
 package UvA.agents;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
 import ch.idsia.mario.environments.Environment;
 import UvA.states.*;
 
@@ -11,6 +8,7 @@ public class SarsaAgent extends QLearnAgent{
 
 	// agent specific values
 	static private final String name = "SarsaAgent";
+	//private final String configFile = System.getProperty("user.dir") + "/config.properties";
 	
 	// action to return
 	private boolean[] action;
@@ -19,26 +17,13 @@ public class SarsaAgent extends QLearnAgent{
 	// values used by sarsa
 	//private Map<StateActionPair, Double> qValues;	// state-action values
  
-		
 	/**
 	 *  Constructor of sarsa agent with a blank policy (to be learned)
+	 *  Calls constructor with private string name
 	 */
 	public SarsaAgent() {
-		this(new HashMap<StateActionPair, Double>());	
-	} // end constructor without policy
-	
-	/**
-	 * Constructor for a q learning agent with a given policy
-	 * 
-	 * @param plc is the policy the agent should handle
-	 */
-	public SarsaAgent(Map<StateActionPair, Double> qValuesIn) {
-		super();
-		this.setName(name);
-		initiateValues();
-		super.qValues = qValuesIn;
-	} // end constructor with policy
-	
+		super(name);
+	} // end constructor 
 
 	/**
 	 * getAction function is called by the engine to retrieve an action from mario
@@ -47,7 +32,7 @@ public class SarsaAgent extends QLearnAgent{
 	public boolean[] getAction(Environment environment)
 	{
 		// take action a, observe r, s'
-		state = createState(environment);
+		state = createState(environment, oldState);
 		
 		// choose a' from s' with eGreedy
 		action = eGreedyAction();
@@ -90,11 +75,15 @@ public class SarsaAgent extends QLearnAgent{
 	 */
 	@Override
 	public void initiateValues() {
-		oldState = createState(null);
-		state = createState(null);
+		// initialise states and actions
+		oldState = new MarioState(null,null, configFile);
+		state =  new MarioState(null,null, configFile);
+
 		oldAction = new boolean[Environment.numberOfButtons];
 		action = new boolean[Environment.numberOfButtons];
 		allActions = getAllActions();
+
+		
 	} // end initiateValues
 	
 } // end class
