@@ -20,7 +20,7 @@ public class MarioState implements State
 	protected static int verbose = 0;
 
 	// state representation, settable
-	public transient int viewDim = 8;//max 20;// 	//size of statespace that  is represented
+	public int viewDim = 8;//max 20;// 	//size of statespace that  is represented
 	public transient static final int miscDims = 1; // dimensions for extra information about state
 
 
@@ -90,12 +90,11 @@ public class MarioState implements State
 	 * @param configFile -- string where the config file is situated
 	 */
 	public MarioState(String configFile) {
-		amountOfInput = (viewDim + 1)*(viewDim) + miscDims;
-		representation = new double[amountOfInput];
-		
 		Properties properties = MarioState.readPropertiesFile(configFile);
-		representation[representation.length - 1] = 2; // set mariomode to 2
 		setAllProperties(properties); 
+		this.amountOfInput = (viewDim + 1)*(viewDim) + miscDims;
+		this.representation = new double[amountOfInput];
+		representation[representation.length - 1] = 2; // set mariomode to 2
 	} // end first constructors made by mario
 
 	/**
@@ -103,13 +102,13 @@ public class MarioState implements State
 	 * @param environment is the mario environment
 	 * @param oldState is the old state given by mario
 	 */
-	public MarioState(Environment environment, State oldState) {
-		amountOfInput = (viewDim + 1)*(viewDim) + miscDims;
-		representation = new double[amountOfInput];
-		
+	public MarioState(Environment environment, State oldState) {		
 		if(environment == null) 
 			System.err.println("Trying to set mariostate with empty env but no configfile, should not happen!");
-
+		
+		MarioState oldMState = (MarioState) oldState;
+		this.amountOfInput = (oldMState.getViewDim() + 1)*(oldMState.getViewDim()) + miscDims;
+		this.representation = new double[amountOfInput];
 		updateRepresentation(environment, oldState);
 	} // end constructor env + xPosIn used by mario
 
@@ -119,12 +118,12 @@ public class MarioState implements State
 	 * @param oldState the oldstate given by mario
 	 */
 	public MarioState(LevelScene levelScene, State oldState) {	
-		amountOfInput = (viewDim + 1)*(viewDim) + miscDims;
-		representation = new double[amountOfInput];
-		
 		if(levelScene == null) 
 			System.err.println("Trying to set mariostate with empty levelScene but no configfile, should not happen!");
 
+		MarioState oldMState = (MarioState) oldState;
+		this.amountOfInput = (oldMState.getViewDim() + 1)*(oldMState.getViewDim()) + miscDims;
+		this.representation = new double[amountOfInput];
 		updateRepresentation(levelScene, oldState);
 	} // end constructor env + xPosIn used by mario
 
@@ -246,11 +245,8 @@ public class MarioState implements State
 	    xPos = levelScene.mario.x;
 
 	    // check for below point of no return
-	    if( levelScene.mario.y > 225 )
-	    	dieCheck = 1;
-	    else
-	    	dieCheck = 0;
-
+	    dieCheck = (levelScene.mario.y > 225)? 1 : 0;
+	    
 	    // update enemies killed
 		killedByFire = levelScene.enemiesKilled - totalKilledByFire; 
 		killedByStomp = levelScene.enemiesJumpedOn - totalKilledByStomp;
@@ -358,12 +354,7 @@ public class MarioState implements State
 		xPos = environment.getMarioFloatPos()[0];
 
 		// check for below point of no return
-		boolean tmpDieCheck = environment.getMarioFloatPos()[1] > 225;
-		if(tmpDieCheck == true)
-			dieCheck = 1;
-		else
-			dieCheck = 0;
-
+		dieCheck = (environment.getMarioFloatPos()[1] > 225)? 1 : 0;
 
 		// update enemies killed
 		totalKilledByFire = environment.getKillsByFire();
@@ -451,13 +442,13 @@ public class MarioState implements State
 	 */
 	@Override
 	public String toString() {
-		String string = String.format("%.0f ", representation[0]);
+		String string = String.format("%.0f\t", representation[0]);
 		for(int i = 1; i<representation.length; i++) 
 		{
 			if( ( (i) % (viewDim+1)) == 0 )
 				string += "\n";
 
-			string += String.format("%.0f ", representation[i]);
+			string += String.format("%.0f\t", representation[i]);
 
 			if( (i+1) % ((viewDim + 1)*viewDim) == 0 )
 				string += "\n";
