@@ -23,7 +23,7 @@ MarioAI2009/src/UvA/stateSpaceReduction/Test.java
 
 # Serializable files
 #   denote exceptions with prefix !
-ser/*
+MarioAI2009/ser/
 *.ser
 
 # Settings file
@@ -33,5 +33,5 @@ config.properties
 *.debug
 
 # Matlab files
-mat/*
+MarioAI2009/mat/
 *.mat
