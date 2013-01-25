@@ -21,8 +21,8 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	protected final String configFile = System.getProperty("user.dir") + "/config.properties";
 	
 	// used to create state
-	State state = null;
-	State oldState = null;
+	protected State state = null;
+	protected State oldState = null;
 	
 	// action to return
 	protected boolean[] returnAction;
@@ -338,5 +338,11 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		gamma = Double.parseDouble(properties.getProperty("gamma", "0.9"));
 		alpha = Double.parseDouble(properties.getProperty("alpha", "0.3"));
 	}// end function setAllProperties
+	
+	public int getViewDim()
+	{
+		MarioState mState = (MarioState) state;
+		return mState.getViewDim();
+	}
 	
 } // end class
