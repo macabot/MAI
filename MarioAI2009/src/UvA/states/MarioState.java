@@ -103,7 +103,7 @@ public class MarioState implements State
 			System.err.println("Trying to set mariostate with empty env but no configfile, should not happen!");
 
 		setAllProperties(oldState);
-		updateRepresentation( (Environment) environment, oldState);
+		updateRepresentation(environment, oldState);
 	} // end constructor env + xPosIn used by mario
 
 	/**
@@ -330,6 +330,7 @@ public class MarioState implements State
 					break;
 				case 20:
 					value = -10; // flower pot/cannon equals border
+					break;
 				} // end switch
 
 				representation[which++] = value;	
