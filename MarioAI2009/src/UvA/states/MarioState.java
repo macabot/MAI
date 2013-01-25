@@ -241,7 +241,7 @@ public class MarioState implements State
 		// TODO: add sprites
 
 		// TODO: get from levelScene and oldState 
-		/*
+		
         oldXPos = xPos;
 	    xPos = levelScene.mario.x;
 
@@ -266,10 +266,11 @@ public class MarioState implements State
 		collectedCoins = 0;
 
 		// check collided
-		if(marioMode < lastMarioMode) {
+		MarioState oldMState = (MarioState) oldState;
+		if(marioMode < oldMState.marioMode) {
 			collided = 1; 
-			lastMarioMode = marioMode; // set for next evaluation
-		}
+		}else
+			collided = 0;
 
 		// check pickup flower
 		if(Mario.gainedFlowers > gainedFlowersSoFar) {
@@ -289,7 +290,7 @@ public class MarioState implements State
 	    	gainedCoinsSoFar = Mario.coins;
 	    }
 
-		 */
+		 
 
 
 
@@ -359,6 +360,7 @@ public class MarioState implements State
 			dieCheck = 1;
 		else
 			dieCheck = 0;
+
 
 		// update enemies killed
 		totalKilledByFire = environment.getKillsByFire();

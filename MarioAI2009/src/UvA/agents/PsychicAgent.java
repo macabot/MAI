@@ -19,7 +19,7 @@ public class PsychicAgent extends QLearnAgent {
     
 	public PsychicAgent()
 	{
-		super("StateAgent");
+		super("PsychicAgent");
 		sim = new AStarSimulator();
 	}
 	
@@ -59,9 +59,10 @@ public class PsychicAgent extends QLearnAgent {
 		
 		state = new  MarioState(oldScene, oldState);	//save old state
 		State futureState = state.clone();
+		double startReward = rewardSoFar;
 		List<boolean[]>listAction = getAllActions();//get all actions
 		for(int i = 0; i < listAction.size();i++)//for all possible actions
-		{
+		{	
 			futureState = state.clone();
 			boolean[] tempAction = listAction.get(i);
 			for(int j = 0 ; j < depth;j++)//repeat same action
@@ -73,13 +74,8 @@ public class PsychicAgent extends QLearnAgent {
 				updateQValue(tempState, futureState); //update Q
 			}
 			sim.levelScene = oldScene; //reset scene
-
-		}
-		
-		
-		
-		
-		
+			rewardSoFar = startReward;
+		}	
 		
 		// regular qLearning
 		state = createState(observation, oldState);
@@ -99,5 +95,13 @@ public class PsychicAgent extends QLearnAgent {
 		
 	}//end getAction
 
-	
+	public void reset(){
+		state.reset();
+		oldState.reset();
+		returnAction = new boolean[Environment.numberOfButtons]; 
+		rewardSoFar = 0;
+		currentReward = 0;
+		action = new boolean[Environment.numberOfButtons];// Empty action
+        sim = new AStarSimulator();
+	}// end reset
 }//end class
