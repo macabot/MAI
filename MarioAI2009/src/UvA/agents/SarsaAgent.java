@@ -35,6 +35,11 @@ public class SarsaAgent extends QLearnAgent{
 		// take action a, observe r, s'
 		state = createState(environment, oldState);
 		
+		//update reward values in screen
+		double reward = state.getReward();
+		rewardSoFar += reward;
+		currentReward = reward;
+		
 		// choose a' from s' with eGreedy
 		action = eGreedyAction();
 		

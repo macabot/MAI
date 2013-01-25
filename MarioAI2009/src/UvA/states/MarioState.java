@@ -18,13 +18,13 @@ public class MarioState implements State
 	private static final long serialVersionUID = 4326470085716280782L;
 
 	// state representation, settable
-	public int viewDim = 8;//max 20;// 	//size of statespace that  is represented
-	public static final int miscDims = 1; // dimensions for extra information about state
+	public transient int viewDim = 8;//max 20;// 	//size of statespace that  is represented
+	public transient static final int miscDims = 1; // dimensions for extra information about state
 
 
 	// 2 windows that contain info on objects and enemies = (viewDim + 1) x viewDim (X x Y)
 	// miscDims spaces for features mario mode
-	private final int amountOfInput = (viewDim + 1)*(viewDim) + miscDims;
+	private transient final int amountOfInput = (viewDim + 1)*(viewDim) + miscDims;
 	private double[] representation = new double[amountOfInput];
 
 	// used for reward calculation
@@ -32,32 +32,32 @@ public class MarioState implements State
 	public transient double oldXPos = 32;
 
 	// Parameters for how important the reward for X is, set in configFile
-	private int REWARD_DISTANCE = 2; //Positive for moving to right, negative for left
-	private int REWARD_KILLED_STOMP = 0;
-	private int REWARD_KILLED_FIRE = 0;
-	private int REWARD_KILLED_SHELL = 0;
-	private int REWARD_COLLIDED = -1000; //Should be negative
-	private int REWARD_FLOWER = 10;
-	private int REWARD_MUSHROOM = 10;
-	private int REWARD_COIN = 1;
-	private int REWARD_DIE = -1000; // should be negative
+	private transient int REWARD_DISTANCE = 2; //Positive for moving to right, negative for left
+	private transient int REWARD_KILLED_STOMP = 0;
+	private transient int REWARD_KILLED_FIRE = 0;
+	private transient int REWARD_KILLED_SHELL = 0;
+	private transient int REWARD_COLLIDED = -1000; //Should be negative
+	private transient int REWARD_FLOWER = 10;
+	private transient int REWARD_MUSHROOM = 10;
+	private transient int REWARD_COIN = 1;
+	private transient int REWARD_DIE = -1000; // should be negative
 
 	// enemies killed total
-	private int totalKilledByStomp = 0;
-	private int totalKilledByFire = 0;
-	private int totalKilledByShell = 0;
+	private transient int totalKilledByStomp = 0;
+	private transient int totalKilledByFire = 0;
+	private transient int totalKilledByShell = 0;
 
 	// enemies killed in current scene
-	private int killedByStomp = 0;
-	private int killedByFire = 0;
-	private int killedByShell = 0;
+	private transient int killedByStomp = 0;
+	private transient int killedByFire = 0;
+	private transient int killedByShell = 0;
 
 
-	private int marioMode = 2;
+	private transient int marioMode = 2;
 
 	// used for heavy negative reward
-	private int collided = 0;
-	private int dieCheck = 0;
+	private transient int collided = 0;
+	private transient int dieCheck = 0;
 
 	// following values are used in displaying total reward 
 	// and calculating current reward
@@ -65,17 +65,17 @@ public class MarioState implements State
 	// Rest is used for storing current reward, at the end the total 
 	/// reward is incremented with the current reward 
 
-	private int gainedFlowersSoFar = 0;
-	private int collectedFlowers = 0;
+	private transient int gainedFlowersSoFar = 0;
+	private transient int collectedFlowers = 0;
 
-	private int gainedMushroomsSoFar = 0;
-	private int collectedMushrooms = 0;
+	private transient int gainedMushroomsSoFar = 0;
+	private transient int collectedMushrooms = 0;
 
-	private int gainedCoinsSoFar = 0;
-	private int collectedCoins = 0;
+	private transient int gainedCoinsSoFar = 0;
+	private transient int collectedCoins = 0;
 
-	public double rewardSoFar = 0;
-	public double currentReward = 0;
+	public transient double rewardSoFar = 0;
+	public transient double currentReward = 0;
 
 
 
@@ -392,8 +392,7 @@ public class MarioState implements State
 		//currentReward = reward;
 		//System.out.println("RewardSoFar: " + rewardSoFar);
 		//System.out.println("currentReward: " + currentReward);
-		if(collided == 1)
-			System.out.println("Collided! Current reward: " + reward);
+
 		return reward;
 	} // end getReward
 

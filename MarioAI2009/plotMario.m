@@ -19,6 +19,7 @@ function plotMario(agent, alpha, gamma, epsilon, training, runs, saveDir)
     %stdCompetitionScore = data(6,:);
     
     h = figure();
+    axis("tight");
 
     % plot our reward over the training episodes
     subplot(2,1,1)
@@ -48,7 +49,7 @@ function plotMario(agent, alpha, gamma, epsilon, training, runs, saveDir)
     
     % save the plot to pdf
     saveName = strcat(saveDir, fileName, '.png');
-    %saveas(h, saveName, 'pdf'); %TODO this is matlab
+    %saveas(h, saveName, 'pdf'); %TODO this is matlab, not Octave
     print(saveName);
     
 end

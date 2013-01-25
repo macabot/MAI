@@ -162,6 +162,11 @@ public class QLearnAstarAgent extends QLearnAgent implements Agent {
 	        action = sim.optimise(MC.mouseListener.goal);        
 	        
 	        
+			//update reward values in screen
+			double reward = state.getReward();
+			rewardSoFar += reward;
+			currentReward = reward;
+			
 	     // update oldState for updateQValue()
 		    oldState = state.clone();
 	        if (sim.levelScene.verbose > 1) System.out.println("Returning action: " + sim.printAction(action));

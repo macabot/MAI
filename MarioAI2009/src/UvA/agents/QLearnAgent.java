@@ -93,6 +93,11 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	{
 		state = createState(environment, oldState); // added oldSTate for non static
 		
+		//update reward values in screen
+		double reward = state.getReward();
+		rewardSoFar += reward;
+		currentReward = reward;
+		
 		// update q and return action
 		updateQValue();
 		
@@ -159,8 +164,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		// update according to reward of current state
 		double reward = state.getReward();
 		
-		rewardSoFar += reward;
-		currentReward = reward;
 		// get bets QValue for calculating updated qvalue
 		List<boolean[]> actions = getValidActions();
 		double bestQValue = 0;

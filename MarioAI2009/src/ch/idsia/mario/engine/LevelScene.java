@@ -918,7 +918,7 @@ public class LevelScene extends Scene implements SpriteContext
         // draw intermediate reward
         //TODO TEST REWARD
         drawStringDropShadow(g, "REWARD: " + df.format(QLearnAgent.rewardSoFar), 19, 5, 2);
-        drawStringDropShadow(g, "CURRENT REWARD: " + df.format(QLearnAgent.currentReward), 19, 6, 2);
+        drawStringDropShadow(g, "CURRENT: " + df.format(QLearnAgent.currentReward), 19, 6, 2);
 		
         drawStringDropShadow(g, "TIME", 32, 0, 7);
         int time = (timeLeft+15-1)/15;
