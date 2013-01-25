@@ -16,6 +16,8 @@ public class MarioState implements State
 {
 	// necessarily for serializing
 	private static final long serialVersionUID = 4326470085716280782L;
+	
+	protected static int verbose = 0;
 
 	// state representation, settable
 	public transient int viewDim = 8;//max 20;// 	//size of statespace that  is represented
@@ -24,8 +26,8 @@ public class MarioState implements State
 
 	// 2 windows that contain info on objects and enemies = (viewDim + 1) x viewDim (X x Y)
 	// miscDims spaces for features mario mode
-	private transient final int amountOfInput = (viewDim + 1)*(viewDim) + miscDims;
-	private double[] representation = new double[amountOfInput];
+	private transient final int amountOfInput;// = (viewDim + 1)*(viewDim) + miscDims;
+	private double[] representation;// = new double[amountOfInput];
 
 	// used for reward calculation
 	public transient double xPos = 32;
@@ -88,6 +90,9 @@ public class MarioState implements State
 	 * @param configFile -- string where the config file is situated
 	 */
 	public MarioState(String configFile) {
+		amountOfInput = (viewDim + 1)*(viewDim) + miscDims;
+		representation = new double[amountOfInput];
+		
 		Properties properties = MarioState.readPropertiesFile(configFile);
 		representation[representation.length - 1] = 2; // set mariomode to 2
 		setAllProperties(properties); 
@@ -99,10 +104,12 @@ public class MarioState implements State
 	 * @param oldState is the old state given by mario
 	 */
 	public MarioState(Environment environment, State oldState) {
+		amountOfInput = (viewDim + 1)*(viewDim) + miscDims;
+		representation = new double[amountOfInput];
+		
 		if(environment == null) 
 			System.err.println("Trying to set mariostate with empty env but no configfile, should not happen!");
 
-		setAllProperties(oldState);
 		updateRepresentation(environment, oldState);
 	} // end constructor env + xPosIn used by mario
 
@@ -112,10 +119,12 @@ public class MarioState implements State
 	 * @param oldState the oldstate given by mario
 	 */
 	public MarioState(LevelScene levelScene, State oldState) {	
+		amountOfInput = (viewDim + 1)*(viewDim) + miscDims;
+		representation = new double[amountOfInput];
+		
 		if(levelScene == null) 
 			System.err.println("Trying to set mariostate with empty levelScene but no configfile, should not happen!");
 
-		setAllProperties(oldState);
 		updateRepresentation(levelScene, oldState);
 	} // end constructor env + xPosIn used by mario
 
@@ -124,13 +133,13 @@ public class MarioState implements State
 	 * @param marioState is the marioState to return
 	 */
 	public MarioState(MarioState marioState) {
+		
 		if (marioState == null)
 			System.err.println("Error, marioState to clone is empty! Should not happen, right?");
-
-		this.representation = new double[marioState.representation.length];
+		
+		this.amountOfInput = marioState.amountOfInput;
+		this.representation = new double[amountOfInput];
 		System.arraycopy(marioState.representation, 0, this.representation, 0, this.representation.length);
-
-		setAllProperties(marioState);
 
 		this.xPos = marioState.xPos;
 		this.oldXPos = marioState.oldXPos;
@@ -372,7 +381,7 @@ public class MarioState implements State
 		collectedFlowers = gainedFlowersSoFar - oldState.gainedFlowersSoFar;
 		collectedMushrooms = gainedMushroomsSoFar - oldState.gainedMushroomsSoFar;
 		collectedCoins = gainedCoinsSoFar - oldState.gainedCoinsSoFar;
-				
+
 	} // end updateRepresentation
 
 	///////////////////////////////////////// end update function, start getReward function
@@ -393,6 +402,13 @@ public class MarioState implements State
 		//currentReward = reward;
 		//System.out.println("RewardSoFar: " + rewardSoFar);
 		//System.out.println("currentReward: " + currentReward);
+		if( verbose==1 )
+		{
+			if(collided == 1 )
+				System.out.printf("Collided! Current reward: %f\n", reward);
+			if( dieCheck==1 )
+				System.out.printf("Died! Current reward: %f\n", reward);
+		}
 
 		return reward;
 	} // end getReward
@@ -534,22 +550,6 @@ public class MarioState implements State
 		this.REWARD_DIE = Integer.parseInt(properties.getProperty("reward_die", "-1000"));
 		// representation
 		this.viewDim = Integer.parseInt(properties.getProperty("viewDim", "8"));
-	}
-
-	public void setAllProperties(State state){
-		// rewards
-		MarioState marioState = (MarioState) state;
-		this.REWARD_DISTANCE = marioState.REWARD_DISTANCE;
-		this.REWARD_KILLED_STOMP = marioState.REWARD_KILLED_STOMP;
-		this.REWARD_KILLED_FIRE = marioState.REWARD_KILLED_FIRE;
-		this.REWARD_KILLED_SHELL = marioState.REWARD_KILLED_SHELL;
-		this.REWARD_COLLIDED = marioState.REWARD_COLLIDED;
-		this.REWARD_FLOWER = marioState.REWARD_FLOWER;
-		this.REWARD_MUSHROOM = marioState.REWARD_MUSHROOM;
-		this.REWARD_COIN = marioState.REWARD_COIN;
-		this.REWARD_DIE = marioState.REWARD_DIE;
-		// representation
-		this.viewDim = marioState.viewDim;
 	}
 
 	/**

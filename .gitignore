@@ -23,9 +23,8 @@ MarioAI2009/src/UvA/stateSpaceReduction/Test.java
 
 # Serializable files
 #   denote exceptions with prefix !
+ser/*
 *.ser
-!showQlearn.ser
-!dif1lev2qlearn.ser
 
 # Settings file
 config.properties
@@ -34,4 +33,5 @@ config.properties
 *.debug
 
 # Matlab files
+mat/*
 *.mat
