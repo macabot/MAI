@@ -3,7 +3,6 @@ package UvA.agents;
 import java.util.HashMap;
 import java.util.Map;
 
-import UvA.states.MarioState;
 import UvA.states.StateActionPair;
 import ch.idsia.ai.agents.Agent;
 import ch.idsia.mario.engine.MarioComponent;

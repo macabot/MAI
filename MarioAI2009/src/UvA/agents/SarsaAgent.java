@@ -76,8 +76,8 @@ public class SarsaAgent extends QLearnAgent{
 	@Override
 	public void initiateValues() {
 		// initialise states and actions
-		oldState = new MarioState(null,null, configFile);
-		state =  new MarioState(null,null, configFile);
+		oldState = new MarioState(configFile);
+		state =  new MarioState(configFile);
 
 		oldAction = new boolean[Environment.numberOfButtons];
 		action = new boolean[Environment.numberOfButtons];
