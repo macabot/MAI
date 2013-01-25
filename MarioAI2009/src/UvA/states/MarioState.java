@@ -367,7 +367,7 @@ public class MarioState implements State
 		collectedFlowers = gainedFlowersSoFar - oldState.gainedFlowersSoFar;
 		collectedMushrooms = gainedMushroomsSoFar - oldState.gainedMushroomsSoFar;
 		collectedCoins = gainedCoinsSoFar - oldState.gainedCoinsSoFar;
-
+		
 	} // end updateRepresentation
 
 	///////////////////////////////////////// end update function, start getReward function
@@ -390,8 +390,9 @@ public class MarioState implements State
 		} // end if/else diecheck
 
 		rewardSoFar += reward; // used in mario engine for displaying total reward
-		currentReward = reward;
-
+		//currentReward = reward;
+		//System.out.println("RewardSoFar: " + rewardSoFar);
+		//System.out.println("currentReward: " + currentReward);
 		return reward;
 	} // end getReward
 

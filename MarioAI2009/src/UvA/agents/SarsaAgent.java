@@ -1,6 +1,7 @@
 package UvA.agents;
 
 
+import ch.idsia.mario.engine.sprites.Mario;
 import ch.idsia.mario.environments.Environment;
 import UvA.states.*;
 
@@ -83,6 +84,20 @@ public class SarsaAgent extends QLearnAgent{
 		action = new boolean[Environment.numberOfButtons];
 		allActions = getAllActions();
 
+		// hardcoded set the possible actions
+		JUMP[Mario.KEY_JUMP] = true;
+		SPEED[Mario.KEY_SPEED] = true;
+		JUMP_SPEED[Mario.KEY_JUMP] = JUMP_SPEED[Mario.KEY_SPEED] = true;
+		RIGHT[Mario.KEY_RIGHT] = true;
+		RIGHT_JUMP[Mario.KEY_RIGHT] = RIGHT_JUMP[Mario.KEY_JUMP] = true;
+		RIGHT_SPEED[Mario.KEY_RIGHT] = RIGHT_SPEED[Mario.KEY_SPEED] = true;
+		RIGHT_JUMP_SPEED[Mario.KEY_RIGHT] = RIGHT_JUMP_SPEED[Mario.KEY_JUMP] = 
+				RIGHT_JUMP_SPEED[Mario.KEY_SPEED] = true;
+		LEFT[Mario.KEY_LEFT] = true;
+		LEFT_JUMP[Mario.KEY_LEFT] = LEFT_JUMP[Mario.KEY_JUMP] = true;
+		LEFT_SPEED[Mario.KEY_LEFT] = LEFT_SPEED[Mario.KEY_SPEED] = true;
+		LEFT_JUMP_SPEED[Mario.KEY_LEFT] = LEFT_JUMP_SPEED[Mario.KEY_JUMP] = 
+				LEFT_JUMP_SPEED[Mario.KEY_SPEED] = true;
 		
 	} // end initiateValues
 	

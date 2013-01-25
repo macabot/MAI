@@ -51,6 +51,9 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	final boolean[] LEFT_SPEED = new boolean[Environment.numberOfButtons];
 	final boolean[] LEFT_JUMP_SPEED = new boolean[Environment.numberOfButtons];
 	
+	public static double rewardSoFar;
+	public static double currentReward;
+	
 	/**
 	 *  Constructor of qlearn agent with a blank policy (to be learned)
 	 *  Calls constructor with private string name
@@ -155,6 +158,9 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	{
 		// update according to reward of current state
 		double reward = state.getReward();
+		
+		rewardSoFar += reward;
+		currentReward = reward;
 		// get bets QValue for calculating updated qvalue
 		List<boolean[]> actions = getValidActions();
 		double bestQValue = 0;
@@ -330,6 +336,8 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		state.reset();
 		oldState.reset();
 		returnAction = new boolean[Environment.numberOfButtons]; 
+		rewardSoFar = 0;
+		currentReward = 0;
 	}// end reset
 	
 	public void setAllProperties(Properties properties){
