@@ -220,8 +220,8 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 */
 	public void initiateValues() {
 		// initialise states and actions
-		oldState = new MarioState(null, configFile);
-		state =  new MarioState(null, configFile);
+		oldState = new MarioState(configFile);
+		state =  new MarioState(configFile);
 		
 		returnAction = new boolean[Environment.numberOfButtons];
 		allActions = getAllActions();
@@ -241,7 +241,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		LEFT_JUMP_SPEED[Mario.KEY_LEFT] = LEFT_JUMP_SPEED[Mario.KEY_JUMP] = 
 				LEFT_JUMP_SPEED[Mario.KEY_SPEED] = true;
 
-	} // end getvalidactions
+	} // end initiateValues
 
 	
 	/**
@@ -343,6 +343,10 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	{
 		MarioState mState = (MarioState) state;
 		return mState.getViewDim();
+	}
+
+	public double getAlpha() {
+		return alpha;
 	}
 	
 } // end class
