@@ -57,7 +57,7 @@ public class MarioState implements State
 
 	// used for heavy negative reward
 	private int collided = 0;
-	private boolean dieCheck = false;
+	private int dieCheck = 0;
 
 	// following values are used in displaying total reward 
 	// and calculating current reward
@@ -344,7 +344,11 @@ public class MarioState implements State
 		xPos = environment.getMarioFloatPos()[0];
 
 		// check for below point of no return
-		dieCheck = environment.getMarioFloatPos()[1] > 225;
+		boolean tmpDieCheck = environment.getMarioFloatPos()[1] > 225;
+		if(tmpDieCheck == true)
+			dieCheck = 1;
+		else
+			dieCheck = 0;
 
 		// update enemies killed
 		totalKilledByFire = environment.getKillsByFire();
@@ -363,11 +367,11 @@ public class MarioState implements State
 		rewardSoFar = oldState.rewardSoFar;
 
 		// set current events
-		collided = marioMode - oldState.marioMode;
+		collided = (oldState.marioMode > marioMode)? 1 : 0;
 		collectedFlowers = gainedFlowersSoFar - oldState.gainedFlowersSoFar;
 		collectedMushrooms = gainedMushroomsSoFar - oldState.gainedMushroomsSoFar;
 		collectedCoins = gainedCoinsSoFar - oldState.gainedCoinsSoFar;
-		
+				
 	} // end updateRepresentation
 
 	///////////////////////////////////////// end update function, start getReward function
@@ -377,22 +381,19 @@ public class MarioState implements State
 	 */ 
 	public double getReward() {
 		double reward;
-		// If dieing, return the reward for dieing
-		if(dieCheck) {
-			reward = REWARD_DIE;
-		} else {
-			double distance = xPos - oldXPos;
+		double distance = xPos - oldXPos;
 
-			reward = (double) (distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
-					killedByFire*REWARD_KILLED_FIRE + killedByShell*REWARD_KILLED_SHELL + 
-					collided*REWARD_COLLIDED + collectedFlowers*REWARD_FLOWER + collectedMushrooms*REWARD_MUSHROOM +
-					collectedCoins*REWARD_COIN) - 1;
-		} // end if/else diecheck
+		reward = (double) (distance*REWARD_DISTANCE + killedByStomp*REWARD_KILLED_STOMP + 
+				killedByFire*REWARD_KILLED_FIRE + killedByShell*REWARD_KILLED_SHELL + 
+				collided*REWARD_COLLIDED + collectedFlowers*REWARD_FLOWER + collectedMushrooms*REWARD_MUSHROOM +
+				collectedCoins*REWARD_COIN + dieCheck*REWARD_DIE) - 1;
 
 		rewardSoFar += reward; // used in mario engine for displaying total reward
 		//currentReward = reward;
 		//System.out.println("RewardSoFar: " + rewardSoFar);
 		//System.out.println("currentReward: " + currentReward);
+		if(collided == 1)
+			System.out.println("Collided! Current reward: " + reward);
 		return reward;
 	} // end getReward
 
@@ -571,7 +572,7 @@ public class MarioState implements State
 		this.marioMode = 2;
 
 		this.collided = 0;
-		this.dieCheck = false;
+		this.dieCheck = 0;
 
 		this.gainedFlowersSoFar = 0;
 		this.collectedFlowers = 0;
