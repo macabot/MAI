@@ -360,4 +360,9 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		return alpha;
 	}
 	
+	public Map<StateActionPair, Double> getQValues()
+	{
+		return qValues;
+	}
+	
 } // end class
