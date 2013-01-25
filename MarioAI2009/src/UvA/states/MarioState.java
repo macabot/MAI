@@ -246,7 +246,10 @@ public class MarioState implements State
 	    xPos = levelScene.mario.x;
 
 	    // check for below point of no return
-	    dieCheck = levelScene.mario.y > 225;
+	    if( levelScene.mario.y > 225 )
+	    	dieCheck = 1;
+	    else
+	    	dieCheck = 0;
 
 	    // update enemies killed
 		killedByFire = levelScene.enemiesKilled - totalKilledByFire; 
