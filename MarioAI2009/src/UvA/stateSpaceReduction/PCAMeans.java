@@ -83,18 +83,14 @@ public class PCAMeans implements Serializable
 			{
 				projectToMeanCache.put(means.get(i), i); // cache the conversions
 			}
-			if( verbose==1 )
-			{
-				Dataset[] clusters = {means};
-				clustersToMatFile(clusters);	// write single cluster to file
-			}
 		}else
 		{
 			Dataset[] clusters = createClusters(projections, clusterAmount, iterations);
-			if( verbose==1 )
-				clustersToMatFile(clusters);	// write the clusters to file
 			this.means = calculateMeans(clusters);
 		}
+		
+		if( verbose==1 )
+			datasetToMatFile(means);
 	}//end constructors
 
 	/**
@@ -134,7 +130,7 @@ public class PCAMeans implements Serializable
 	 * @param vectors - double array of vectors
 	 * @return Dataset containing vectors
 	 */
-	private Dataset doubleArrayToDataset(double[][] vectors)
+	private static Dataset doubleArrayToDataset(double[][] vectors)
 	{
 		Dataset data = new DefaultDataset();
 		for (int i = 0; i < vectors.length; i++) 
@@ -172,29 +168,29 @@ public class PCAMeans implements Serializable
 	 * Write 'clusters' to file
 	 * @param clusters - clusters of vectors
 	 */
-	private void clustersToMatFile(Dataset[] clusters)
+	public void datasetToMatFile(Dataset data)
+	{
+		String fileName = String.format("means_nC%d_cA%d_i%d.mat", 
+				numComponents, clusterAmount, iterations);
+		datasetToMatFile(data, fileName);
+	}//end clustersToMatFile
+	
+	public static void datasetToMatFile(Dataset data, String fileName)
 	{
 		ArrayList<MLArray> matClusters = new ArrayList<MLArray>();
-		for(int i=0; i<clusters.length; i++)
-		{
-			Dataset cluster = clusters[i];
-			double[][] clusterDoubleArray = datasetToDoubleArray(cluster);
-			String clusterName = String.format("cluster%d", i);
-			MLArray matArray = new MLDouble(clusterName, clusterDoubleArray);
-			matClusters.add(matArray);
-		}
+		double[][] meansDoubleArray = datasetToDoubleArray(data);
+		MLArray matArray = new MLDouble("means", meansDoubleArray);
+		matClusters.add(matArray);
 		
 		try {			
-			String fileName = String.format("clusters_nC%d_cA%d_i%d.mat", 
-					numComponents, clusterAmount, iterations);
 			System.out.printf("Write to file %s\n", fileName);
 			new MatFileWriter( fileName, matClusters );	
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}//end clustersToMatFile
+	}
 	
-	public double[][] datasetToDoubleArray(Dataset cluster)
+	public static double[][] datasetToDoubleArray(Dataset cluster)
 	{
 		double[][] doubleArray = new double[cluster.size()][];
 		for(int i=0; i<cluster.size(); i++)
@@ -205,7 +201,7 @@ public class PCAMeans implements Serializable
 		return doubleArray;
 	}
 	
-	public double[] instanceToArray(Instance vector)
+	public static double[] instanceToArray(Instance vector)
 	{
 		double[] array = new double[vector.noAttributes()];
 		for(int i=0; i<array.length; i++)
