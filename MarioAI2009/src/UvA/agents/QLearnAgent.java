@@ -184,7 +184,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		// calculate reward according to qLearn
 		double updatedValue = oldQ + alpha*(reward + gamma*bestQValue - oldQ);
 		
-		System.out.println("updating from " + oldQ + " to " + Double.toString(updatedValue));
 		qValues.put(oldSap, updatedValue);	// update qValue of State-action pair
 	}
 	
