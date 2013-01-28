@@ -45,18 +45,13 @@ public class PsychicAgent extends QLearnAgent {
 		
 		sim.setLevelPart(scene, enemies);
 
-
-		
-		
-
-		
 		LevelScene oldScene = null;
 		try {
 			oldScene = (LevelScene) sim.levelScene.clone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
-		
+		/*
 		state = new  MarioState(oldScene, oldState);	//save old state
 		State futureState = state.clone();
 		double startReward = rewardSoFar;
@@ -76,14 +71,26 @@ public class PsychicAgent extends QLearnAgent {
 			sim.levelScene = oldScene; //reset scene
 			rewardSoFar = startReward;
 		}	
-		
+		*/
 		// regular qLearning
 		state = createState(observation, oldState);
 		
 		// testing purposes, comparing states
 		State aStarState = new MarioState(oldScene, oldState);
 
+		if(!aStarState.equals(state))
+			System.out.println("Other states!");
+
 		// update q and return action
+		aStarState.equals(state);
+		
+		
+		//update reward values in screen
+		double reward = state.getReward();
+		rewardSoFar += reward;
+		currentReward = reward;
+		
+		
 		updateQValue();
 		
 		returnAction = eGreedyAction();

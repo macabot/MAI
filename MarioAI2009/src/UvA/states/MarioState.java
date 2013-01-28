@@ -51,9 +51,8 @@ public class MarioState implements State
 
 	// enemies killed in current scene
 	private transient int killedByStomp = 0;
-	public transient int killedByFire = 0;
+	private transient int killedByFire = 0;
 	private transient int killedByShell = 0;
-
 
 	private transient int marioMode = 2;
 
@@ -239,7 +238,8 @@ public class MarioState implements State
 
 		representation[representation.length-1] = 2- levelScene.mario.damage;
 
-		// TODO: add sprites
+		// add sprites (enemies)
+		
 
 		MarioState oldMState = (MarioState) oldState;
 		
@@ -249,16 +249,14 @@ public class MarioState implements State
 	    // check for below point of no return
 	    dieCheck = (levelScene.mario.y > 225)? 1 : 0;
 	    
-	    
-	    
 	    // update enemies killed
-		killedByFire = levelScene.enemiesKilled - oldMState.totalKilledByFire; 
+		// killedByFire = levelScene.enemiesKilled - oldMState.totalKilledByFire; levelscene doesn't work correctly  
 		killedByStomp = levelScene.enemiesJumpedOn - oldMState.totalKilledByStomp;
-		killedByShell = levelScene.enemiesKilled - oldMState.totalKilledByShell;
+		// killedByShell = levelScene.enemiesKilled - oldMState.totalKilledByShell; levelscene doesn't work correctly
 		
-		totalKilledByFire = levelScene.enemiesKilled; 
-		totalKilledByStomp = levelScene.enemiesJumpedOn;
-		totalKilledByShell = levelScene.enemiesKilled;
+		// totalKilledByFire = levelScene.enemiesKilled; doesn't work 
+		totalKilledByStomp = levelScene.enemiesJumpedOn; 
+		// totalKilledByShell = levelScene.enemiesKilled; doesn't work
 		marioMode = 2 - levelScene.mario.damage;
 
 		// calculate dynamic values
@@ -294,8 +292,7 @@ public class MarioState implements State
 	    	gainedCoinsSoFar = Mario.coins;
 	    }
 
-		 
-
+	    this.rewardSoFar = oldMState.rewardSoFar;
 
 
 	} // end update levelScene (a star)
@@ -330,6 +327,9 @@ public class MarioState implements State
 			{
 				double value = probe(x,y,scene);
 				switch((int) value) { 
+				case 34:
+					value = 0; // dont see coins
+					break;
 				case 25:
 					value = 0; // fireball becomes 0
 					break;
@@ -363,6 +363,7 @@ public class MarioState implements State
 
 		// update enemies killed
 		killedByFire = environment.getKillsByFire()- oldState.totalKilledByFire;
+		
 		killedByStomp = environment.getKillsByStomp() - oldState.totalKilledByStomp;
 		killedByShell = environment.getKillsByShell() - oldState.totalKilledByShell;
 		
@@ -370,13 +371,12 @@ public class MarioState implements State
 		totalKilledByStomp = environment.getKillsByStomp();
 		totalKilledByShell = environment.getKillsByShell();
 
-		
-
 
 		// update stuff collected total and reward
 		gainedFlowersSoFar = Mario.gainedFlowers;
 		gainedMushroomsSoFar = Mario.gainedMushrooms;
 		gainedCoinsSoFar = Mario.coins;
+		
 		rewardSoFar = oldState.rewardSoFar;
 
 		// set current events

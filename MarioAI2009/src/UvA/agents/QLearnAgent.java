@@ -91,8 +91,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	public boolean[] getAction(Environment environment)
 	{
 		state = createState(environment, oldState); // added oldSTate for non static
-		MarioState tState = (MarioState) state;
-		System.out.println(tState.killedByFire);
+
 		//update reward values in screen
 		double reward = state.getReward();
 		rewardSoFar += reward;
@@ -123,7 +122,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		// initialize variables
 		Random generator = new Random();
 		boolean[] bestAction = new boolean[Environment.numberOfButtons];
-		double bestValue = 0;
+		double bestValue = -10000;
 
 		// find best action
 		List<boolean[]> validActions = getValidActions();
@@ -147,6 +146,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 			return randomAction;
 		}
 		
+
 		return bestAction;	// choose best action
 	}
 
