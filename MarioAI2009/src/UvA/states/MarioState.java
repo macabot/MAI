@@ -110,7 +110,7 @@ public class MarioState implements State
 		this.amountOfInput = (oldMState.getViewDim() + 1)*(oldMState.getViewDim()) + miscDims;
 		this.representation = new double[amountOfInput];
 		updateRepresentation(environment, oldState);
-	} // end constructor env + xPosIn used by mario
+	} // end constructor env + oldState
 
 	/**
 	 * The constructor for astar created level scenes
@@ -239,8 +239,6 @@ public class MarioState implements State
 
 		// TODO: add sprites
 
-		// TODO: get from levelScene and oldState 
-		
         oldXPos = xPos;
 	    xPos = levelScene.mario.x;
 

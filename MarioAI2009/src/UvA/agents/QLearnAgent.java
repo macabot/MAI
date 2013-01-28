@@ -38,7 +38,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	public static double alpha = 0.3; // learning rate
 	
 	// actions
-	final boolean[] STAY = new boolean[Environment.numberOfButtons];
 	final boolean[] JUMP = new boolean[Environment.numberOfButtons];
 	final boolean[] SPEED = new boolean[Environment.numberOfButtons];
 	final boolean[] JUMP_SPEED = new boolean[Environment.numberOfButtons];
@@ -185,6 +184,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		// calculate reward according to qLearn
 		double updatedValue = oldQ + alpha*(reward + gamma*bestQValue - oldQ);
 		
+		System.out.println("updating from " + oldQ + " to " + Double.toString(updatedValue));
 		qValues.put(oldSap, updatedValue);	// update qValue of State-action pair
 	}
 	
@@ -262,7 +262,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		// initiate valid actions
 		List<boolean[]> allActions = new ArrayList<boolean[]>();
 		
-		allActions.add(STAY);
 		allActions.add(JUMP);
 		allActions.add(SPEED);
 		allActions.add(LEFT);
