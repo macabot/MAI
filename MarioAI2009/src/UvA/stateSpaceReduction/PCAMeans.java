@@ -232,6 +232,24 @@ public class PCAMeans implements Serializable
 		return nearestMeanIndex;
 	}
 	
+	public Instance sampleToMeanProject(double[] sample)
+	{
+		Instance projection = sampleToProjection(sample);
+		if( projectToMeanCache.containsKey(projection) )
+		{
+			int index = projectToMeanCache.get(projection);
+			return means.get(index);
+		}
+		DistanceMeasure dm = new EuclideanDistance();
+		Set<Instance> closestSet = means.kNearest(1, projection, dm);	// find nearest neighbor
+		Iterator<Instance> iter = closestSet.iterator();
+		Instance closest = iter.next();
+		int nearestMeanIndex = means.indexOf(closest);	// find index of nearest neighbor
+		projectToMeanCache.put(projection, nearestMeanIndex);	// cache conversion
+		
+		return closest;
+	}
+	
 	/**
 	 * Project a vector with PCA.
 	 * @param sample	a vector
