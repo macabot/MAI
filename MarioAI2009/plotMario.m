@@ -1,4 +1,4 @@
-function plotMario(agent, alpha, gamma, epsilon, training, runs, saveDir)
+function plotMario(agent, alpha, gamma, epsilon, training, episodes, steps, saveDir)
 
     %bijvoorbeeld:
     %QLearnAgent_Alpha0.3Gamma0.9Epsilon0.1Training100Runs10.txt
@@ -7,7 +7,8 @@ function plotMario(agent, alpha, gamma, epsilon, training, runs, saveDir)
         'Gamma',num2str(gamma),...
         'Epsilon',num2str(epsilon),...
         'Training',num2str(training),...
-        'Runs',num2str(runs) );
+        'Episodes',num2str(episodes),
+        'Steps',num2str(steps) );
     %data = importdata(strcat(fileName, '.txt')); %TODO importdata for matlab
     data = load(strcat(fileName, '.txt'));
     
@@ -23,7 +24,7 @@ function plotMario(agent, alpha, gamma, epsilon, training, runs, saveDir)
 
     % plot our reward over the training episodes
     subplot(2,1,1)
-    plotGP(1:length(averageReward):training, averageReward, stdReward);
+    plotGP(0:steps:training, averageReward, stdReward);
     title(strcat(agent,...
         ', alpha = ',num2str(alpha),...
         ', epsilon = ',num2str(epsilon),...
@@ -34,7 +35,7 @@ function plotMario(agent, alpha, gamma, epsilon, training, runs, saveDir)
     
     % plot the distance over the training episodes
     subplot(2,1,2);
-    plotGP(1:length(averageDistance):training, averageDistance, stdDistance);
+    plotGP(0:steps:training, averageDistance, stdDistance);
     xlabel('Training episodes');
     ylabel('Distance travelled');
     

@@ -2,9 +2,6 @@
 %Richard Rozeboom   6173292
 
 function plotGP(x, meanList, covarianceList)
-    x
-    meanList
-    covarianceList
     hold on;
     topCov = meanList+covarianceList;
     bottomCov = fliplr(meanList-covarianceList);
@@ -13,5 +10,4 @@ function plotGP(x, meanList, covarianceList)
 
     fill(doubleX, y, [7 7 7]/8);
     plot(x, meanList)
-
 end

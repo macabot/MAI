@@ -48,6 +48,27 @@ public class Calculate {
 		return sqrt(div);
 	}
 	
+	public static double[] mean(double[][] episodes)
+	{
+		double sum[] = new double[episodes[0].length];
+		for(int i=0; i<episodes.length; i++)
+			sum = add(sum, episodes[i]);
+		return divide(sum, episodes.length); // divide by runs
+	}
+	
+	public static double[] standardDeviation(double[][] episodes, double[] mean)
+	{
+		double[] sqrdDif = new double[episodes[0].length];
+		for(int i=0; i<episodes.length; i++)
+		{
+			double[] dif = subtract(episodes[i], mean);
+			double[] tempSqrdDif = pow(dif, 2);
+			sqrdDif = add(sqrdDif, tempSqrdDif);
+		}
+		double[] div = divide(sqrdDif, episodes.length);
+		return sqrt(div);
+	}
+	
 	/**
 	 * Calculate the standard deviation of a set of times.
 	 * @param timeList	a list of episode lengths
@@ -112,6 +133,14 @@ public class Calculate {
 	}
 	
 	public static double[] subtract(int[] a, double[] b)
+	{
+		double[] c = new double[a.length];
+		for(int i=0; i<a.length; i++)
+			c[i] = a[i]-b[i];
+		return c;
+	}
+	
+	public static double[] subtract(double[] a, double[] b)
 	{
 		double[] c = new double[a.length];
 		for(int i=0; i<a.length; i++)
@@ -192,6 +221,12 @@ public class Calculate {
 	 * @param a double array.
 	 */
 	public static <E> void printDoubleArray(E[][] a)
+	{
+		for(int i=0; i<a.length; i++)
+			printArray(a[i]);
+	}
+	
+	public static void printDoubleArray(double[][] a)
 	{
 		for(int i=0; i<a.length; i++)
 			printArray(a[i]);

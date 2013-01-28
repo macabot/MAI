@@ -317,7 +317,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 */
 	public void setAlpha(int newAlpha) {
 		alpha = newAlpha;
-		System.out.println("New alpha is set: " + alpha);
+		//System.out.println("New alpha is set: " + alpha);
 	}
 	
 	/**
