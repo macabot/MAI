@@ -27,7 +27,7 @@ public interface State extends Serializable
 	
 	public double[] getTotalReward();
 	
-	public void setAllProperties(Properties p);
+	public void setAllProperties();
 	
 	@Override
 	public String toString();

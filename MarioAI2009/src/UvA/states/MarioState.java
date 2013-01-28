@@ -17,16 +17,16 @@ public class MarioState implements State
 	// necessarily for serializing
 	private static final long serialVersionUID = 4326470085716280782L;
 	
-	protected static int verbose = 0;
+	protected static int verbose = 1;
 
 	// state representation, settable
 	public int viewDim = 8;//max 20;// 	//size of statespace that  is represented
-	public transient static final int miscDims = 1; // dimensions for extra information about state
-
+	public transient static int miscDims = 1; // dimensions for extra information about state
+	private Properties properties;
 
 	// 2 windows that contain info on objects and enemies = (viewDim + 1) x viewDim (X x Y)
 	// miscDims spaces for features mario mode
-	private transient final int amountOfInput;// = (viewDim + 1)*(viewDim) + miscDims;
+	private transient int amountOfInput;// = (viewDim + 1)*(viewDim) + miscDims;
 	private double[] representation;// = new double[amountOfInput];
 
 	// used for reward calculation
@@ -51,7 +51,7 @@ public class MarioState implements State
 
 	// enemies killed in current scene
 	private transient int killedByStomp = 0;
-	private transient int killedByFire = 0;
+	public transient int killedByFire = 0;
 	private transient int killedByShell = 0;
 
 
@@ -89,12 +89,9 @@ public class MarioState implements State
 	 * @param st is the oldstate (null aswell)
 	 * @param configFile -- string where the config file is situated
 	 */
-	public MarioState(String configFile) {
-		Properties properties = MarioState.readPropertiesFile(configFile);
-		setAllProperties(properties); 
-		this.amountOfInput = (viewDim + 1)*(viewDim) + miscDims;
-		this.representation = new double[amountOfInput];
-		representation[representation.length - 1] = 2; // set mariomode to 2
+	public MarioState(Properties configFile) {
+		this.properties = configFile;
+		setAllProperties(); 
 	} // end first constructors made by mario
 
 	/**
@@ -107,8 +104,10 @@ public class MarioState implements State
 			System.err.println("Trying to set mariostate with empty env but no configfile, should not happen!");
 		
 		MarioState oldMState = (MarioState) oldState;
-		this.amountOfInput = (oldMState.getViewDim() + 1)*(oldMState.getViewDim()) + miscDims;
-		this.representation = new double[amountOfInput];
+		
+		this.properties = oldMState.getProperties();
+		setAllProperties();
+		
 		updateRepresentation(environment, oldState);
 	} // end constructor env + oldState
 
@@ -122,8 +121,10 @@ public class MarioState implements State
 			System.err.println("Trying to set mariostate with empty levelScene but no configfile, should not happen!");
 
 		MarioState oldMState = (MarioState) oldState;
-		this.amountOfInput = (oldMState.getViewDim() + 1)*(oldMState.getViewDim()) + miscDims;
-		this.representation = new double[amountOfInput];
+		
+		this.properties = oldMState.getProperties();
+		setAllProperties();
+		
 		updateRepresentation(levelScene, oldState);
 	} // end constructor env + xPosIn used by mario
 
@@ -136,8 +137,9 @@ public class MarioState implements State
 		if (marioState == null)
 			System.err.println("Error, marioState to clone is empty! Should not happen, right?");
 		
-		this.amountOfInput = marioState.amountOfInput;
-		this.representation = new double[amountOfInput];
+		this.properties = marioState.getProperties();
+		setAllProperties();
+		
 		System.arraycopy(marioState.representation, 0, this.representation, 0, this.representation.length);
 
 		this.xPos = marioState.xPos;
@@ -239,16 +241,21 @@ public class MarioState implements State
 
 		// TODO: add sprites
 
-        oldXPos = xPos;
+		MarioState oldMState = (MarioState) oldState;
+		
+        oldXPos = oldMState.xPos;
 	    xPos = levelScene.mario.x;
 
 	    // check for below point of no return
 	    dieCheck = (levelScene.mario.y > 225)? 1 : 0;
 	    
+	    
+	    
 	    // update enemies killed
-		killedByFire = levelScene.enemiesKilled - totalKilledByFire; 
-		killedByStomp = levelScene.enemiesJumpedOn - totalKilledByStomp;
-		killedByShell = levelScene.enemiesKilled - totalKilledByShell;
+		killedByFire = levelScene.enemiesKilled - oldMState.totalKilledByFire; 
+		killedByStomp = levelScene.enemiesJumpedOn - oldMState.totalKilledByStomp;
+		killedByShell = levelScene.enemiesKilled - oldMState.totalKilledByShell;
+		
 		totalKilledByFire = levelScene.enemiesKilled; 
 		totalKilledByStomp = levelScene.enemiesJumpedOn;
 		totalKilledByShell = levelScene.enemiesKilled;
@@ -263,7 +270,7 @@ public class MarioState implements State
 		collectedCoins = 0;
 
 		// check collided
-		MarioState oldMState = (MarioState) oldState;
+		
 		if(marioMode < oldMState.marioMode) {
 			collided = 1; 
 		}else
@@ -355,13 +362,15 @@ public class MarioState implements State
 		dieCheck = (environment.getMarioFloatPos()[1] > 225)? 1 : 0;
 
 		// update enemies killed
+		killedByFire = environment.getKillsByFire()- oldState.totalKilledByFire;
+		killedByStomp = environment.getKillsByStomp() - oldState.totalKilledByStomp;
+		killedByShell = environment.getKillsByShell() - oldState.totalKilledByShell;
+		
 		totalKilledByFire = environment.getKillsByFire();
 		totalKilledByStomp = environment.getKillsByStomp();
 		totalKilledByShell = environment.getKillsByShell();
 
-		killedByFire = totalKilledByFire - oldState.killedByFire;
-		killedByStomp = totalKilledByStomp - oldState.killedByStomp;
-		killedByShell = totalKilledByShell - oldState.killedByShell;
+		
 
 
 		// update stuff collected total and reward
@@ -396,14 +405,14 @@ public class MarioState implements State
 		//currentReward = reward;
 		//System.out.println("RewardSoFar: " + rewardSoFar);
 		//System.out.println("currentReward: " + currentReward);
-		if( verbose==1 )
-		{
-			if(collided == 1 )
-				System.out.printf("Collided! Current reward: %f\n", reward);
-			if( dieCheck==1 )
-				System.out.printf("Died! Current reward: %f\n", reward);
-		}
+		if(collided == 1 )
+			System.out.printf("Collided! Current reward: %f\n", reward);
+		if( dieCheck==1 )
+			System.out.printf("Died! Current reward: %f\n", reward);
 
+		if(verbose == 2 && !(collided == 1) && !(dieCheck ==1))
+			System.out.println("Reward is " + reward);
+		
 		return reward;
 	} // end getReward
 
@@ -509,6 +518,14 @@ public class MarioState implements State
 		double[] reward = {this.xPos, this.rewardSoFar};
 		return reward;
 	} // end get total reward
+	
+	/**
+	 * Function returns the properties file read in by the state
+	 * @return Properties file for setting variables
+	 */
+	public Properties getProperties() {
+		return this.properties;
+	}
 
 	public static Properties readPropertiesFile(String configFilePath){
 		//String configFilePath = "D:/settings.properties";
@@ -531,7 +548,7 @@ public class MarioState implements State
 		return properties;
 	}// end function readPropertiesFile
 
-	public void setAllProperties(Properties properties){
+	public void setAllProperties(){
 		// rewards
 		this.REWARD_DISTANCE = Integer.parseInt(properties.getProperty("reward_distance", "2"));;
 		this.REWARD_KILLED_STOMP = Integer.parseInt(properties.getProperty("reward_stomp", "0"));;
@@ -544,6 +561,10 @@ public class MarioState implements State
 		this.REWARD_DIE = Integer.parseInt(properties.getProperty("reward_die", "-1000"));
 		// representation
 		this.viewDim = Integer.parseInt(properties.getProperty("viewDim", "8"));
+		
+		this.amountOfInput = (viewDim + 1)*(viewDim) + miscDims;
+		this.representation = new double[amountOfInput];
+		representation[representation.length - 1] = 2; // set mariomode to 2 
 	}
 
 	/**
@@ -583,7 +604,7 @@ public class MarioState implements State
 
 	public int getViewDim()
 	{
-		return viewDim;
+		return this.viewDim;
 	}
 
 } // end marioState class
