@@ -17,7 +17,7 @@ public class MarioState implements State
 	// necessarily for serializing
 	private static final long serialVersionUID = 4326470085716280782L;
 	
-	protected static int verbose = 1;
+	protected static int verbose = 0;
 
 	// state representation, settable
 	public int viewDim = 8;//max 20;// 	//size of statespace that  is represented
@@ -405,12 +405,12 @@ public class MarioState implements State
 		//currentReward = reward;
 		//System.out.println("RewardSoFar: " + rewardSoFar);
 		//System.out.println("currentReward: " + currentReward);
-		if(collided == 1 )
+		if(verbose == 1 && collided == 1)
 			System.out.printf("Collided! Current reward: %f\n", reward);
-		if( dieCheck==1 )
+		if(verbose == 1 && dieCheck==1)
 			System.out.printf("Died! Current reward: %f\n", reward);
 
-		if(verbose == 2 && !(collided == 1) && !(dieCheck ==1))
+		if(verbose == 1 && !(collided == 1) && !(dieCheck ==1))
 			System.out.println("Reward is " + reward);
 		
 		return reward;

@@ -41,19 +41,15 @@ public class Evaluate {
 	 */
 
 
-	private static String loadPath = null; // path to saved QValues
 	private static String savePath = null;
+	private static boolean save = false;
 	
-	private static boolean load = false;
-	private static boolean save = true;
-	private static int amountTrain = 100;
-	private static int amountTest = 1;
+	private static int amountTrain = 2500;
 	
 	// Set these for plotting
-	public static String agentType = "QLearnAgent";
-	private static boolean plot = true;
-	private static int episodes = 10; // evaluation will be run X times to average results 
-	private static int steps = 10; // evaluation will be done every X steps
+	public static String agentType = "QLearnAgent"; // set name if you change the agent
+	private static int episodes = 10; // evaluation will be run X times to average results
+	private static int steps = 50; // evaluation will be done every X steps
 	
 	private static double[] printAverageDistance = new double[amountTrain/steps];
 	private static double[] printStdDistance = new double[amountTrain/steps];
@@ -72,140 +68,127 @@ public class Evaluate {
     	//set all properties
     	//QLearnAgent.setAllProperties(properties);
     	//PCAQLAgent.setAllProperties(properties);
-    	setAllProperties(properties); // for Play
+    	setAllProperties(properties); // for Evaluation
     	
     	// initialization
         EvaluationOptions options = new CmdLineOptions(args);
         Task task = new ProgressTask(options);
         QLearnAgent agent = (QLearnAgent) options.getAgent();
-        //SarsaAgent agent = (SarsaAgent) options.getAgent();
-        //QLearnAstarAgent agent = (QLearnAstarAgent) options.getAgent();
-        //PCAQLAgent agent = (PCAQLAgent) options.getAgent();
-        //PsychicAgent agent = (PsychicAgent) options.getAgent();
 
-	   //optionally load qvalues, don't forget to set path\
-       if(plot == true)
-    	   load = false;
-	   if(load)
-		   agent.loadQValues(loadPath);       
-	        
-	   // regular options
-	   options.setLevelDifficulty(1);
-	   options.setLevelRandSeed(12);      
-	   options.setLevelLength(2560);
-	 
-	   // set options specific for learning
-	   options.setVisualization(false);
-	   options.setMaxFPS(true);
-	   task.setOptions(options);
-	   
-	   agent.setAllProperties(properties);
+        // regular options
+        options.setLevelDifficulty(1);
+        options.setLevelRandSeed(15);      
+        //options.setLevelLength(2560);
 
-	   if(plot == false){
-	        // train
-	        for (int i = 0; i < amountTrain; i++) { 
-		        System.out.print("Training trial " + i + "... ");
-		        task.evaluate(agent);
-		        //MarioState.resetStatic(2);
-		        System.out.print("Done!\n");
-	        }
-	        
-	        //// reset options for visualization
-	        options.setVisualization(true);
-	        options.setMaxFPS(true);
-	        task.setOptions(options);
-	        
-	        //// and show the next game, learned agent
-	        System.out.print("Showing improvement... ");
-	        for (int i = 0; i < amountTest; i++) {
-	        	task.evaluate(agent);
-	        	//MarioState.resetStatic(2);
-	        }
-	        System.out.println("Done!");
-	        
-	        ///// write new qvalues to file
-	        if(save)
-	        	agent.writeQValues(savePath);
-	        System.out.println("Done with simulation!");
-        }// end if plot == false
-        else if(plot == true){
-        	QLearnAgent plotAgent = (QLearnAgent) options.getAgent();
-        	int amountEval = amountTrain/steps +1;
-        	double[][] tmpDistance = new double[episodes][amountEval];
-        	double[][] tmpReward = new double[episodes][amountEval];
-        	for (int ep=0; ep < episodes; ep++){
-        		System.out.println("Episode: " + ep);
-	        	for (int i = 0; i <= amountTrain; i++) { 
-			        System.out.print("Training trial " + i + "... ");
-			        task.evaluate(plotAgent);
-			        System.out.print("Done learning!\n");
-			        int modI = i%steps;
-			        
-			        //don't learn and just evaluate the results
-			        if(modI == 0){
+        // set options specific for learning
+        options.setVisualization(false);
+        options.setMaxFPS(true);
+        task.setOptions(options);
 
-			        	// set alpha to 0 so there will be no learning
-			        	plotAgent.setAlpha(0);
+        agent.setAllProperties(properties);
+        
+        int amountEval = amountTrain/steps +1;
+        double[][] tmpDistance = new double[episodes][amountEval];
+        double[][] tmpReward = new double[episodes][amountEval];
+        
+        double[] alphas = {0.1, 0.2, 0.4, 0.6};
+        int[] initialValue = {20, 40, 60, 80};
+        //viewdim:
+        // 4 Sammie
+        // 6 Michael
+        // 8 Anna
+        // 12 Richard
+        // 16 SP
+        
+        for (int iV=0; iV < initialValue.length; iV++){
+	        for (int a=0; a < alphas.length; a++){
+		        for (int ep=0; ep < episodes; ep++){
 
-			        	//System.out.println("Saving results # " + i + "... " + i/steps);
-			        	task.evaluate(plotAgent);
-			        	double[] currentReward = plotAgent.getTotalReward();
-			        	double distance = currentReward[0];
-			        	double totalReward = currentReward[1];
+		        	try{ 
+		        		for (int i = 0; i <= amountTrain; i++) { 
+			        		// set alpha and initial value
+			        		agent.setAlpha(alphas[a]);
+			        		agent.setInitialValue(initialValue[iV]);
+			        		
+			        		System.out.print("Episode: " + ep + " Alpha: " + alphas[a] + 
+			        				" Initial Value: " + initialValue[iV] + 
+			        				" Training trial " + i + "... ");
+			        		task.evaluate(agent);
+			        		System.out.print("Done learning!\n");
+			        		int modI = i%steps;
+			
+			        		//don't learn and just evaluate the results
+			        		if(modI == 0){
+			
+			        			// set alpha to 0 so there will be no learning
+			        			agent.setAlpha(0);
+			
+			        			//System.out.println("Saving results # " + i + "... " + i/steps);
+			        			task.evaluate(agent);
+			        			double[] currentReward = agent.getTotalReward();
+			        			double distance = currentReward[0];
+			        			double totalReward = currentReward[1];
+			
+			        			tmpDistance[ep][i/steps] = distance;
+			        			tmpReward[ep][i/steps] = totalReward;
+			
+			        			//System.out.println("distance: " + distance);
+			        			//System.out.println("reward: " + totalReward);
+			
+			        			//System.out.print("Done evaluating!\n");
+			        		}// end if
+			        		//reset alpha and continue learning
+			        		agent.setAlpha(alphas[a]);
+			        	}// end for learning/evaluating
 			        	
-			        	tmpDistance[ep][i/steps] = distance;
-			        	tmpReward[ep][i/steps] = totalReward;
-			        	
-			        	System.out.println("distance: " + distance);
-			        	System.out.println("reward: " + totalReward);
-
-			        	System.out.print("Done evaluating!\n");
-			        }// end if
-			        //reset alpha and continue learning
-			        plotAgent.setAllProperties(properties);
-	        	}// end for learning/evaluating
-	        	
-        	}// end for
-        	
-        	// add tmpDistance[ep]
-        	double[] averageDistance = Calculate.mean(tmpDistance);
-        	double[] stdDistance = Calculate.standardDeviation(tmpDistance, averageDistance);
-        	double[] averageReward = Calculate.mean(tmpReward);
-        	double[] stdReward = Calculate.standardDeviation(tmpReward, averageReward);
-        	//TODO remove printstatements
-        	System.out.print("\n avgDistance : ");
-        	Calculate.printArray(averageDistance);
-        	System.out.print("\n stdDistance : ");
-        	Calculate.printArray(stdDistance);
-        	System.out.print("\n avgReward : ");
-        	Calculate.printArray(averageReward);
-        	System.out.print("\n stdReward : ");
-        	Calculate.printArray(stdReward);
-        	System.out.print("\n");
-        	//System.out.println("stdDistance: " + stdDistance);
-        	//System.out.println("averageReward: " + averageReward);
-        	//System.out.println("stdReward: " + stdReward);
-        	printAverageDistance = averageDistance;
-        	printStdDistance = stdDistance;
-        	printAverageReward = averageReward;
-        	printStdReward = stdReward;
-        	
-            // saving values
-            if(save)
-            	agent.writeQValues(savePath);
-            
-            double[][] toPrint = new double[4][printAverageDistance.length];
-			toPrint[0] = printAverageDistance;
-			toPrint[1] = printStdDistance;
-			toPrint[2] = printAverageReward;
-			toPrint[3] = printStdReward;
-			//TODO make better filename
-			String fileName = String.format("%s_Alpha%.1fGamma%.1fEpsilon%.1fTraining%dEpisodes%dSteps%d.txt", agentType,
-					QLearnAgent.alpha, QLearnAgent.gamma, QLearnAgent.epsilon, amountTrain, episodes, steps);
-			fileName = fileName.replaceAll(",", ".");
-			Calculate.printToFile(fileName, toPrint);
-        }// end else if (plot==true)
-
+		        	//end try
+		        	} catch( Exception e )
+		        	{
+		        		e.getStackTrace();
+		        	}// end catch
+		
+		        }// end for
+		
+		        // add tmpDistance[ep]
+		        double[] averageDistance = Calculate.mean(tmpDistance);
+		        double[] stdDistance = Calculate.standardDeviation(tmpDistance, averageDistance);
+		        double[] averageReward = Calculate.mean(tmpReward);
+		        double[] stdReward = Calculate.standardDeviation(tmpReward, averageReward);
+		        
+		        //TODO remove print statements
+		        //System.out.print("\n avgDistance : ");
+		        //Calculate.printArray(averageDistance);
+		        //System.out.print("\n stdDistance : ");
+		        //Calculate.printArray(stdDistance);
+		        //System.out.print("\n avgReward : ");
+		        //Calculate.printArray(averageReward);
+		        //System.out.print("\n stdReward : ");
+		        //Calculate.printArray(stdReward);
+		        //System.out.print("\n");
+		        //System.out.println("stdDistance: " + stdDistance);
+		        //System.out.println("averageReward: " + averageReward);
+		        //System.out.println("stdReward: " + stdReward);
+		        
+		        printAverageDistance = averageDistance;
+		        printStdDistance = stdDistance;
+		        printAverageReward = averageReward;
+		        printStdReward = stdReward;
+		
+		        // saving values
+		        if(save)
+		        	agent.writeQValues(savePath);
+		
+		        double[][] toPrint = new double[4][printAverageDistance.length];
+		        toPrint[0] = printAverageDistance;
+		        toPrint[1] = printStdDistance;
+		        toPrint[2] = printAverageReward;
+		        toPrint[3] = printStdReward;
+		        String fileName = String.format("%s_A%.1fG%.1fE%.1fIV%dTraining%dEps%dSteps%d.txt", agentType,
+		        		QLearnAgent.alpha, QLearnAgent.gamma, QLearnAgent.epsilon, QLearnAgent.initialValue, amountTrain, episodes, steps);
+		        fileName = fileName.replaceAll(",", ".");
+		        Calculate.printToFile(fileName, toPrint);
+	        }// end for loop alpha
+	    }// end for loop initial value
     }// end main
     
 	/**
@@ -213,7 +196,7 @@ public class Evaluate {
 	 * @param properties
 	 */
     public static void setAllProperties(Properties properties){
-    	loadPath = System.getProperty("user.dir") + "/" + properties.getProperty("loadPath");
+    	//loadPath = System.getProperty("user.dir") + "/" + properties.getProperty("loadPath");
     	savePath = System.getProperty("user.dir") + "/" + properties.getProperty("savePath");
     }//end function setAllProperties
 	

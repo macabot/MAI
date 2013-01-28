@@ -32,7 +32,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	protected List<boolean[]> allActions;
  
 	// settings for q learning
-	static int initialValue = 20; // initial qvalues
+	public static int initialValue = 20; // initial qvalues
 	public static double epsilon = 0.1; // epsilon used in picking an action
 	public static double gamma = 0.9; // gamma is penalty on delayed result
 	public static double alpha = 0.3; // learning rate
@@ -315,9 +315,16 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 * Set alpha, used to test without learning
 	 * @param newAlpha
 	 */
-	public void setAlpha(int newAlpha) {
+	public void setAlpha(double newAlpha) {
 		alpha = newAlpha;
-		//System.out.println("New alpha is set: " + alpha);
+	}
+	
+	/**
+	 * Set alpha, used to test without learning
+	 * @param newAlpha
+	 */
+	public void setInitialValue(int newInitialValue) {
+		initialValue = newInitialValue;
 	}
 	
 	/**
