@@ -1,7 +1,6 @@
 package UvA.states;
 
 import java.io.Serializable;
-import java.util.Properties;
 
 
 public interface State extends Serializable

@@ -77,7 +77,7 @@ public class Evaluate {
 
         // regular options
         options.setLevelDifficulty(1);
-        options.setLevelRandSeed(15);      
+        options.setLevelRandSeed(15);
         //options.setLevelLength(2560);
 
         // set options specific for learning

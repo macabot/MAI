@@ -129,14 +129,39 @@ public class PCAQLAgent extends QLearnAgent
 		}
 	} // end loadQValues
 	
+	public void setPCAM(PCAMeans pcamIn)
+	{
+		this.pcam = pcamIn;
+	}
+	
+	public PCAMeans getPCAM()
+	{
+		return pcam;
+	}
+	
+	public void setNumComponents(int numComponentsIn)
+	{
+		this.numComponents = numComponentsIn;
+	}
+	
 	public int getNumComponents()
 	{
 		return this.numComponents;
 	}
 	
+	public void setClusterAmount(int clusterAmountIn)
+	{
+		this.clusterAmount = clusterAmountIn;
+	}
+	
 	public int getClusterAmount()
 	{
 		return this.clusterAmount;
+	}
+	
+	public void setIterations(int iterationsIn)
+	{
+		this.iterations = iterationsIn;
 	}
 	
 	public int getIterations()
@@ -149,6 +174,12 @@ public class PCAQLAgent extends QLearnAgent
 	 * @param properties
 	 */
 	public void setAllProperties(Properties properties){
+		// set values QLearnAgent
+		initialValue = Integer.parseInt(properties.getProperty("initialValue", "20"));
+		epsilon = Double.parseDouble(properties.getProperty("epsilon", "0.1"));
+		gamma = Double.parseDouble(properties.getProperty("gamma", "0.9"));
+		alpha = Double.parseDouble(properties.getProperty("alpha", "0.3"));
+		// set value PCAQLAgent
 		this.numComponents = Integer.parseInt(properties.getProperty("numComponents", "2"));
 		this.clusterAmount = Integer.parseInt(properties.getProperty("clusterAmount", "-1"));
 		this.iterations = Integer.parseInt(properties.getProperty("iterations", "10"));
