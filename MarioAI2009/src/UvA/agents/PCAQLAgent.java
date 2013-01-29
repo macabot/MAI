@@ -169,10 +169,7 @@ public class PCAQLAgent extends QLearnAgent
 		return this.iterations;
 	}
 	
-	/**
-	 * Set all the properties via a config.properties file
-	 * @param properties
-	 */
+	@Override
 	public void setAllProperties(Properties properties){
 		// set values QLearnAgent
 		initialValue = Integer.parseInt(properties.getProperty("initialValue", "20"));
