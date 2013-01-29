@@ -44,12 +44,12 @@ public class Evaluate {
 	private static String savePath = null;
 	private static boolean save = false;
 	
-	private static int amountTrain = 10; // TODO: RESET BACK TO 1000
+	private static int amountTrain = 1000; // TODO: RESET BACK TO 1000
 	
 	// Set these for plotting
 	public static String agentType = "QLearnAgent"; // set name if you change the agent
-	private static int episodes = 10; // evaluation will be run X times to average results
-	private static int steps = 2; // evaluation will be done every X steps TODO: RESET
+	private static int episodes = 50; // evaluation will be run X times to average results
+	private static int steps = 50; // evaluation will be done every X steps TODO: RESET
 	
 	private static double[] printAverageDistance = new double[amountTrain/steps];
 	private static double[] printStdDistance = new double[amountTrain/steps];
@@ -91,9 +91,9 @@ public class Evaluate {
         double[][] tmpDistance = new double[episodes][amountEval];
         double[][] tmpReward = new double[episodes][amountEval];
         
-        // TODO: SET CONFIGFILE CORRECTLY
-        double[] alphas = {0.1, 0.3, 0.6};
-        int[] initialValue = {20, 50, 80};
+        // TODO: SET CONFIGFILE CORRECTLY (view dimensions)
+        double[] alphas = {0.1, 0.3};
+        int[] initialValue = {20};
         //viewdim:
         // 4 Sammie
         // 6 Michael
@@ -185,8 +185,8 @@ public class Evaluate {
 		        toPrint[1] = printStdDistance;
 		        toPrint[2] = printAverageReward;
 		        toPrint[3] = printStdReward;
-		        String fileName = String.format("%s_A%dVDim%.1fG%.1fE%.1fIV%dTraining%dEps%dSteps%d.txt", agentType, agent.getViewDim(),
-		        		QLearnAgent.alpha, QLearnAgent.gamma, QLearnAgent.epsilon, QLearnAgent.initialValue, amountTrain, episodes, steps);
+		        String fileName = String.format("%s_A%dVDim%.1fG%.1fE%.1fIV%dTraining%dEps%dSteps%d.txt", agentType, QLearnAgent.alpha, 
+		        		agent.getViewDim(), QLearnAgent.gamma, QLearnAgent.epsilon, QLearnAgent.initialValue, amountTrain, episodes, steps);
 		        fileName = fileName.replaceAll(",", ".");
 		        Calculate.printToFile(fileName, toPrint);
 	        }// end for loop alpha
