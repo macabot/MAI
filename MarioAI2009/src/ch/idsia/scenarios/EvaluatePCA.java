@@ -51,12 +51,12 @@ public class EvaluatePCA {
 	private static String savePath = null;
 	private static boolean save = false;
 
-	private static int amountTrain = 1000;
+	private static int amountTrain = 10;
 
 	// Set these for plotting
 	public static String agentType = "PCAQLAgent"; // set name if you change the agent
 	private static int episodes = 10; // evaluation will be run X times to average results
-	private static int steps = 50; // evaluation will be done every X steps
+	private static int steps = 2; // evaluation will be done every X steps
 
 	private static double[] printAverageDistance = new double[amountTrain/steps];
 	private static double[] printStdDistance = new double[amountTrain/steps];
@@ -126,18 +126,20 @@ public class EvaluatePCA {
 				long start = System.currentTimeMillis();
 				
 				System.out.print("Episode: " + ep + 
-						" amount of clusters " + nrClusters[nrCluster] +  
+						" amount of clusters " + nrClusters[nrCluster] + 
 						"... ");
+				
+				agent.setClusterAmount(nrClusters[nrCluster]);
+
+				PCAMeans pcam = new PCAMeans(states, agent.getNumComponents(), agent.getClusterAmount(), agent.getIterations());
+				agent.setPCAM(pcam);
+
 				
 				try{ 
 					for (int i = 0; i <= amountTrain; i++) { 
 						// set values
 
-						agent.setClusterAmount(nrClusters[nrCluster]);
-
-						PCAMeans pcam = new PCAMeans(states, agent.getNumComponents(), agent.getClusterAmount(), agent.getIterations());
-						agent.setPCAM(pcam);
-
+						
 						task.evaluate(agent);
 
 						int modI = i%steps;
@@ -171,7 +173,7 @@ public class EvaluatePCA {
 					//end try
 				} catch( Exception e )
 				{
-					e.getStackTrace();
+					e.printStackTrace();
 				}// end catch
 				
 				System.out.printf("This episode took %d miliseconds \n", System.currentTimeMillis() - start);

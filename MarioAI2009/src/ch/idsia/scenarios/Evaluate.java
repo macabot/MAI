@@ -147,7 +147,7 @@ public class Evaluate {
 		        	//end try
 		        	} catch( Exception e )
 		        	{
-		        		e.getStackTrace();
+		        		e.printStackTrace();
 		        	}// end catch
 		        	System.out.printf("Episode took %d miliseconds \n", System.currentTimeMillis() - start);
 		        }// end for episode 
