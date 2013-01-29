@@ -173,7 +173,7 @@ public class Evaluate {
 		        toPrint[1] = printStdDistance;
 		        toPrint[2] = printAverageReward;
 		        toPrint[3] = printStdReward;
-		        String fileName = String.format("%s_A%dVDim%.1fG%.1fE%.1fIV%dTraining%dEps%dSteps%d.txt", agentType, QLearnAgent.alpha, 
+		        String fileName = String.format("%s_A%.1fVDim%dG%.1fE%.1fIV%dTraining%dEps%dSteps%d.txt", agentType, QLearnAgent.alpha, 
 		        		agent.getViewDim(), QLearnAgent.gamma, QLearnAgent.epsilon, QLearnAgent.initialValue, amountTrain, episodes, steps);
 		        fileName = fileName.replaceAll(",", ".");
 		        Calculate.printToFile(fileName, toPrint);
