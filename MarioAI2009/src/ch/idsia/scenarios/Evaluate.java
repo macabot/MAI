@@ -44,12 +44,12 @@ public class Evaluate {
 	private static String savePath = null;
 	private static boolean save = false;
 	
-	private static int amountTrain = 1000; // TODO: RESET BACK TO 1000
+	private static int amountTrain = 1000;
 	
 	// Set these for plotting
 	public static String agentType = "QLearnAgent"; // set name if you change the agent
 	private static int episodes = 50; // evaluation will be run X times to average results
-	private static int steps = 50; // evaluation will be done every X steps TODO: RESET
+	private static int steps = 50; // evaluation will be done every X steps 
 	
 	private static double[] printAverageDistance = new double[amountTrain/steps];
 	private static double[] printStdDistance = new double[amountTrain/steps];
@@ -91,9 +91,9 @@ public class Evaluate {
         double[][] tmpDistance = new double[episodes][amountEval];
         double[][] tmpReward = new double[episodes][amountEval];
         
-        // TODO: SET CONFIGFILE CORRECTLY (view dimensions)
-        double[] alphas = {0.1, 0.3};
-        int[] initialValue = {20};
+        // TODO: VIEWDIM SETTEN
+        double[] alphas = {0.1, 0.3, 0.6};
+        int[] initialValue = {20, 50, 80};
         //viewdim:
         // 4 Sammie
         // 6 Michael
@@ -157,19 +157,6 @@ public class Evaluate {
 		        double[] averageReward = Calculate.mean(tmpReward);
 		        double[] stdReward = Calculate.standardDeviation(tmpReward, averageReward);
 		        
-		        //TODO remove print statements
-		        //System.out.print("\n avgDistance : ");
-		        //Calculate.printArray(averageDistance);
-		        //System.out.print("\n stdDistance : ");
-		        //Calculate.printArray(stdDistance);
-		        //System.out.print("\n avgReward : ");
-		        //Calculate.printArray(averageReward);
-		        //System.out.print("\n stdReward : ");
-		        //Calculate.printArray(stdReward);
-		        //System.out.print("\n");
-		        //System.out.println("stdDistance: " + stdDistance);
-		        //System.out.println("averageReward: " + averageReward);
-		        //System.out.println("stdReward: " + stdReward);
 		        
 		        printAverageDistance = averageDistance;
 		        printStdDistance = stdDistance;
