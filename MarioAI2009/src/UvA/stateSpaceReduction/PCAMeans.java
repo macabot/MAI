@@ -40,7 +40,7 @@ public class PCAMeans implements Serializable
 	private Dataset means;
 	private Map<Instance, Integer> projectToMeanCache;	// cache contains previous conversions from projected vector (using PCA) to mean-index
 
-	private static int verbose = 1;
+	private static int verbose = 0;
 
 	/**
 	 * Constructor performs PCA on states and clusters the eigen space projections.

@@ -316,7 +316,6 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 */
 	public void setEpsilon(double newEpsilon) {
 		epsilon = newEpsilon;
-		System.out.println("New epsilon is set: " + epsilon);
 	}
 	
 	/**
