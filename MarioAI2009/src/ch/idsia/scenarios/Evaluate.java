@@ -44,12 +44,12 @@ public class Evaluate {
 	private static String savePath = null;
 	private static boolean save = false;
 	
-	private static int amountTrain = 2500;
+	private static int amountTrain = 10; // TODO: RESET BACK TO 1000
 	
 	// Set these for plotting
 	public static String agentType = "QLearnAgent"; // set name if you change the agent
 	private static int episodes = 10; // evaluation will be run X times to average results
-	private static int steps = 50; // evaluation will be done every X steps
+	private static int steps = 2; // evaluation will be done every X steps TODO: RESET
 	
 	private static double[] printAverageDistance = new double[amountTrain/steps];
 	private static double[] printStdDistance = new double[amountTrain/steps];
@@ -91,19 +91,21 @@ public class Evaluate {
         double[][] tmpDistance = new double[episodes][amountEval];
         double[][] tmpReward = new double[episodes][amountEval];
         
-        double[] alphas = {0.1, 0.2, 0.4, 0.6};
-        int[] initialValue = {20, 40, 60, 80};
+        // TODO: SET CONFIGFILE CORRECTLY
+        double[] alphas = {0.1, 0.3, 0.6};
+        int[] initialValue = {20, 50, 80};
         //viewdim:
         // 4 Sammie
         // 6 Michael
         // 8 Anna
-        // 12 Richard
-        // 16 SP
         
         for (int iV=0; iV < initialValue.length; iV++){
 	        for (int a=0; a < alphas.length; a++){
 		        for (int ep=0; ep < episodes; ep++){
-
+		        	
+		        	// reset agent qValues to prevent learning to be transferred to next variable testing
+		        	agent.resetQValues();
+		        	
 		        	try{ 
 		        		for (int i = 0; i <= amountTrain; i++) { 
 			        		// set alpha and initial value
@@ -183,7 +185,7 @@ public class Evaluate {
 		        toPrint[1] = printStdDistance;
 		        toPrint[2] = printAverageReward;
 		        toPrint[3] = printStdReward;
-		        String fileName = String.format("%s_A%.1fG%.1fE%.1fIV%dTraining%dEps%dSteps%d.txt", agentType,
+		        String fileName = String.format("%s_A%dVDim%.1fG%.1fE%.1fIV%dTraining%dEps%dSteps%d.txt", agentType, agent.getViewDim(),
 		        		QLearnAgent.alpha, QLearnAgent.gamma, QLearnAgent.epsilon, QLearnAgent.initialValue, amountTrain, episodes, steps);
 		        fileName = fileName.replaceAll(",", ".");
 		        Calculate.printToFile(fileName, toPrint);

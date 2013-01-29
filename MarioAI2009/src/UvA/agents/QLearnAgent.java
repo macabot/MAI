@@ -379,4 +379,10 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		return qValues;
 	}
 	
+	/**
+	 * This function resets qValues, resets the learning up till now
+	 */
+	public void resetQValues() {
+		qValues = new HashMap<StateActionPair, Double>();
+	} // end resetQValues
 } // end class
