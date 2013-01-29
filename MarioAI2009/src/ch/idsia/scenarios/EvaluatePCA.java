@@ -6,7 +6,6 @@ import java.util.Properties;
 
 import UvA.agents.Calculate;
 import UvA.agents.PCAQLAgent;
-import UvA.agents.QLearnAgent;
 import UvA.agents.SLAPI;
 import UvA.stateSpaceReduction.PCAMeans;
 import UvA.states.PCAState;
@@ -51,12 +50,12 @@ public class EvaluatePCA {
 	private static String savePath = null;
 	private static boolean save = false;
 
-	private static int amountTrain = 10;
+	private static int amountTrain = 1000;
 
 	// Set these for plotting
 	public static String agentType = "PCAQLAgent"; // set name if you change the agent
 	private static int episodes = 10; // evaluation will be run X times to average results
-	private static int steps = 2; // evaluation will be done every X steps
+	private static int steps = 50; // evaluation will be done every X steps TODO
 
 	private static double[] printAverageDistance = new double[amountTrain/steps];
 	private static double[] printStdDistance = new double[amountTrain/steps];
@@ -122,6 +121,15 @@ public class EvaluatePCA {
 		// ? SP
 		for (int nrCluster = 0; nrCluster< nrClusters.length; nrCluster++) {
 
+			agent.setClusterAmount(nrClusters[nrCluster]);
+			
+			// recalculate clusters
+			System.out.print("Clustering....");
+			PCAMeans pcam = new PCAMeans(states, agent.getNumComponents(), agent.getClusterAmount(), agent.getIterations());
+			System.out.println("Done!");
+			
+			agent.setPCAM(pcam);
+
 			for (int ep=0; ep < episodes; ep++){
 				long start = System.currentTimeMillis();
 				
@@ -129,10 +137,9 @@ public class EvaluatePCA {
 						" amount of clusters " + nrClusters[nrCluster] + 
 						"... ");
 				
-				agent.setClusterAmount(nrClusters[nrCluster]);
-
-				PCAMeans pcam = new PCAMeans(states, agent.getNumComponents(), agent.getClusterAmount(), agent.getIterations());
-				agent.setPCAM(pcam);
+				
+				// reset qValues
+				agent.resetQValues();
 
 				
 				try{ 
@@ -201,8 +208,8 @@ public class EvaluatePCA {
 			toPrint[1] = printStdDistance;
 			toPrint[2] = printAverageReward;
 			toPrint[3] = printStdReward;
-			String fileName = String.format("%s_A%.1fG%.1fE%.1fIV%dTraining%dEps%dSteps%d.txt", agentType,
-					QLearnAgent.alpha, QLearnAgent.gamma, QLearnAgent.epsilon, QLearnAgent.initialValue, amountTrain, episodes, steps);
+			String fileName = String.format("%s_It%dNC%dCA%dTraining%dEps%dSteps%d.txt", agentType, agent.getIterations(), 
+					agent.getNumComponents(), agent.getClusterAmount(), amountTrain, episodes, steps);
 			fileName = fileName.replaceAll(",", ".");
 			Calculate.printToFile(fileName, toPrint);
 
