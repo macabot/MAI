@@ -121,14 +121,19 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	{
 		// initialize variables
 		Random generator = new Random();
-		boolean[] bestAction = new boolean[Environment.numberOfButtons];
-		double bestValue = -10000;
-
+		
 		// find best action
 		List<boolean[]> validActions = getValidActions();
-		for(int i=0; i<validActions.size(); i++)
+		
+		// initiate values for comparison
+		StateActionPair sap = new StateActionPair(state, validActions.get(0));
+		boolean[] bestAction = sap.action;
+		
+		double bestValue= getStateActionValue(sap);
+		
+		for(int i=1; i<validActions.size(); i++)
 		{
-			StateActionPair sap = new StateActionPair(state, validActions.get(i));
+			sap = new StateActionPair(state, validActions.get(i));
 			double qValue = getStateActionValue(sap);
 			if( qValue > bestValue )
 			{
@@ -166,13 +171,16 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 		
 		// get bets QValue for calculating updated qvalue
 		List<boolean[]> actions = getValidActions();
-		double bestQValue = 0;
+
+		// initialize values for comparison in next loop
+		StateActionPair sap = new StateActionPair(state, actions.get(0));
+		double bestQValue = getStateActionValue(sap);
 		
 		// for each action, get stateaction pair and compare highest qValue 
 		// to return the future reward
-		for(int i=0; i<actions.size(); i++)
+		for(int i=1; i<actions.size(); i++)
 		{
-			StateActionPair sap = new StateActionPair(state, actions.get(i));
+			sap = new StateActionPair(state, actions.get(i));
 			double Q = getStateActionValue(sap);
 			if( Q > bestQValue )
 				bestQValue = Q;
