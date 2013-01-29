@@ -314,7 +314,7 @@ public class QLearnAgent extends BasicAIAgent implements Agent {
 	 * Set epsilon, used to test without exploring
 	 * @param newEpsilon
 	 */
-	public void setEpsilon(int newEpsilon) {
+	public void setEpsilon(double newEpsilon) {
 		epsilon = newEpsilon;
 		System.out.println("New epsilon is set: " + epsilon);
 	}
