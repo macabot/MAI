@@ -156,7 +156,6 @@ public class EvaluatePCA {
 
 							// set alpha to 0 so there will be no learning
 							agent.setAlpha(0);
-							agent.setEpsilon(0); 
 
 							//System.out.println("Saving results # " + i + "... " + i/steps);
 							task.evaluate(agent);
@@ -174,7 +173,6 @@ public class EvaluatePCA {
 						}// end if
 						//reset alpha and continue learning
 						agent.setAlpha(Double.parseDouble(properties.getProperty("alpha", "0.3")));
-						agent.setEpsilon(Double.parseDouble(properties.getProperty("epsilon", "0.1")));
 					}// end for learning/evaluating
 
 					//end try
