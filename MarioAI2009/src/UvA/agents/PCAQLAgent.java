@@ -70,7 +70,7 @@ public class PCAQLAgent extends QLearnAgent
 	 * @param qValues - dictionary mapping state-action pairs to their value
 	 * @return double array containing representations of states in 'qValues'
 	 */
-	private static double[][] extractRepresentations(Map<StateActionPair, Double> qValues)
+	public static double[][] extractRepresentations(Map<StateActionPair, Double> qValues)
 	{
 		double[][] representations = new double[qValues.size()][];
 		int i=0;
