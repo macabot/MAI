@@ -48,7 +48,7 @@ public class Evaluate {
 	
 	// Set these for plotting
 	public static String agentType = "QLearnAgent"; // set name if you change the agent
-	private static int episodes = 50; // evaluation will be run X times to average results
+	private static int episodes = 10; // evaluation will be run X times to average results
 	private static int steps = 50; // evaluation will be done every X steps 
 	
 	private static double[] printAverageDistance = new double[amountTrain/steps];
@@ -102,7 +102,12 @@ public class Evaluate {
         for (int iV=0; iV < initialValue.length; iV++){
 	        for (int a=0; a < alphas.length; a++){
 		        for (int ep=0; ep < episodes; ep++){
+		        	long start = System.currentTimeMillis();
 		        	
+		        	System.out.print("Episode: " + ep + " Alpha: " + alphas[a] + 
+	        				" Initial Value: " + initialValue[iV] + 
+	        				"... ");
+	        		
 		        	// reset agent qValues to prevent learning to be transferred to next variable testing
 		        	agent.resetQValues();
 		        	
@@ -112,11 +117,7 @@ public class Evaluate {
 			        		agent.setAlpha(alphas[a]);
 			        		agent.setInitialValue(initialValue[iV]);
 			        		
-			        		System.out.print("Episode: " + ep + " Alpha: " + alphas[a] + 
-			        				" Initial Value: " + initialValue[iV] + 
-			        				" Training trial " + i + "... ");
 			        		task.evaluate(agent);
-			        		System.out.print("Done learning!\n");
 			        		int modI = i%steps;
 			
 			        		//don't learn and just evaluate the results
@@ -148,8 +149,8 @@ public class Evaluate {
 		        	{
 		        		e.getStackTrace();
 		        	}// end catch
-		
-		        }// end for
+		        	System.out.printf("Episode took %d miliseconds \n", System.currentTimeMillis() - start);
+		        }// end for episode 
 		
 		        // add tmpDistance[ep]
 		        double[] averageDistance = Calculate.mean(tmpDistance);

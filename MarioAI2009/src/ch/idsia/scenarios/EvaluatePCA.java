@@ -51,7 +51,7 @@ public class EvaluatePCA {
 	private static String savePath = null;
 	private static boolean save = false;
 
-	private static int amountTrain = 2500;
+	private static int amountTrain = 1000;
 
 	// Set these for plotting
 	public static String agentType = "PCAQLAgent"; // set name if you change the agent
@@ -99,6 +99,7 @@ public class EvaluatePCA {
 		double[][] tmpDistance = new double[episodes][amountEval];
 		double[][] tmpReward = new double[episodes][amountEval];
 
+		// TODO: create states
 		// TODO: initiate alpha, initial value and viewdim in config file 
 		// TODO: SET NRCOMPONENTS IN CONFIG FILE
 		// TODO: set correct loadPath in config.properties
@@ -122,7 +123,12 @@ public class EvaluatePCA {
 		for (int nrCluster = 0; nrCluster< nrClusters.length; nrCluster++) {
 
 			for (int ep=0; ep < episodes; ep++){
-
+				long start = System.currentTimeMillis();
+				
+				System.out.print("Episode: " + ep + 
+						" amount of clusters " + nrClusters[nrCluster] +  
+						"... ");
+				
 				try{ 
 					for (int i = 0; i <= amountTrain; i++) { 
 						// set values
@@ -132,11 +138,8 @@ public class EvaluatePCA {
 						PCAMeans pcam = new PCAMeans(states, agent.getNumComponents(), agent.getClusterAmount(), agent.getIterations());
 						agent.setPCAM(pcam);
 
-						System.out.print("Episode: " + ep + 
-								" amount of clusters " + nrClusters[nrCluster] +  
-								" Training trial " + i + "... ");
 						task.evaluate(agent);
-						System.out.print("Done learning!\n");
+
 						int modI = i%steps;
 
 						//don't learn and just evaluate the results
@@ -170,9 +173,11 @@ public class EvaluatePCA {
 				{
 					e.getStackTrace();
 				}// end catch
-
+				
+				System.out.printf("This episode took %d miliseconds \n", System.currentTimeMillis() - start);
+				
 			}// end for episodes
-
+			
 			// add tmpDistance[ep]
 			double[] averageDistance = Calculate.mean(tmpDistance);
 			double[] stdDistance = Calculate.standardDeviation(tmpDistance, averageDistance);
