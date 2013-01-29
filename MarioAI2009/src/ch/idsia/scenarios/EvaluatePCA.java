@@ -55,7 +55,7 @@ public class EvaluatePCA {
 	// Set these for plotting
 	public static String agentType = "PCAQLAgent"; // set name if you change the agent
 	private static int episodes = 10; // evaluation will be run X times to average results
-	private static int steps = 50; // evaluation will be done every X steps TODO
+	private static int steps = 50; // evaluation will be done every X steps
 
 	private static double[] printAverageDistance = new double[amountTrain/steps];
 	private static double[] printStdDistance = new double[amountTrain/steps];
