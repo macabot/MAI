@@ -113,7 +113,7 @@ public class EvaluatePCA {
 
 		double[][] states = PCAQLAgent.extractRepresentations(qValuesTemp);
 
-		int[] nrClusters = {-1, states.length/10, states.length/100}; 
+		int[] nrClusters = {-1, states.length/100, states.length/10}; 
 		// nrCompononents:
 		// ? Sammie
 		// ? Anna
