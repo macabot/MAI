@@ -74,7 +74,7 @@ public class PCAMeans implements Serializable
 		pca.addSamples(vectors);
 		pca.computeBasis(numComponents);
 		double[][] projections = pca.samplesToEigenSpace(vectors);
-
+		
 		// cluster PCA results	
 		if( clusterAmount < 0 )	
 		{

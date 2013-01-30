@@ -1,5 +1,7 @@
 package UvA.agents;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -67,19 +69,32 @@ public class PCAQLAgent extends QLearnAgent
 	
 	/**
 	 * Extract all the states in 'qValues' and return their representations.
+	 * Does not contain duplicates.
 	 * @param qValues - dictionary mapping state-action pairs to their value
 	 * @return double array containing representations of states in 'qValues'
 	 */
 	public static double[][] extractRepresentations(Map<StateActionPair, Double> qValues)
 	{
-		double[][] representations = new double[qValues.size()][];
-		int i=0;
+		Map<Integer, double[]> uniqueRepresentations = new HashMap<Integer, double[]>();
 		for( StateActionPair sap: qValues.keySet() )
 		{
-			representations[i] = sap.state.getRepresentation();
+			double[] tempRepr = sap.state.getRepresentation();
+			uniqueRepresentations.put(Arrays.hashCode(tempRepr), tempRepr);
+		}
+		Collection<double[]> representationSet = uniqueRepresentations.values();
+		return collectionToArray(representationSet);
+	}
+	
+	public static double[][] collectionToArray(Collection<double[]> col)
+	{
+		double[][] array = new double[col.size()][];
+		int i=0;
+		for(double[] element: col)
+		{
+			array[i] = element;
 			i++;
 		}
-		return representations;
+		return array;
 	}
 	
 	@Override
